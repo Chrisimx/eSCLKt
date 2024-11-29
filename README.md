@@ -15,7 +15,7 @@ Add the following in your dependencies:
 
 ```
 dependencies {
-    implementation("io.github.chrisimx.esclkt:1.0.0")
+    implementation("io.github.chrisimx:esclkt:1.0.0")
 }
 ```
 
