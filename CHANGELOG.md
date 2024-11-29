@@ -1,3 +1,9 @@
+## [v1.0.0]
+
+## Changelog
+
+- [c57b856](https://github.com/Chrisimx/eSCLKt/commits/c57b856) Initial commit
+
 # This file
 
 All notable changes in eSCLKt will be documented here.
