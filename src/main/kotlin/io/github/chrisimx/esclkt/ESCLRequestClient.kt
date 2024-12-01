@@ -54,14 +54,16 @@ import java.util.concurrent.TimeUnit
  * A client for the eSCL scanning protocol
  *
  * @param baseUrl The base url to make requests to. Has to be a URL which is derived with "http URL to printer" + "rs" txt record acquired from mDNS
+ * @param usedHttpClient eSCL is an HTTP-based protocol. This OkHttpClient will be used to execute requests
  */
-class ESCLRequestClient(val baseUrl: HttpUrl) {
-    private val okHttpClient = OkHttpClient().newBuilder()
+class ESCLRequestClient(
+    val baseUrl: HttpUrl, val usedHttpClient: OkHttpClient = OkHttpClient().newBuilder()
         .readTimeout(100, TimeUnit.SECONDS)
         .writeTimeout(100, TimeUnit.SECONDS)
         .connectTimeout(100, TimeUnit.SECONDS)
         .callTimeout(100, TimeUnit.SECONDS)
         .build()
+) {
     private val xml = XML {
     }
     private val rootURL: HttpUrl = baseUrl.newBuilder().encodedPath("/").build()
@@ -96,7 +98,7 @@ class ESCLRequestClient(val baseUrl: HttpUrl) {
 
         val response: Response
         try {
-            response = okHttpClient.newCall(req).execute()
+            response = usedHttpClient.newCall(req).execute()
         } catch (e: IOException) {
             return ScannerCapabilitiesResult.NetworkError(e)
         } catch (e: IllegalStateException) {
@@ -155,7 +157,7 @@ class ESCLRequestClient(val baseUrl: HttpUrl) {
 
         val response: Response
         try {
-            response = okHttpClient.newCall(req).execute()
+            response = usedHttpClient.newCall(req).execute()
         } catch (e: IOException) {
             return ScannerStatusResult.NetworkError(e)
         } catch (e: IllegalStateException) {
@@ -211,7 +213,7 @@ class ESCLRequestClient(val baseUrl: HttpUrl) {
 
         val response: Response
         try {
-            response = okHttpClient.newCall(req).execute()
+            response = usedHttpClient.newCall(req).execute()
         } catch (e: IOException) {
             return ScannerCreateJobResult.NetworkError(e)
         } catch (e: IllegalStateException) {
@@ -258,7 +260,7 @@ class ESCLRequestClient(val baseUrl: HttpUrl) {
 
         val response: Response
         try {
-            response = okHttpClient.newCall(req).execute()
+            response = usedHttpClient.newCall(req).execute()
         } catch (e: IOException) {
             return ScannerDeleteJobResult.NetworkError(e)
         } catch (e: IllegalStateException) {
@@ -316,7 +318,7 @@ class ESCLRequestClient(val baseUrl: HttpUrl) {
 
         val response: Response
         try {
-            response = okHttpClient.newCall(req).execute()
+            response = usedHttpClient.newCall(req).execute()
         } catch (e: IOException) {
             return ScannerNextPageResult.NetworkError(e)
         } catch (e: IllegalStateException) {
@@ -371,7 +373,7 @@ class ESCLRequestClient(val baseUrl: HttpUrl) {
 
         val response: Response
         try {
-            response = okHttpClient.newCall(req).execute()
+            response = usedHttpClient.newCall(req).execute()
         } catch (e: IOException) {
             return RetrieveScanImageInfoResult.NetworkError(e)
         } catch (e: IllegalStateException) {
@@ -439,7 +441,7 @@ class ESCLRequestClient(val baseUrl: HttpUrl) {
 
     val response: Response
     try {
-    response = okHttpClient.newCall(req).execute()
+    response = usedHttpClient.newCall(req).execute()
     } catch (e: IOException) {
     return RetrieveRangeResult.NetworkError(e)
     } catch (e: IllegalStateException) {
