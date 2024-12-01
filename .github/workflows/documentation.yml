@@ -38,10 +38,10 @@ jobs:
         run: ./gradlew dokkaHtml
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Copy pages to dest
-        run: cp -r ./build/dokka/html/* ./_site
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+        with:
+          path: './build/dokka/html/'
 
   # Deployment job
   deploy:
