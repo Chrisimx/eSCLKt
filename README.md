@@ -1,4 +1,4 @@
-## eSCLKt: Airscan (eSCL) in Kotlin
+## eSCLKt: AirScan (eSCL) in Kotlin
 
 This project is a easy-to-use Kotlin library for using network-attached scanners supporting the eSCL/AirScan protocol.
 This protocol allows for driverless usage of network scanners and is supported by most modern scanning devices.
