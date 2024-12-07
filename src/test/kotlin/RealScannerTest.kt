@@ -54,6 +54,7 @@ class RealScannerTest {
         val scanJob = testedESCLClient.createJob(
             ScanSettings(
                 version = scannerCapabilitiesResult.scannerCapabilities.interfaceVersion,
+                intent = ScanIntentData.ScanIntentEnum(ScanIntent.Document),
                 colorMode = ColorMode.RGB24,
                 scanRegions = ScanRegions(
                     listOf(

@@ -89,7 +89,7 @@ data class ScanSettings(
     @XmlElement
     @XmlSerialName("pwg:Version")
     val version: String,
-    val intent: ScanIntent? = null,
+    val intent: ScanIntentData? = null,
     @XmlElement
     val scanRegions: ScanRegions? = null,
     @XmlElement

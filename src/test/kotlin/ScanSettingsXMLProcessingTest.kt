@@ -29,7 +29,7 @@ class ScanSettingsXMLProcessingTest {
         }
         val testScanSettings = ScanSettings(
             version = "2.63",
-            intent = ScanIntent.Document,
+            intent = ScanIntentData.ScanIntentEnum(ScanIntent.Document),
             scanRegions = ScanRegions(listOf(ScanRegion(20u, 10u, 2u, 1u)), true),
             documentFormatExt = "image/jpeg",
             contentType = ContentType.Text,
@@ -38,8 +38,6 @@ class ScanSettingsXMLProcessingTest {
             yResolution = 200u,
             colorMode = ColorMode.RGB24,
             colorSpace = "sRGB",
-
-
             )
         println("ScanSettings Serialization returned:\n   ${xml.encodeToString<ScanSettings>(testScanSettings)}")
     }

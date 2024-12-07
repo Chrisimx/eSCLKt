@@ -19,7 +19,12 @@
 
 package io.github.chrisimx.esclkt
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import nl.adaptivity.xmlutil.serialization.XmlSerialName
 import org.w3c.dom.Element
 import org.w3c.dom.Node.ELEMENT_NODE
@@ -54,7 +59,7 @@ data class InputSourceCaps(
     val maxPhysicalWidth: UInt?,
     val maxPhysicalHeight: UInt?,
     val settingProfiles: List<SettingProfile>,
-    val supportedIntents: List<Any>,
+    val supportedIntents: List<ScanIntentData>,
 ) {
     companion object {
         fun fromXMLElement(inputSourceCapsElem: Element): InputSourceCaps {
@@ -69,12 +74,12 @@ data class InputSourceCaps(
                 }
             val scanIntents = inputSourceCapsElem.findRequiredUniqueElementWithName("scan:SupportedIntents")
                 .getElementsByTagName("scan:Intent").let {
-                    val intents = mutableListOf<Any>()
+                    val intents = mutableListOf<ScanIntentData>()
                     for (i in 0..<it.length) {
                         try {
-                            intents.add(ScanIntent.valueOf(it.item(i).textContent))
+                            intents.add(ScanIntentData.ScanIntentEnum(ScanIntent.valueOf(it.item(i).textContent)))
                         } catch (e: IllegalArgumentException) {
-                            intents.add(it.item(i).textContent)
+                            intents.add(ScanIntentData.StringData(it.item(i).textContent))
                         }
                     }
                     intents
@@ -254,6 +259,33 @@ enum class ScanIntent {
     /// Scanning optimized for a business card
     BusinessCard,
 }
+
+@Serializable(ScanIntentDataSerializer::class)
+@XmlSerialName("scan:ScanIntent", "", "scan")
+sealed class ScanIntentData {
+    data class ScanIntentEnum(val scanIntent: ScanIntent) : ScanIntentData()
+    data class StringData(val string: String) : ScanIntentData()
+}
+object ScanIntentDataSerializer : KSerializer<ScanIntentData> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("scan:ScanIntent")
+
+    override fun serialize(encoder: Encoder, value: ScanIntentData) {
+        when (value) {
+            is ScanIntentData.ScanIntentEnum -> encoder.encodeString(value.scanIntent.name)
+            is ScanIntentData.StringData -> encoder.encodeString(value.string)
+        }
+    }
+
+    override fun deserialize(decoder: Decoder): ScanIntentData {
+        val decodedString = decoder.decodeString()
+        return try {
+            ScanIntentData.ScanIntentEnum(ScanIntent.valueOf(decodedString))
+        } catch (exc: IllegalArgumentException) {
+            ScanIntentData.StringData(decodedString)
+        }
+    }
+}
+
 
 @Serializable
 @XmlSerialName("pwg:ContentType")
