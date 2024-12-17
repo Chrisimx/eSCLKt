@@ -87,7 +87,7 @@ jreleaser {
     release {
         github {
             enabled = true
-            draft = true
+            draft = false
 
             changelog {
                 enabled = true
