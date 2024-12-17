@@ -30,7 +30,16 @@ class ScanSettingsXMLProcessingTest {
         val testScanSettings = ScanSettings(
             version = "2.63",
             intent = ScanIntentData.ScanIntentEnum(ScanIntent.Document),
-            scanRegions = ScanRegions(listOf(ScanRegion(20u, 10u, 2u, 1u)), true),
+            scanRegions = ScanRegions(
+                listOf(
+                    ScanRegion(
+                        20u.threeHundredthsOfInch(),
+                        10u.threeHundredthsOfInch(),
+                        2u.threeHundredthsOfInch(),
+                        1u.threeHundredthsOfInch()
+                    )
+                ), true
+            ),
             documentFormatExt = "image/jpeg",
             contentType = ContentType.Text,
             inputSource = InputSource.Platen,

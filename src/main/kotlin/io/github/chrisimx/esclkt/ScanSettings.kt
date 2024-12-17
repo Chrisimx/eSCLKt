@@ -30,16 +30,16 @@ import nl.adaptivity.xmlutil.serialization.XmlSerialName
 data class ScanRegion(
     @XmlElement
     @XmlSerialName("pwg:Height")
-    val height: UInt,
+    val height: ThreeHundredthsOfInch,
     @XmlElement
     @XmlSerialName("pwg:Width")
-    val width: UInt,
+    val width: ThreeHundredthsOfInch,
     @XmlElement
     @XmlSerialName("pwg:XOffset")
-    val xOffset: UInt,
+    val xOffset: ThreeHundredthsOfInch,
     @XmlElement
     @XmlSerialName("pwg:YOffset")
-    val yOffset: UInt,
+    val yOffset: ThreeHundredthsOfInch,
 
     ) {
     @XmlElement

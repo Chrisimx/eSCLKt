@@ -34,6 +34,7 @@ class RealScannerTest {
     @Test
     fun testScanFull() {
         val scannerURL: String? = System.getenv("TEST_SCANNER_URL")
+        val shouldAfdBeTested: Boolean = System.getenv("TEST_FEEDER").toBoolean()
         if (scannerURL == null) {
             println("Functional test with real scanner did not run because TEST_SCANNER_URL is not specified")
             return
@@ -47,29 +48,106 @@ class RealScannerTest {
         println("Retrieved scanner capabilities: $scannerCapabilitiesResult")
         assertTrue(scannerCapabilitiesResult is ScannerCapabilitiesResult.Success)
 
+        val scannerCapabilities = scannerCapabilitiesResult.scannerCapabilities
+
         val scannerStatus = testedESCLClient.getScannerStatus()
         println("Retrieved scanner status: $scannerStatus")
         assertTrue(scannerStatus is ESCLRequestClient.ScannerStatusResult.Success)
 
+        executeScanJob(
+            testedESCLClient, scannerCapabilitiesResult,
+            inputSource = InputSource.Platen,
+            duplex = false,
+            scanRegion = ScanRegion(
+                height = scannerCapabilities.platen!!.inputSourceCaps.maxHeight,
+                width = scannerCapabilities.platen!!.inputSourceCaps.maxWidth,
+                xOffset = 0u.threeHundredthsOfInch(),
+                yOffset = 0u.threeHundredthsOfInch()
+            ),
+            fileNamePrefix = "platen_scan"
+        )
+
+        if (shouldAfdBeTested) {
+            assert(scannerCapabilities.adf != null)
+
+            val duplexSupported = scannerCapabilities.adf!!.duplexCaps != null
+            val inputSourceCaps =
+                if (duplexSupported) scannerCapabilities.adf!!.duplexCaps!! else scannerCapabilities.adf!!.simplexCaps
+
+            executeScanJob(
+                testedESCLClient, scannerCapabilitiesResult,
+                inputSource = InputSource.Feeder,
+                duplex = duplexSupported,
+                scanRegion = ScanRegion(
+                    height = inputSourceCaps.maxHeight,
+                    width = inputSourceCaps.maxWidth,
+                    xOffset = 0u.threeHundredthsOfInch(),
+                    yOffset = 0u.threeHundredthsOfInch()
+                ),
+                fileNamePrefix = "feeder_scan"
+            )
+        }
+    }
+
+    // According to spec this should use the maximum size available, when the regions dimensions are over limits. It should not error
+    @Test
+    fun regionOutOfRange() {
+        val scannerURL: String? = System.getenv("TEST_SCANNER_URL")
+        if (scannerURL == null) {
+            println("Functional test with real scanner did not run because TEST_SCANNER_URL is not specified")
+            return
+        }
+
+        File(".").listFiles()?.forEach { it.delete() }
+
+        val testedESCLClient = ESCLRequestClient(scannerURL.toHttpUrl())
+
+        val scannerCapabilitiesResult = testedESCLClient.getScannerCapabilities()
+        println("Retrieved scanner capabilities: $scannerCapabilitiesResult")
+        assertTrue(scannerCapabilitiesResult is ScannerCapabilitiesResult.Success)
+
+        val scannerCapabilities = scannerCapabilitiesResult.scannerCapabilities
+
+        val scannerStatus = testedESCLClient.getScannerStatus()
+        println("Retrieved scanner status: $scannerStatus")
+        assertTrue(scannerStatus is ESCLRequestClient.ScannerStatusResult.Success)
+
+        executeScanJob(
+            testedESCLClient, scannerCapabilitiesResult,
+            inputSource = InputSource.Platen,
+            duplex = false,
+            scanRegion = ScanRegion(
+                height = 300000.threeHundredthsOfInch(),
+                width = 300000.threeHundredthsOfInch(),
+                xOffset = 0u.threeHundredthsOfInch(),
+                yOffset = 0u.threeHundredthsOfInch()
+            ),
+            fileNamePrefix = "platen_scan"
+        )
+    }
+
+    private fun executeScanJob(
+        testedESCLClient: ESCLRequestClient,
+        scannerCapabilitiesResult: ScannerCapabilitiesResult.Success,
+        inputSource: InputSource,
+        duplex: Boolean,
+        scanRegion: ScanRegion,
+        fileNamePrefix: String
+    ) {
         val scanJob = testedESCLClient.createJob(
             ScanSettings(
                 version = scannerCapabilitiesResult.scannerCapabilities.interfaceVersion,
                 intent = ScanIntentData.ScanIntentEnum(ScanIntent.Document),
+                inputSource = inputSource,
                 colorMode = ColorMode.RGB24,
                 scanRegions = ScanRegions(
                     listOf(
-                        ScanRegion(
-                            scannerCapabilitiesResult.scannerCapabilities.platen!!.inputSourceCaps.maxHeight,
-                            scannerCapabilitiesResult.scannerCapabilities.platen!!.inputSourceCaps.maxWidth,
-                            0u,
-                            0u
-                        )
+                        scanRegion
                     ), mustHonor = true
                 ),
                 xResolution = 600u,
                 yResolution = 600u,
-                inputSource = InputSource.Platen,
-                duplex = false,
+                duplex = duplex,
                 documentFormatExt = "image/jpeg"
             )
         )
@@ -90,7 +168,7 @@ class RealScannerTest {
                 pageRequest.page.data.use {
                     Files.copy(
                         it.body!!.byteStream(),
-                        Path.of("SCANNEDIMAGE$counter.jpg"),
+                        Path.of("$fileNamePrefix$counter.jpg"),
                         StandardCopyOption.REPLACE_EXISTING
                     )
                 }
@@ -131,7 +209,6 @@ class RealScannerTest {
                 sleep(3000)
             }
         }
-
     }
 
 }

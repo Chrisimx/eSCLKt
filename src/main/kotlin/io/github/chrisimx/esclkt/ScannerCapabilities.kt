@@ -45,19 +45,19 @@ private fun Element.findRequiredUniqueElementWithName(name: String): Element {
 }
 
 data class InputSourceCaps(
-    val minWidth: UInt,
-    val maxWidth: UInt,
-    val minHeight: UInt,
-    val maxHeight: UInt,
+    val minWidth: ThreeHundredthsOfInch,
+    val maxWidth: ThreeHundredthsOfInch,
+    val minHeight: ThreeHundredthsOfInch,
+    val maxHeight: ThreeHundredthsOfInch,
     val maxScanRegions: UInt,
     val maxOpticalXResolution: UInt,
     val maxOpticalYResolution: UInt,
-    val riskyLeftMargin: UInt,
-    val riskyRightMargin: UInt,
-    val riskyTopMargin: UInt,
-    val riskyBottomMargin: UInt,
-    val maxPhysicalWidth: UInt?,
-    val maxPhysicalHeight: UInt?,
+    val riskyLeftMargin: ThreeHundredthsOfInch,
+    val riskyRightMargin: ThreeHundredthsOfInch,
+    val riskyTopMargin: ThreeHundredthsOfInch,
+    val riskyBottomMargin: ThreeHundredthsOfInch,
+    val maxPhysicalWidth: ThreeHundredthsOfInch?,
+    val maxPhysicalHeight: ThreeHundredthsOfInch?,
     val settingProfiles: List<SettingProfile>,
     val supportedIntents: List<ScanIntentData>,
 ) {
@@ -88,19 +88,29 @@ data class InputSourceCaps(
             val resultISC: InputSourceCaps
             try {
                 resultISC = InputSourceCaps(
-                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MinWidth").textContent.toUInt(),
-                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MaxWidth").textContent.toUInt(),
-                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MinHeight").textContent.toUInt(),
-                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MaxHeight").textContent.toUInt(),
+                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MinWidth").textContent.toUInt()
+                        .threeHundredthsOfInch(),
+                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MaxWidth").textContent.toUInt()
+                        .threeHundredthsOfInch(),
+                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MinHeight").textContent.toUInt()
+                        .threeHundredthsOfInch(),
+                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MaxHeight").textContent.toUInt()
+                        .threeHundredthsOfInch(),
                     inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MaxScanRegions").textContent.toUInt(),
                     inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MaxOpticalXResolution").textContent.toUInt(),
                     inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MaxOpticalYResolution").textContent.toUInt(),
-                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:RiskyLeftMargin").textContent.toUInt(),
-                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:RiskyRightMargin").textContent.toUInt(),
-                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:RiskyTopMargin").textContent.toUInt(),
-                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:RiskyBottomMargin").textContent.toUInt(),
-                    inputSourceCapsElem.findUniqueElementWithName("scan:MaxPhysicalWidth")?.textContent?.toUInt(),
-                    inputSourceCapsElem.findUniqueElementWithName("scan:MaxPhysicalHeight")?.textContent?.toUInt(),
+                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:RiskyLeftMargin").textContent.toUInt()
+                        .threeHundredthsOfInch(),
+                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:RiskyRightMargin").textContent.toUInt()
+                        .threeHundredthsOfInch(),
+                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:RiskyTopMargin").textContent.toUInt()
+                        .threeHundredthsOfInch(),
+                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:RiskyBottomMargin").textContent.toUInt()
+                        .threeHundredthsOfInch(),
+                    inputSourceCapsElem.findUniqueElementWithName("scan:MaxPhysicalWidth")?.textContent?.toUInt()
+                        ?.threeHundredthsOfInch(),
+                    inputSourceCapsElem.findUniqueElementWithName("scan:MaxPhysicalHeight")?.textContent?.toUInt()
+                        ?.threeHundredthsOfInch(),
                     settingsProfiles,
                     scanIntents
                 )
