@@ -29,7 +29,7 @@ kotlin {
 KotlinPlatformType.setupAttributesMatchingStrategy(dependencies.attributesSchema)
 
 group = "io.github.chrisimx"
-version = "1.1.0"
+version = "1.2.0"
 
 publishing {
     publications {

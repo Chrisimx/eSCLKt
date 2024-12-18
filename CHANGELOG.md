@@ -1,3 +1,16 @@
+## [v1.2.0]
+
+## Changelog
+
+## 🚀 Features
+
+- [23d93b3](https://github.com/Chrisimx/eSCLKt/commits/23d93b3) feat: add and use length units (millimeters, inches,
+  threeHundredthsOfInch)
+
+---
+
+- [7cea8a6](https://github.com/Chrisimx/eSCLKt/commits/7cea8a6) release: don't draft github releases anymore
+
 ## [v1.1.0]
 
 ## Changelog
