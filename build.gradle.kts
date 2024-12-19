@@ -45,7 +45,7 @@ publishing {
                 packaging = "jar"
                 name.set("esclkt")
                 description.set("eSCLKt: AirScan protocol (eSCL) in Kotlin")
-                url.set("https://github.com/tschuehly/spring-view-component/")
+                url.set("https://github.com/chrisimx/eSCLKt")
                 inceptionYear.set("2024")
                 licenses {
                     license {
