@@ -1,3 +1,16 @@
+## [v1.2.1]
+
+## Changelog
+
+## 🐛 Fixes
+
+- [361e0b7](https://github.com/Chrisimx/eSCLKt/commits/361e0b7) fix: handling of root URLs
+- [b4ac6b1](https://github.com/Chrisimx/eSCLKt/commits/b4ac6b1) fix: correct pom url
+
+---
+
+- [5a7819a](https://github.com/Chrisimx/eSCLKt/commits/5a7819a) release: bump version v1.2.1
+
 ## [v1.2.0]
 
 ## Changelog
