@@ -74,7 +74,7 @@ class ESCLRequestClient(
      */
     fun getScannerCapabilities(): ScannerCapabilitiesResult {
         val req = Request.Builder()
-            .url("$baseUrl/ScannerCapabilities")
+            .url("${baseUrl}ScannerCapabilities")
             .header("Accept", "*/*")
             .get()
             .build()
@@ -133,7 +133,7 @@ class ESCLRequestClient(
      */
     fun getScannerStatus(): ScannerStatusResult {
         val req = Request.Builder()
-            .url("$baseUrl/ScannerStatus")
+            .url("${baseUrl}ScannerStatus")
             .header("Accept", "*/*")
             .get()
             .build()
@@ -190,7 +190,7 @@ class ESCLRequestClient(
      */
     fun createJob(scanSettings: ScanSettings): ScannerCreateJobResult {
         val req = Request.Builder()
-            .url("$baseUrl/ScanJobs")
+            .url("${baseUrl}ScanJobs")
             .post(xml.encodeToString(ScanSettings.serializer(), scanSettings).toRequestBody("text/xml".toMediaType()))
             .build()
 
@@ -213,7 +213,11 @@ class ESCLRequestClient(
             }
             if (error != null) return error
 
-            return ScannerCreateJobResult.Success(ScanJob(jobLocation!!, this, scanSettings))
+            return ScannerCreateJobResult.Success(
+                ScanJob(
+                    jobLocation!!.newBuilder().encodedPath(jobLocation.encodedPath + "/").build(), this, scanSettings
+                )
+            )
         }
     }
 
@@ -294,7 +298,7 @@ class ESCLRequestClient(
     fun retrieveNextPageForJob(jobUri: String): ScannerNextPageResult {
         val jobURL = rootURL.resolve(jobUri) ?: return ScannerNextPageResult.InvalidJobUri
         val req = Request.Builder()
-            .url("$jobURL/NextDocument")
+            .url("${jobURL}NextDocument")
             .get()
             .header("Accept", "*/*")
             .build()
@@ -350,7 +354,7 @@ class ESCLRequestClient(
     fun retrieveScanImageInfoForJob(jobUri: String): RetrieveScanImageInfoResult {
         val jobURL = rootURL.resolve(jobUri) ?: return RetrieveScanImageInfoResult.InvalidJobUri
         val req = Request.Builder()
-            .url("$jobURL/ScanImageInfo")
+            .url("${jobURL}ScanImageInfo")
             .get()
             .build()
 

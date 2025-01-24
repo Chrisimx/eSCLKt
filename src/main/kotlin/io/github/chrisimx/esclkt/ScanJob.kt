@@ -41,7 +41,11 @@ class ScanJob(jobUrl: HttpUrl, private val esclClient: ESCLRequestClient, val sc
         val scannerStatus = esclClient.getScannerStatus()
         if (scannerStatus !is ESCLRequestClient.ScannerStatusResult.Success) return null
 
-        return scannerStatus.scannerStatus.jobs?.jobInfos?.firstOrNull { it.jobURI == this.jobUri }
+        return scannerStatus.scannerStatus.jobs?.jobInfos?.firstOrNull {
+            this.jobUri.trimEnd('/') == it.jobURI.trimEnd(
+                '/'
+            )
+        }
     }
 
     /** Executes a NextPage request to the scanner to retrieve the next page of the scan job
