@@ -571,7 +571,7 @@ data class ScannerCapabilities @OptIn(ExperimentalUuidApi::class) constructor(
                 StoredJobRequestSupport.fromXMLElement(it)
             }
 
-            // Check for addtional illegal elements
+            // Check for additional illegal elements
             val reservedNames = listOf(
                 "pwg:Version",
                 "pwg:MakeAndModel",
@@ -590,7 +590,9 @@ data class ScannerCapabilities @OptIn(ExperimentalUuidApi::class) constructor(
                 "scan:StoredJobRequestSupport",
                 "scan:MaxJobNameLength",
                 "scan:BlankPageDetection",
-                "scan:BlankPageDetectionAndRemoval"
+                "scan:BlankPageDetectionAndRemoval",
+                "scan:ContrastSupport",
+                "scan:eSCLConfigCap"
             )
             for (i in 0..<xmlRoot.childNodes.length) {
                 val currentNode = xmlRoot.childNodes.item(i)
