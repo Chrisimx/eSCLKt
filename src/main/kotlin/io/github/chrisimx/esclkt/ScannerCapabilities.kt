@@ -52,10 +52,10 @@ data class InputSourceCaps(
     val maxScanRegions: UInt,
     val maxOpticalXResolution: UInt,
     val maxOpticalYResolution: UInt,
-    val riskyLeftMargin: ThreeHundredthsOfInch,
-    val riskyRightMargin: ThreeHundredthsOfInch,
-    val riskyTopMargin: ThreeHundredthsOfInch,
-    val riskyBottomMargin: ThreeHundredthsOfInch,
+    val riskyLeftMargin: ThreeHundredthsOfInch?,
+    val riskyRightMargin: ThreeHundredthsOfInch?,
+    val riskyTopMargin: ThreeHundredthsOfInch?,
+    val riskyBottomMargin: ThreeHundredthsOfInch?,
     val maxPhysicalWidth: ThreeHundredthsOfInch?,
     val maxPhysicalHeight: ThreeHundredthsOfInch?,
     val settingProfiles: List<SettingProfile>,
@@ -99,14 +99,14 @@ data class InputSourceCaps(
                     inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MaxScanRegions").textContent.toUInt(),
                     inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MaxOpticalXResolution").textContent.toUInt(),
                     inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MaxOpticalYResolution").textContent.toUInt(),
-                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:RiskyLeftMargin").textContent.toUInt()
-                        .threeHundredthsOfInch(),
-                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:RiskyRightMargin").textContent.toUInt()
-                        .threeHundredthsOfInch(),
-                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:RiskyTopMargin").textContent.toUInt()
-                        .threeHundredthsOfInch(),
-                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:RiskyBottomMargin").textContent.toUInt()
-                        .threeHundredthsOfInch(),
+                    inputSourceCapsElem.findUniqueElementWithName("scan:RiskyLeftMargin")?.textContent?.toUInt()
+                        ?.threeHundredthsOfInch(),
+                    inputSourceCapsElem.findUniqueElementWithName("scan:RiskyRightMargin")?.textContent?.toUInt()
+                        ?.threeHundredthsOfInch(),
+                    inputSourceCapsElem.findUniqueElementWithName("scan:RiskyTopMargin")?.textContent?.toUInt()
+                        ?.threeHundredthsOfInch(),
+                    inputSourceCapsElem.findUniqueElementWithName("scan:RiskyBottomMargin")?.textContent?.toUInt()
+                        ?.threeHundredthsOfInch(),
                     inputSourceCapsElem.findUniqueElementWithName("scan:MaxPhysicalWidth")?.textContent?.toUInt()
                         ?.threeHundredthsOfInch(),
                     inputSourceCapsElem.findUniqueElementWithName("scan:MaxPhysicalHeight")?.textContent?.toUInt()
