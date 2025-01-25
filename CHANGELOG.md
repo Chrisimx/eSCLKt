@@ -1,3 +1,15 @@
+## [v1.2.2]
+
+This update increases scanner compatibility. Specifically, the HP Color LaserJet Pro MFP M283fdw should now work.
+
+## Changelog
+
+## 🐛 Fixes
+
+- [fb1cfff](https://github.com/Chrisimx/eSCLKt/commits/fb1cfff) fix: add scan:ContrastSupport and scan:eSCLConfigCap to
+  known root elements
+- [2576f94](https://github.com/Chrisimx/eSCLKt/commits/2576f94) fix: make risky margins optional
+
 ## [v1.2.1]
 
 ## Changelog
