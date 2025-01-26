@@ -52,6 +52,14 @@ class ESCLRequestClientTest {
                 .setBody(resource.readText(charset = Charsets.UTF_8))
         )
 
+        val statusResource = javaClass.getResource("/testResources/status/HPColorLaserjetMFPM283fdw.xml")!!
+        server.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setHeader("Content-Type", "text/xml; charset=utf-8")
+                .setBody(statusResource.readText(charset = Charsets.UTF_8))
+        )
+
         server.start()
 
         val baseUrl = server.url("/eSCL")
@@ -87,6 +95,10 @@ class ESCLRequestClientTest {
         )
         assertTrue(
             testedESCLClient.getScannerCapabilities() is ScannerCapabilitiesResult.Success
+        )
+
+        assertTrue(
+            testedESCLClient.getScannerStatus() is ESCLRequestClient.ScannerStatusResult.Success
         )
 
         server.shutdown()
