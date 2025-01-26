@@ -1,3 +1,31 @@
+## [v1.3.0]
+
+## Changelog
+
+This update improves error reporting and increases scanner compatibility. The dependencies are also upgraded.
+
+## 🚀 Features
+
+- [702bc0a](https://github.com/Chrisimx/eSCLKt/commits/702bc0a) feat!: Provide more information on error events
+- [cf47a3e](https://github.com/Chrisimx/eSCLKt/commits/cf47a3e) feat: add scan:TransferRetryCount as JobInfo child
+  element
+
+## 🧪 Tests
+
+- [073fc72](https://github.com/Chrisimx/eSCLKt/commits/073fc72) test: add request client test case for scanner status of
+  HP Color Laserjet
+- [604296a](https://github.com/Chrisimx/eSCLKt/commits/604296a) test: add HP Color Laserjet MFPM283fdw example
+  ScannerStatus as testing case
+
+## 🛠 Build
+
+- [319b9fb](https://github.com/Chrisimx/eSCLKt/commits/319b9fb) ci: fix github dokka documentation generation workflow
+
+---
+
+- [46a17e3](https://github.com/Chrisimx/eSCLKt/commits/46a17e3) deps: update dependencies and add versions plugin
+- [503025e](https://github.com/Chrisimx/eSCLKt/commits/503025e) release: create github releases as drafts
+
 ## [v1.2.2]
 
 This update increases scanner compatibility. Specifically, the HP Color LaserJet Pro MFP M283fdw should now work.
