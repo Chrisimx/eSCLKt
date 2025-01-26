@@ -84,9 +84,8 @@ class ESCLRequestClientTest {
             ScannerCapabilitiesResult.NoBodyReturned,
             testedESCLClient.getScannerCapabilities()
         )
-        assertEquals(
-            ScannerCapabilitiesResult.WrongContentType,
-            testedESCLClient.getScannerCapabilities()
+        assertTrue(
+            testedESCLClient.getScannerCapabilities() is ScannerCapabilitiesResult.WrongContentType
         )
 
         // Success cases

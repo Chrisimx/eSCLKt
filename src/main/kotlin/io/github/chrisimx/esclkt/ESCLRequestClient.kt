@@ -57,9 +57,10 @@ class ESCLRequestClient(
         data class NetworkError(val exception: IOException) : ScannerCapabilitiesResult()
         data class NotSuccessfulCode(val responseCode: Int) : ScannerCapabilitiesResult()
         data object NoBodyReturned : ScannerCapabilitiesResult()
-        data object WrongContentType : ScannerCapabilitiesResult()
-        data class XMLParsingError(val saxException: SAXException) : ScannerCapabilitiesResult()
-        data object ScannerCapabilitiesMalformed : ScannerCapabilitiesResult()
+        data class WrongContentType(val contentType: String?) : ScannerCapabilitiesResult()
+        data class XMLParsingError(val content: String, val saxException: SAXException) : ScannerCapabilitiesResult()
+        data class ScannerCapabilitiesMalformed(val content: String, val exception: Exception) :
+            ScannerCapabilitiesResult()
         data class InternalBug(val exception: Exception) : ScannerCapabilitiesResult()
     }
 
@@ -93,20 +94,23 @@ class ESCLRequestClient(
             val error = when {
                 !it.isSuccessful -> ScannerCapabilitiesResult.NotSuccessfulCode(it.code)
                 it.body!!.contentLength() <= 0 -> ScannerCapabilitiesResult.NoBodyReturned
-                it.header("Content-Type")?.contains("text/xml") != true -> ScannerCapabilitiesResult.WrongContentType
+                it.header("Content-Type")
+                    ?.contains("text/xml") != true -> ScannerCapabilitiesResult.WrongContentType(it.header("Content-Type"))
                 else -> null
             }
             if (error != null) return error
 
             val scannerCapabilities: ScannerCapabilities
+            var body: String? = null
             try {
-                scannerCapabilities = ScannerCapabilities.fromXML(it.body!!.byteStream())
+                body = it.body!!.string()
+                scannerCapabilities = ScannerCapabilities.fromXML(body.byteInputStream())
             } catch (exception: IllegalArgumentException) {
-                return ScannerCapabilitiesResult.ScannerCapabilitiesMalformed
+                return ScannerCapabilitiesResult.ScannerCapabilitiesMalformed(body.toString(), exception)
             } catch (exception: IOException) {
                 return ScannerCapabilitiesResult.InternalBug(exception)
             } catch (exception: SAXException) {
-                return ScannerCapabilitiesResult.XMLParsingError(exception)
+                return ScannerCapabilitiesResult.XMLParsingError(body.toString(), exception)
             }
 
             return ScannerCapabilitiesResult.Success(scannerCapabilities)
@@ -119,7 +123,7 @@ class ESCLRequestClient(
         data class NotSuccessfulCode(val responseCode: Int) : ScannerStatusResult()
         data object NoBodyReturned : ScannerStatusResult()
         data object WrongContentType : ScannerStatusResult()
-        data class ScannerStatusMalformed(val xmlString: String) : ScannerStatusResult()
+        data class ScannerStatusMalformed(val xmlString: String, val exception: Exception) : ScannerStatusResult()
         data class InternalBug(val exception: Exception) : ScannerStatusResult()
     }
 
@@ -163,9 +167,9 @@ class ESCLRequestClient(
             val scannerStatus: ScannerStatus
             try {
                 scannerStatus = xml.decodeFromString(ScannerStatus.serializer(), body)
-            } catch (exception: XmlException) {
+            } catch (exception: Exception) {
                 println("Scanner status invalid: $body")
-                return ScannerStatusResult.ScannerStatusMalformed(body)
+                return ScannerStatusResult.ScannerStatusMalformed(body, exception)
             }
 
             return ScannerStatusResult.Success(scannerStatus)
