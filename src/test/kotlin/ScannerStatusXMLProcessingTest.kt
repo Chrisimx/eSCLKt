@@ -77,5 +77,16 @@ class ScannerStatusXMLProcessingTest {
                 }"
             )
         }
+        javaClass.getResource("/testResources/status/HPColorLaserjetMFPM283fdw.xml")!!.openStream().use {
+            val status = it.readAllBytes().toString(StandardCharsets.UTF_8)
+            println(
+                "ScannerStatus Deserialization example 3 (HP Color Laserjet MFPM283fdw) returned:\n   ${
+                    xml.decodeFromString(
+                        ScannerStatus.serializer(),
+                        status
+                    )
+                }"
+            )
+        }
     }
 }

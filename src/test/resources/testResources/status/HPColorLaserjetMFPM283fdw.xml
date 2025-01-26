@@ -1,0 +1,37 @@
+<!--
+ THIS DATA SUBJECT TO DISCLAIMER(S) INCLUDED WITH THE PRODUCT OF ORIGIN. 
+-->
+<scan:ScannerStatus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xmlns:scan="http://schemas.hp.com/imaging/escl/2011/05/03"
+                    xmlns:pwg="http://www.pwg.org/schemas/2010/12/sm"
+                    xsi:schemaLocation="http://schemas.hp.com/imaging/escl/2011/05/03 eSCL.xsd">
+    <pwg:Version>2.63</pwg:Version>
+    <pwg:State>Processing</pwg:State>
+    <scan:AdfState>ScannerAdfEmpty</scan:AdfState>
+    <scan:Jobs>
+        <scan:JobInfo>
+            <pwg:JobUri>/eSCL/ScanJobs/5aae756a-ef1f-4e97-a993-4f8d1d43d10c</pwg:JobUri>
+            <pwg:JobUuid>5aae756a-ef1f-4e97-a993-4f8d1d43d10c</pwg:JobUuid>
+            <scan:Age>110</scan:Age>
+            <pwg:ImagesCompleted>1</pwg:ImagesCompleted>
+            <pwg:ImagesToTransfer>1</pwg:ImagesToTransfer>
+            <scan:TransferRetryCount>0</scan:TransferRetryCount>
+            <pwg:JobState>Processing</pwg:JobState>
+            <pwg:JobStateReasons>
+                <pwg:JobStateReason>JobScanning</pwg:JobStateReason>
+            </pwg:JobStateReasons>
+        </scan:JobInfo>
+        <scan:JobInfo>
+            <pwg:JobUri>/eSCL/ScanJobs/9a945b93-7798-44c2-a839-e3cd14be058d</pwg:JobUri>
+            <pwg:JobUuid>9a945b93-7798-44c2-a839-e3cd14be058d</pwg:JobUuid>
+            <scan:Age>100</scan:Age>
+            <pwg:ImagesCompleted>1</pwg:ImagesCompleted>
+            <pwg:ImagesToTransfer>1</pwg:ImagesToTransfer>
+            <scan:TransferRetryCount>0</scan:TransferRetryCount>
+            <pwg:JobState>Aborted</pwg:JobState>
+            <pwg:JobStateReasons>
+                <pwg:JobStateReason>JobCanceledAtDevice</pwg:JobStateReason>
+            </pwg:JobStateReasons>
+        </scan:JobInfo>
+    </scan:Jobs>
+</scan:ScannerStatus>
