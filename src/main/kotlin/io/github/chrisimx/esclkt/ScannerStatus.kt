@@ -110,6 +110,14 @@ data class JobInfo(
     val imagesToTransfer: UInt? = null,
 
     @XmlElement
+    @XmlSerialName(
+        value = "TransferRetryCount",
+        prefix = "scan",
+        namespace = "http://schemas.hp.com/imaging/escl/2011/05/03"
+    )
+    val transferRetryCount: UInt? = null,
+
+    @XmlElement
     @XmlSerialName(value = "JobState", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
     val jobState: JobState,
 
