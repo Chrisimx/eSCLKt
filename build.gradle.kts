@@ -1,3 +1,4 @@
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jreleaser.model.Active
 import org.jreleaser.model.Changelog
@@ -7,9 +8,10 @@ plugins {
     kotlin("jvm") version "2.0.21"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.1.0-RC2"
     id("maven-publish")
-    id("org.jreleaser") version "1.15.0"
-    id("org.jetbrains.dokka") version "1.9.20"
+    id("org.jreleaser") version "1.16.0"
+    id("org.jetbrains.dokka") version "2.0.0"
     id("signing")
+    id("com.github.ben-manes.versions") version "0.52.0"
 }
 
 java {
@@ -79,9 +81,6 @@ jreleaser {
         name = rootProject.name
         versionPattern.set("SEMVER")
         copyright.set("Christian Nagel and contributors")
-        java {
-            artifactId = "esclkt"
-        }
     }
     gitRootSearch.set(true)
     release {
@@ -158,4 +157,17 @@ tasks.jar {
     enabled = true
     // Remove `plain` postfix from jar file name
     archiveClassifier.set("")
+}
+
+fun isNonStable(version: String): Boolean {
+    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }
+    val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+    val isStable = stableKeyword || regex.matches(version)
+    return isStable.not()
+}
+
+tasks.withType<DependencyUpdatesTask> {
+    rejectVersionIf {
+        isNonStable(candidate.version)
+    }
 }
