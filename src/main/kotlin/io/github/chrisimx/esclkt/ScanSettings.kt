@@ -93,6 +93,9 @@ data class ScanSettings(
     @XmlElement
     val scanRegions: ScanRegions? = null,
     @XmlElement
+    @XmlSerialName("pwg:DocumentFormat")
+    val documentFormat: String? = null,
+    @XmlElement
     @XmlSerialName("scan:DocumentFormatExt")
     val documentFormatExt: String? = null,
     @XmlElement
