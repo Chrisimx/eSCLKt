@@ -227,7 +227,7 @@ data class DocumentFormats(
         fun fromXMLElement(documentFormatsElem: Element): DocumentFormats {
             val documentFormatElems = documentFormatsElem.getElementsByTagName("pwg:DocumentFormat")
             val documentFormatExtElems = documentFormatsElem.getElementsByTagName("scan:DocumentFormatExt")
-            if (documentFormatElems.length < 2 || documentFormatExtElems.length < 2) throw IllegalArgumentException("Mandatory document formats not found")
+            if (documentFormatElems.length < 2 && documentFormatExtElems.length < 2) throw IllegalArgumentException("Mandatory document formats not found. Case 1")
             val documentFormats: MutableList<String> = mutableListOf()
             val documentFormatsExt: MutableList<String> = mutableListOf()
             for (i in 0..<documentFormatElems.length) {
@@ -236,12 +236,14 @@ data class DocumentFormats(
             for (j in 0..<documentFormatExtElems.length) {
                 documentFormatsExt.add(documentFormatExtElems.item(j).textContent)
             }
+
             // Scanners MUST at least support PDF and JPEG
-            if (!documentFormats.contains("application/pdf") || !documentFormats.contains("image/jpeg")) {
-                throw IllegalArgumentException("Mandatory document formats not found")
-            }
-            if (!documentFormatsExt.contains("application/pdf") || !documentFormatsExt.contains("image/jpeg")) {
-                throw IllegalArgumentException("Mandatory document formats not found")
+            val documentFormatExtInvalid =
+                !documentFormatsExt.contains("application/pdf") || !documentFormatsExt.contains("image/jpeg")
+            val documentFormatInvalid =
+                !documentFormats.contains("application/pdf") || !documentFormats.contains("image/jpeg")
+            if (documentFormatExtInvalid && documentFormatInvalid) {
+                throw IllegalArgumentException("Mandatory document formats not found. Case 2")
             }
             return DocumentFormats(documentFormats, documentFormatsExt)
         }
