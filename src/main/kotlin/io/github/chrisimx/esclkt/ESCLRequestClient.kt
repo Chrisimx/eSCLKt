@@ -268,7 +268,7 @@ class ESCLRequestClient(
 
     data class ScannedPage(
         val contentType: String,
-        val contentLocation: String,
+        val contentLocation: String? = null,
         val data: Response,
         val supportRangeHeader: Boolean
     ) : Closeable {
@@ -283,7 +283,6 @@ class ESCLRequestClient(
         data object InvalidJobUri : ScannerNextPageResult()
         data class NetworkError(val exception: IOException) : ScannerNextPageResult()
         data object WrongContentType : ScannerNextPageResult()
-        data object ContentLocationMissing : ScannerNextPageResult()
         data class NotSuccessfulCode(val responseCode: Int) : ScannerNextPageResult()
         data class InternalBug(val exception: Exception) : ScannerNextPageResult()
     }
@@ -320,7 +319,6 @@ class ESCLRequestClient(
             response.code == 404 -> ScannerNextPageResult.NoFurtherPages
             !response.isSuccessful -> ScannerNextPageResult.NotSuccessfulCode(response.code)
             response.header("Content-Type").isNullOrEmpty() -> ScannerNextPageResult.WrongContentType
-            response.header("Content-Location").isNullOrEmpty() -> ScannerNextPageResult.ContentLocationMissing
             else -> null
         }
         if (error != null) return error
@@ -328,7 +326,7 @@ class ESCLRequestClient(
         return ScannerNextPageResult.Success(
             ScannedPage(
                 contentType = response.header("Content-Type")!!,
-                contentLocation = response.header("Content-Location")!!,
+                contentLocation = response.header("Content-Location"),
                 data = response,
                 supportRangeHeader = response.header("Accept-Ranges", "none") == "bytes"
             )
