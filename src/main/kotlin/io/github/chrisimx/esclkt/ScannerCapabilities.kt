@@ -148,7 +148,7 @@ data class SettingProfile(
     val contentTypes: List<ContentType>?,
     val documentFormats: DocumentFormats,
     val supportedResolutions: List<DiscreteResolution>,
-    val colorSpaces: List<String>,
+    val colorSpaces: List<String>? = null,
     val ccdChannels: List<CcdChannel>? = null
 ) {
     companion object {
@@ -189,7 +189,7 @@ data class SettingProfile(
                 }
 
             val colorSpaces = settingsProfileElem
-                .findRequiredUniqueElementWithName("scan:ColorSpaces").getElementsByTagName("scan:ColorSpace").let {
+                .findUniqueElementWithName("scan:ColorSpaces")?.getElementsByTagName("scan:ColorSpace")?.let {
                     val spaces = mutableListOf<String>()
                     for (i in 0..<it.length) {
                         spaces.add(it.item(i).textContent)
