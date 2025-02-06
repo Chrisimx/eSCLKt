@@ -1,3 +1,16 @@
+## [v1.4.1]
+
+## Changelog
+
+Hotfix for HP DeskJet 3630 support
+
+## 🚀 Features
+
+### HP DeskJet 3630 support
+
+- [a8f1eba](https://github.com/Chrisimx/eSCLKt/commits/a8f1eba) feat!: make content-location optional for NextPage
+  retrieval
+
 ## [v1.4.0]
 
 ## Changelog
