@@ -49,9 +49,9 @@ data class InputSourceCaps(
     val maxWidth: ThreeHundredthsOfInch,
     val minHeight: ThreeHundredthsOfInch,
     val maxHeight: ThreeHundredthsOfInch,
-    val maxScanRegions: UInt,
-    val maxOpticalXResolution: UInt,
-    val maxOpticalYResolution: UInt,
+    val maxScanRegions: UInt?,
+    val maxOpticalXResolution: UInt?,
+    val maxOpticalYResolution: UInt?,
     val riskyLeftMargin: ThreeHundredthsOfInch?,
     val riskyRightMargin: ThreeHundredthsOfInch?,
     val riskyTopMargin: ThreeHundredthsOfInch?,
@@ -96,9 +96,9 @@ data class InputSourceCaps(
                         .threeHundredthsOfInch(),
                     inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MaxHeight").textContent.toUInt()
                         .threeHundredthsOfInch(),
-                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MaxScanRegions").textContent.toUInt(),
-                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MaxOpticalXResolution").textContent.toUInt(),
-                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MaxOpticalYResolution").textContent.toUInt(),
+                    inputSourceCapsElem.findUniqueElementWithName("scan:MaxScanRegions")?.textContent?.toUInt(),
+                    inputSourceCapsElem.findUniqueElementWithName("scan:MaxOpticalXResolution")?.textContent?.toUInt(),
+                    inputSourceCapsElem.findUniqueElementWithName("scan:MaxOpticalYResolution")?.textContent?.toUInt(),
                     inputSourceCapsElem.findUniqueElementWithName("scan:RiskyLeftMargin")?.textContent?.toUInt()
                         ?.threeHundredthsOfInch(),
                     inputSourceCapsElem.findUniqueElementWithName("scan:RiskyRightMargin")?.textContent?.toUInt()
@@ -148,7 +148,7 @@ data class SettingProfile(
     val contentTypes: List<ContentType>?,
     val documentFormats: DocumentFormats,
     val supportedResolutions: List<DiscreteResolution>,
-    val colorSpaces: List<String>,
+    val colorSpaces: List<String>? = null,
     val ccdChannels: List<CcdChannel>? = null
 ) {
     companion object {
@@ -189,7 +189,7 @@ data class SettingProfile(
                 }
 
             val colorSpaces = settingsProfileElem
-                .findRequiredUniqueElementWithName("scan:ColorSpaces").getElementsByTagName("scan:ColorSpace").let {
+                .findUniqueElementWithName("scan:ColorSpaces")?.getElementsByTagName("scan:ColorSpace")?.let {
                     val spaces = mutableListOf<String>()
                     for (i in 0..<it.length) {
                         spaces.add(it.item(i).textContent)
@@ -227,7 +227,7 @@ data class DocumentFormats(
         fun fromXMLElement(documentFormatsElem: Element): DocumentFormats {
             val documentFormatElems = documentFormatsElem.getElementsByTagName("pwg:DocumentFormat")
             val documentFormatExtElems = documentFormatsElem.getElementsByTagName("scan:DocumentFormatExt")
-            if (documentFormatElems.length < 2 || documentFormatExtElems.length < 2) throw IllegalArgumentException("Mandatory document formats not found")
+            if (documentFormatElems.length < 2 && documentFormatExtElems.length < 2) throw IllegalArgumentException("Mandatory document formats not found. Case 1")
             val documentFormats: MutableList<String> = mutableListOf()
             val documentFormatsExt: MutableList<String> = mutableListOf()
             for (i in 0..<documentFormatElems.length) {
@@ -236,12 +236,14 @@ data class DocumentFormats(
             for (j in 0..<documentFormatExtElems.length) {
                 documentFormatsExt.add(documentFormatExtElems.item(j).textContent)
             }
+
             // Scanners MUST at least support PDF and JPEG
-            if (!documentFormats.contains("application/pdf") || !documentFormats.contains("image/jpeg")) {
-                throw IllegalArgumentException("Mandatory document formats not found")
-            }
-            if (!documentFormatsExt.contains("application/pdf") || !documentFormatsExt.contains("image/jpeg")) {
-                throw IllegalArgumentException("Mandatory document formats not found")
+            val documentFormatExtInvalid =
+                !documentFormatsExt.contains("application/pdf") || !documentFormatsExt.contains("image/jpeg")
+            val documentFormatInvalid =
+                !documentFormats.contains("application/pdf") || !documentFormats.contains("image/jpeg")
+            if (documentFormatExtInvalid && documentFormatInvalid) {
+                throw IllegalArgumentException("Mandatory document formats not found. Case 2")
             }
             return DocumentFormats(documentFormats, documentFormatsExt)
         }
@@ -575,6 +577,7 @@ data class ScannerCapabilities @OptIn(ExperimentalUuidApi::class) constructor(
             val reservedNames = listOf(
                 "pwg:Version",
                 "pwg:MakeAndModel",
+                "pwg:ModelName",
                 "pwg:SerialNumber",
                 "scan:Manufacturer",
                 "scan:UUID",

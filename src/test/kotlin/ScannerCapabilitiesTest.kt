@@ -64,5 +64,11 @@ class ScannerCapabilitiesTest {
                 ScannerCapabilities.fromXML(it)
             }
         }
+        val resource6 = javaClass.getResource("/testResources/capabilities/kyocera-ecosys-m5521cdn-caps.xml")!!
+        resource6.openStream().use {
+            assertDoesNotThrow {
+                ScannerCapabilities.fromXML(it)
+            }
+        }
     }
 }
