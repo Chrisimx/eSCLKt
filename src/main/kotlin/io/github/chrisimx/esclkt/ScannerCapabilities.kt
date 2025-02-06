@@ -50,8 +50,8 @@ data class InputSourceCaps(
     val minHeight: ThreeHundredthsOfInch,
     val maxHeight: ThreeHundredthsOfInch,
     val maxScanRegions: UInt?,
-    val maxOpticalXResolution: UInt,
-    val maxOpticalYResolution: UInt,
+    val maxOpticalXResolution: UInt?,
+    val maxOpticalYResolution: UInt?,
     val riskyLeftMargin: ThreeHundredthsOfInch?,
     val riskyRightMargin: ThreeHundredthsOfInch?,
     val riskyTopMargin: ThreeHundredthsOfInch?,
@@ -97,8 +97,8 @@ data class InputSourceCaps(
                     inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MaxHeight").textContent.toUInt()
                         .threeHundredthsOfInch(),
                     inputSourceCapsElem.findUniqueElementWithName("scan:MaxScanRegions")?.textContent?.toUInt(),
-                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MaxOpticalXResolution").textContent.toUInt(),
-                    inputSourceCapsElem.findRequiredUniqueElementWithName("scan:MaxOpticalYResolution").textContent.toUInt(),
+                    inputSourceCapsElem.findUniqueElementWithName("scan:MaxOpticalXResolution")?.textContent?.toUInt(),
+                    inputSourceCapsElem.findUniqueElementWithName("scan:MaxOpticalYResolution")?.textContent?.toUInt(),
                     inputSourceCapsElem.findUniqueElementWithName("scan:RiskyLeftMargin")?.textContent?.toUInt()
                         ?.threeHundredthsOfInch(),
                     inputSourceCapsElem.findUniqueElementWithName("scan:RiskyRightMargin")?.textContent?.toUInt()
