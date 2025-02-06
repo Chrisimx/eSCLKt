@@ -577,6 +577,7 @@ data class ScannerCapabilities @OptIn(ExperimentalUuidApi::class) constructor(
             val reservedNames = listOf(
                 "pwg:Version",
                 "pwg:MakeAndModel",
+                "pwg:ModelName",
                 "pwg:SerialNumber",
                 "scan:Manufacturer",
                 "scan:UUID",
