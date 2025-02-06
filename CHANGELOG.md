@@ -1,3 +1,38 @@
+## [v1.4.0]
+
+## Changelog
+
+## 🐛 Fixes
+
+### Kyocera ECOSYS M5521cdn support
+
+- [35e2cbf](https://github.com/Chrisimx/eSCLKt/commits/35e2cbf) fix: kyocera ecosys M5521cdn support tweaks 1
+- [0d121fd](https://github.com/Chrisimx/eSCLKt/commits/0d121fd) fix: add pwg:ModelName to known top-level elements
+- [f33cac8](https://github.com/Chrisimx/eSCLKt/commits/f33cac8) fix: make scan:MaxOpticalXResolution and scan:
+  MaxOpticalYResolution optional
+- [38aef3f](https://github.com/Chrisimx/eSCLKt/commits/38aef3f) fix: make scan:MaxScanRegions optional
+- [3d47489](https://github.com/Chrisimx/eSCLKt/commits/3d47489) fix: make scan:ColorSpaces optional
+- [88c79ab](https://github.com/Chrisimx/eSCLKt/commits/88c79ab) fix: accept scanner caps even if only DocumentFormat
+  exists
+
+### HP DeskJet 3630 support
+
+- [9095adb](https://github.com/Chrisimx/eSCLKt/commits/9095adb) fix: deskjet 3630 support tweaks 1
+- [952846b](https://github.com/Chrisimx/eSCLKt/commits/952846b) fix: register scan:BrightnessSupport and scan:
+  ThresholdSupport as known top-levels
+- [5a29e17](https://github.com/Chrisimx/eSCLKt/commits/5a29e17) fix: make adminURI and iconURI optional
+- [271e660](https://github.com/Chrisimx/eSCLKt/commits/271e660) fix: make scan:UUID optional
+
+## 🧪 Tests
+
+- [8dbc36c](https://github.com/Chrisimx/eSCLKt/commits/8dbc36c) test: add Kyocera ECOSYS M5521cdn scanner caps as test
+  case
+- [57a51d0](https://github.com/Chrisimx/eSCLKt/commits/57a51d0) test: add HP DeskJet 3630 scanner caps as test case
+
+---
+
+- [603209e](https://github.com/Chrisimx/eSCLKt/commits/603209e) deps: update dependencies
+
 ## [v1.3.0]
 
 ## Changelog
