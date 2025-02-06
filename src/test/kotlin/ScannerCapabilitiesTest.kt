@@ -58,5 +58,11 @@ class ScannerCapabilitiesTest {
                 ScannerCapabilities.fromXML(it)
             }
         }
+        val resource5 = javaClass.getResource("/testResources/capabilities/hp-deskjet-3630-caps.xml")!!
+        resource5.openStream().use {
+            assertDoesNotThrow {
+                ScannerCapabilities.fromXML(it)
+            }
+        }
     }
 }

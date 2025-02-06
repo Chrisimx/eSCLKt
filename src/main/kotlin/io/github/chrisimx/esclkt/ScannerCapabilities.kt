@@ -505,10 +505,10 @@ data class ScannerCapabilities @OptIn(ExperimentalUuidApi::class) constructor(
     val makeAndModel: String,
     val manufacturer: String? = null,
     /** Conforming to RFC 4122, has to match mDNS "UUID" txt record **/
-    val deviceUuid: Uuid,
+    val deviceUuid: Uuid? = null,
     val serialNumber: String,
-    val adminURI: String,
-    val iconURI: String,
+    val adminURI: String? = null,
+    val iconURI: String? = null,
     val certifications: List<Certfication>?,
     val platen: Platen?,
     val adf: Adf?,
@@ -538,9 +538,9 @@ data class ScannerCapabilities @OptIn(ExperimentalUuidApi::class) constructor(
             val manufacturer = xmlRoot.findUniqueElementWithName("scan:Manufacturer")?.textContent
 
             val serialNumber = xmlRoot.findRequiredUniqueElementWithName("pwg:SerialNumber").textContent
-            val printerUUID = Uuid.parse(xmlRoot.findRequiredUniqueElementWithName("scan:UUID").textContent)
-            val adminURI = xmlRoot.findRequiredUniqueElementWithName("scan:AdminURI").textContent
-            val iconURI = xmlRoot.findRequiredUniqueElementWithName("scan:IconURI").textContent
+            val printerUUID = xmlRoot.findUniqueElementWithName("scan:UUID")?.let { Uuid.parse(it.textContent) }
+            val adminURI = xmlRoot.findUniqueElementWithName("scan:AdminURI")?.textContent
+            val iconURI = xmlRoot.findUniqueElementWithName("scan:IconURI")?.textContent
 
             val certifications = xmlRoot.findUniqueElementWithName("scan:Certifications")?.let {
                 Certfication.certListFromXMLElement(it)
@@ -592,6 +592,8 @@ data class ScannerCapabilities @OptIn(ExperimentalUuidApi::class) constructor(
                 "scan:BlankPageDetection",
                 "scan:BlankPageDetectionAndRemoval",
                 "scan:ContrastSupport",
+                "scan:BrightnessSupport",
+                "scan:ThresholdSupport",
                 "scan:eSCLConfigCap"
             )
             for (i in 0..<xmlRoot.childNodes.length) {
