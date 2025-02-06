@@ -592,6 +592,8 @@ data class ScannerCapabilities @OptIn(ExperimentalUuidApi::class) constructor(
                 "scan:BlankPageDetection",
                 "scan:BlankPageDetectionAndRemoval",
                 "scan:ContrastSupport",
+                "scan:BrightnessSupport",
+                "scan:ThresholdSupport",
                 "scan:eSCLConfigCap"
             )
             for (i in 0..<xmlRoot.childNodes.length) {
