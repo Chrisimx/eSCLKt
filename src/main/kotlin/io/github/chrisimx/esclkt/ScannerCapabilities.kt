@@ -507,8 +507,8 @@ data class ScannerCapabilities @OptIn(ExperimentalUuidApi::class) constructor(
     /** Conforming to RFC 4122, has to match mDNS "UUID" txt record **/
     val deviceUuid: Uuid? = null,
     val serialNumber: String,
-    val adminURI: String,
-    val iconURI: String,
+    val adminURI: String? = null,
+    val iconURI: String? = null,
     val certifications: List<Certfication>?,
     val platen: Platen?,
     val adf: Adf?,
@@ -539,8 +539,8 @@ data class ScannerCapabilities @OptIn(ExperimentalUuidApi::class) constructor(
 
             val serialNumber = xmlRoot.findRequiredUniqueElementWithName("pwg:SerialNumber").textContent
             val printerUUID = xmlRoot.findUniqueElementWithName("scan:UUID")?.let { Uuid.parse(it.textContent) }
-            val adminURI = xmlRoot.findRequiredUniqueElementWithName("scan:AdminURI").textContent
-            val iconURI = xmlRoot.findRequiredUniqueElementWithName("scan:IconURI").textContent
+            val adminURI = xmlRoot.findUniqueElementWithName("scan:AdminURI")?.textContent
+            val iconURI = xmlRoot.findUniqueElementWithName("scan:IconURI")?.textContent
 
             val certifications = xmlRoot.findUniqueElementWithName("scan:Certifications")?.let {
                 Certfication.certListFromXMLElement(it)
