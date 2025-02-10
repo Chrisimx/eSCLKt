@@ -1,3 +1,18 @@
+## [v1.4.2]
+
+## Changelog
+
+## 🚀 Features
+
+- [d774c2b](https://github.com/Chrisimx/eSCLKt/commits/d774c2b) feat: add pwg:DocumentFormat to ScanSettings
+
+## 🐛 Fixes
+
+### HP DeskJet 3630 support
+
+- [27e19be](https://github.com/Chrisimx/eSCLKt/commits/27e19be) fix: don't error out with NoBodyReturned with
+  contentLength == -1
+
 ## [v1.4.1]
 
 ## Changelog
