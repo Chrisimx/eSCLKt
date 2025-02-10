@@ -10,7 +10,7 @@
 
 ### HP DeskJet 3630 support
 
-- [27e19be](https://github.com/Chrisimx/eSCLKt/commits/27e19be) fix: don't error out with NoBodyReturned with
+- [27e19be](https://github.com/Chrisimx/eSCLKt/commits/27e19be) fix: don't error out with NoBodyReturned when
   contentLength == -1
 
 ## [v1.4.1]
