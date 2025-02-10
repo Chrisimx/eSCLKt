@@ -93,7 +93,7 @@ class ESCLRequestClient(
             // Checking for response errors on HTTP level
             val error = when {
                 !it.isSuccessful -> ScannerCapabilitiesResult.NotSuccessfulCode(it.code)
-                it.body!!.contentLength() <= 0 -> ScannerCapabilitiesResult.NoBodyReturned
+                it.body!!.contentLength() == 0L -> ScannerCapabilitiesResult.NoBodyReturned
                 it.header("Content-Type")
                     ?.contains("text/xml") != true -> ScannerCapabilitiesResult.WrongContentType(it.header("Content-Type"))
                 else -> null
@@ -104,6 +104,7 @@ class ESCLRequestClient(
             var body: String? = null
             try {
                 body = it.body!!.string()
+                if (body.isEmpty()) return ScannerCapabilitiesResult.NoBodyReturned
                 scannerCapabilities = ScannerCapabilities.fromXML(body.byteInputStream())
             } catch (exception: IllegalArgumentException) {
                 return ScannerCapabilitiesResult.ScannerCapabilitiesMalformed(body.toString(), exception)
