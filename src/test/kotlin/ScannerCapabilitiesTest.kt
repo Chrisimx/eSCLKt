@@ -70,5 +70,11 @@ class ScannerCapabilitiesTest {
                 ScannerCapabilities.fromXML(it)
             }
         }
+        val resource7 = javaClass.getResource("/testResources/capabilities/brother-mfc-j480dw-caps.xml")!!
+        resource7.openStream().use {
+            assertDoesNotThrow {
+                ScannerCapabilities.fromXML(it)
+            }
+        }
     }
 }
