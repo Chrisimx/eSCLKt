@@ -23,6 +23,8 @@ import org.junit.jupiter.api.assertDoesNotThrow
 import kotlin.test.assertEquals
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
+import java.nio.file.Files
+import java.nio.file.Paths
 
 class ScannerCapabilitiesTest {
     @OptIn(ExperimentalUuidApi::class)
@@ -30,7 +32,7 @@ class ScannerCapabilitiesTest {
     fun testScannerCapabilitiesXMLParsing() {
         val resource = javaClass.getResource("/testResources/capabilities/brother-mfc-l8690cdw-caps.xml")!!
         resource.openStream().use {
-            assertDoesNotThrow {
+            assertDoesNotThrow("Failed to parse brother-mfc-l8690cdw-caps.xml") {
                 val scannerCapabilities = ScannerCapabilities.fromXML(it)
                 assertEquals("2.62", scannerCapabilities.interfaceVersion)
                 assertEquals("Brother MFC-L8690CDW series", scannerCapabilities.makeAndModel)
@@ -40,41 +42,16 @@ class ScannerCapabilitiesTest {
                 assertEquals("http://192.168.200.122/icons/device-icons-128.png", scannerCapabilities.iconURI)
             }
         }
-        val resource2 = javaClass.getResource("/testResources/capabilities/brother-mfc-j497dw-caps.xml")!!
-        resource2.openStream().use {
-            assertDoesNotThrow {
-                ScannerCapabilities.fromXML(it)
+        val capabilitiesDir = javaClass.getResource("/testResources/capabilities")!!
+        val capabilitiesPath = Paths.get(capabilitiesDir.toURI())
+        Files.walk(capabilitiesPath)
+            .filter { it.toString().endsWith("-caps.xml") }
+            .forEach { path ->
+                javaClass.getResourceAsStream("/testResources/capabilities/${path.fileName}")?.use {
+                    assertDoesNotThrow("Failed to parse ${path.fileName}") {
+                        ScannerCapabilities.fromXML(it)
+                    }
+                }
             }
-        }
-        val resource3 = javaClass.getResource("/testResources/capabilities/canon-ts5300-series-caps.xml")!!
-        resource3.openStream().use {
-            assertDoesNotThrow {
-                ScannerCapabilities.fromXML(it)
-            }
-        }
-        val resource4 = javaClass.getResource("/testResources/capabilities/canon-ts7450-caps.xml")!!
-        resource4.openStream().use {
-            assertDoesNotThrow {
-                ScannerCapabilities.fromXML(it)
-            }
-        }
-        val resource5 = javaClass.getResource("/testResources/capabilities/hp-deskjet-3630-caps.xml")!!
-        resource5.openStream().use {
-            assertDoesNotThrow {
-                ScannerCapabilities.fromXML(it)
-            }
-        }
-        val resource6 = javaClass.getResource("/testResources/capabilities/kyocera-ecosys-m5521cdn-caps.xml")!!
-        resource6.openStream().use {
-            assertDoesNotThrow {
-                ScannerCapabilities.fromXML(it)
-            }
-        }
-        val resource7 = javaClass.getResource("/testResources/capabilities/brother-mfc-j480dw-caps.xml")!!
-        resource7.openStream().use {
-            assertDoesNotThrow {
-                ScannerCapabilities.fromXML(it)
-            }
-        }
     }
 }
