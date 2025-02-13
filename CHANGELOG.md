@@ -1,3 +1,15 @@
+## [v1.4.3]
+
+## Changelog
+
+## 🐛 Fixes
+### HP Neverstop Laser MFP 1200w support
+- [10f85c9](https://github.com/Chrisimx/eSCLKt/commits/10f85c9) fix: accept application/xml as Content-Type
+
+## 🧪 Tests
+- [068c03e](https://github.com/Chrisimx/eSCLKt/commits/068c03e) test: run parsing tests on all *-caps.xml files in the testResources/capabilities directory
+- [9dad2d1](https://github.com/Chrisimx/eSCLKt/commits/9dad2d1) test: add brother-mfc-j480dw-caps.xml as it is previously threw an IllegalArgumentException in the parser
+
 ## [v1.4.2]
 
 ## Changelog
