@@ -94,8 +94,7 @@ class ESCLRequestClient(
             val error = when {
                 !it.isSuccessful -> ScannerCapabilitiesResult.NotSuccessfulCode(it.code)
                 it.body!!.contentLength() == 0L -> ScannerCapabilitiesResult.NoBodyReturned
-                it.header("Content-Type")
-                    ?.contains("text/xml") != true -> ScannerCapabilitiesResult.WrongContentType(it.header("Content-Type"))
+                !it.header("Content-Type").isContentTypeXML() -> ScannerCapabilitiesResult.WrongContentType(it.header("Content-Type"))
                 else -> null
             }
             if (error != null) return error
@@ -158,7 +157,7 @@ class ESCLRequestClient(
             val error = when {
                 !it.isSuccessful -> ScannerStatusResult.NotSuccessfulCode(it.code)
                 body.isEmpty() -> ScannerStatusResult.NoBodyReturned
-                it.header("Content-Type")?.contains("text/xml") != true -> ScannerStatusResult.WrongContentType
+                !it.header("Content-Type").isContentTypeXML() -> ScannerStatusResult.WrongContentType
                 else -> null
             }
             if (error != null) return error
@@ -375,9 +374,7 @@ class ESCLRequestClient(
             val error = when {
                 !it.isSuccessful -> RetrieveScanImageInfoResult.NotSuccessfulCode(it.code)
                 body.isEmpty() -> RetrieveScanImageInfoResult.NoBodyReturned
-                it.header("Content-Type")
-                    ?.startsWith("text/xml") == true -> RetrieveScanImageInfoResult.WrongContentType
-
+                !it.header("Content-Type").isContentTypeXML() -> RetrieveScanImageInfoResult.WrongContentType
                 else -> null
             }
             if (error != null) return error
