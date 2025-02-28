@@ -31,7 +31,7 @@ kotlin {
 KotlinPlatformType.setupAttributesMatchingStrategy(dependencies.attributesSchema)
 
 group = "io.github.chrisimx"
-version = "1.4.3"
+version = "1.4.4"
 
 publishing {
     publications {

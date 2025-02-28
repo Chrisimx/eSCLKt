@@ -1,3 +1,11 @@
+## [v1.4.4]
+
+## Changelog
+
+## 🐛 Fixes
+### HP DeskJet 2700 support
+- [ae562b7](https://github.com/Chrisimx/eSCLKt/commits/ae562b7) fix: add scan:JobSourceInfoSupport to known top-level elements
+
 ## [v1.4.3]
 
 ## Changelog
