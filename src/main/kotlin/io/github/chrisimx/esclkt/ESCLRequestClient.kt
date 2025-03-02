@@ -57,7 +57,6 @@ class ESCLRequestClient(
         data class NetworkError(val exception: IOException) : ScannerCapabilitiesResult()
         data class NotSuccessfulCode(val responseCode: Int) : ScannerCapabilitiesResult()
         data object NoBodyReturned : ScannerCapabilitiesResult()
-        data class WrongContentType(val contentType: String?) : ScannerCapabilitiesResult()
         data class XMLParsingError(val content: String, val saxException: SAXException) : ScannerCapabilitiesResult()
         data class ScannerCapabilitiesMalformed(val content: String, val exception: Exception) :
             ScannerCapabilitiesResult()
@@ -94,7 +93,6 @@ class ESCLRequestClient(
             val error = when {
                 !it.isSuccessful -> ScannerCapabilitiesResult.NotSuccessfulCode(it.code)
                 it.body!!.contentLength() == 0L -> ScannerCapabilitiesResult.NoBodyReturned
-                !it.header("Content-Type").isContentTypeXML() -> ScannerCapabilitiesResult.WrongContentType(it.header("Content-Type"))
                 else -> null
             }
             if (error != null) return error
@@ -122,7 +120,6 @@ class ESCLRequestClient(
         data class NetworkError(val exception: IOException) : ScannerStatusResult()
         data class NotSuccessfulCode(val responseCode: Int) : ScannerStatusResult()
         data object NoBodyReturned : ScannerStatusResult()
-        data object WrongContentType : ScannerStatusResult()
         data class ScannerStatusMalformed(val xmlString: String, val exception: Exception) : ScannerStatusResult()
         data class InternalBug(val exception: Exception) : ScannerStatusResult()
     }
@@ -157,7 +154,6 @@ class ESCLRequestClient(
             val error = when {
                 !it.isSuccessful -> ScannerStatusResult.NotSuccessfulCode(it.code)
                 body.isEmpty() -> ScannerStatusResult.NoBodyReturned
-                !it.header("Content-Type").isContentTypeXML() -> ScannerStatusResult.WrongContentType
                 else -> null
             }
             if (error != null) return error
@@ -282,7 +278,6 @@ class ESCLRequestClient(
         data object NoFurtherPages : ScannerNextPageResult()
         data object InvalidJobUri : ScannerNextPageResult()
         data class NetworkError(val exception: IOException) : ScannerNextPageResult()
-        data object WrongContentType : ScannerNextPageResult()
         data class NotSuccessfulCode(val responseCode: Int) : ScannerNextPageResult()
         data class InternalBug(val exception: Exception) : ScannerNextPageResult()
     }
@@ -318,7 +313,6 @@ class ESCLRequestClient(
         val error = when {
             response.code == 404 -> ScannerNextPageResult.NoFurtherPages
             !response.isSuccessful -> ScannerNextPageResult.NotSuccessfulCode(response.code)
-            response.header("Content-Type").isNullOrEmpty() -> ScannerNextPageResult.WrongContentType
             else -> null
         }
         if (error != null) return error
@@ -337,7 +331,6 @@ class ESCLRequestClient(
         data class Success(val scanImageInfo: ScanImageInfo) : RetrieveScanImageInfoResult()
         data class NetworkError(val exception: IOException) : RetrieveScanImageInfoResult()
         data object InvalidJobUri : RetrieveScanImageInfoResult()
-        data object WrongContentType : RetrieveScanImageInfoResult()
         data class NotSuccessfulCode(val responseCode: Int) : RetrieveScanImageInfoResult()
         data class ScanImageInfoMalformed(val errorCausingXml: String) : RetrieveScanImageInfoResult()
         data object NoBodyReturned : RetrieveScanImageInfoResult()
@@ -374,7 +367,6 @@ class ESCLRequestClient(
             val error = when {
                 !it.isSuccessful -> RetrieveScanImageInfoResult.NotSuccessfulCode(it.code)
                 body.isEmpty() -> RetrieveScanImageInfoResult.NoBodyReturned
-                !it.header("Content-Type").isContentTypeXML() -> RetrieveScanImageInfoResult.WrongContentType
                 else -> null
             }
             if (error != null) return error

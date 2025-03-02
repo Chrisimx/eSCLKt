@@ -34,10 +34,7 @@ class ESCLRequestClientTest {
         server.enqueue(MockResponse().setResponseCode(500))
         server.enqueue(MockResponse().setResponseCode(503))
         server.enqueue(MockResponse().setResponseCode(200))
-        server.enqueue(
-            MockResponse().setResponseCode(200).setBody("sfdsf")
-                .setHeader("Content-Type", "application/json; charset=utf-8")
-        )
+
         val resource = javaClass.getResource("/testResources/capabilities/brother-mfc-l8690cdw-caps.xml")!!
         server.enqueue(
             MockResponse()
@@ -83,9 +80,6 @@ class ESCLRequestClientTest {
         assertEquals(
             ScannerCapabilitiesResult.NoBodyReturned,
             testedESCLClient.getScannerCapabilities()
-        )
-        assertTrue(
-            testedESCLClient.getScannerCapabilities() is ScannerCapabilitiesResult.WrongContentType
         )
 
         // Success cases
