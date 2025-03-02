@@ -1,3 +1,14 @@
+## [v1.4.5]
+
+## Changelog
+
+## 🐛 Fixes
+### Canon MF628CW support
+- [cdad72e](https://github.com/Chrisimx/eSCLKt/commits/cdad72e) fix: remove Content-Type checks
+
+## 🧪 Tests
+- [2ac0796](https://github.com/Chrisimx/eSCLKt/commits/2ac0796) test: add HP DeskJet 2700 to tested scanner caps
+
 ## [v1.4.4]
 
 ## Changelog
