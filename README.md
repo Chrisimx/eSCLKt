@@ -15,7 +15,7 @@ Add the following in your dependencies:
 
 ```
 dependencies {
-    implementation("io.github.chrisimx:esclkt:1.2.0")
+    implementation("io.github.chrisimx:esclkt:1.4.6")
 }
 ```
 
@@ -29,7 +29,7 @@ Add the following in your pom.xml as dependency:
     <dependency>
         <groupId>io.github.chrisimx</groupId>
         <artifactId>esclkt</artifactId>
-        <version>1.2.0</version>
+        <version>1.4.6</version>
     </dependency>
     ...
 </dependencies>

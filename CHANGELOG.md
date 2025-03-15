@@ -1,3 +1,15 @@
+## [v1.4.6]
+
+## Changelog
+
+## 🐛 Fixes
+### HP Color Laser MFP 179fnw support
+- [c5c9b50](https://github.com/Chrisimx/eSCLKt/commits/c5c9b50) fix: add scan:SettingProfiles to known top-level elements
+
+## 🧪 Tests
+- [c371da8](https://github.com/Chrisimx/eSCLKt/commits/c371da8) test: add scannercaps of hp color laser mfp 179fnw as test case
+- [bf288fc](https://github.com/Chrisimx/eSCLKt/commits/bf288fc) test: add scannercaps of canon mf628cw as test case
+
 ## [v1.4.5]
 
 ## Changelog
