@@ -599,6 +599,7 @@ data class ScannerCapabilities @OptIn(ExperimentalUuidApi::class) constructor(
                 "scan:ThresholdSupport",
                 "scan:eSCLConfigCap",
                 "scan:JobSourceInfoSupport",
+                "scan:SettingProfiles"
             )
             for (i in 0..<xmlRoot.childNodes.length) {
                 val currentNode = xmlRoot.childNodes.item(i)
