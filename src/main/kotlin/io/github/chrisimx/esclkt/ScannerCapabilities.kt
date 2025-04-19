@@ -345,7 +345,7 @@ data class Platen(
 data class Adf(
     val simplexCaps: InputSourceCaps,
     val duplexCaps: InputSourceCaps? = null,
-    val feederCapacity: UInt,
+    val feederCapacity: UInt? = null,
     val adfOptions: List<AdfOption>,
 ) {
     companion object {
@@ -362,7 +362,7 @@ data class Adf(
 
             // Extract feederCapacity
             val feederCapacity =
-                adfElement.findRequiredUniqueElementWithName("scan:FeederCapacity").textContent.toUInt()
+                adfElement.findUniqueElementWithName("scan:FeederCapacity")?.textContent?.toUInt()
 
             // Extract adfOptions
             val adfOptions = adfElement.findRequiredUniqueElementWithName("scan:AdfOptions")
