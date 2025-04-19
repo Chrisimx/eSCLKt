@@ -1,3 +1,14 @@
+## [v1.4.7]
+
+## Changelog
+
+## 🐛 Fixes
+### Canon MF269dw support
+- [60ba839](https://github.com/Chrisimx/eSCLKt/commits/60ba839) fix: make Adf/scan:FeederCapacity optional
+
+---
+- [eac7dee](https://github.com/Chrisimx/eSCLKt/commits/eac7dee) deps: upgrade dependencies
+
 ## [v1.4.6]
 
 ## Changelog
