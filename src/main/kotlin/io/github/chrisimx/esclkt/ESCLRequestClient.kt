@@ -189,9 +189,13 @@ class ESCLRequestClient(
      * @see ScannerCreateJobResult
      */
     fun createJob(scanSettings: ScanSettings): ScannerCreateJobResult {
+
+        val header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+        val requestData = xml.encodeToString(ScanSettings.serializer(), scanSettings)
+
         val req = Request.Builder()
             .url("${baseUrl}ScanJobs")
-            .post(xml.encodeToString(ScanSettings.serializer(), scanSettings).toRequestBody("text/xml".toMediaType()))
+            .post((header + requestData).toRequestBody("text/xml".toMediaType()))
             .build()
 
         val response: Response
