@@ -1,3 +1,11 @@
+## [v1.4.8]
+
+## Changelog
+
+## 🐛 Fixes
+### HP Officejet 8020 support
+- [7245314](https://github.com/Chrisimx/eSCLKt/commits/7245314) fix: add XML header to job creation POST request
+
 ## [v1.4.7]
 
 ## Changelog
