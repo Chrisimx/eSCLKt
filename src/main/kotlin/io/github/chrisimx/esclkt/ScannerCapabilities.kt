@@ -44,6 +44,8 @@ private fun Element.findRequiredUniqueElementWithName(name: String): Element {
     return this.findUniqueElementWithName(name, true)!!
 }
 
+class TopLevelElemNotKnownException(message: String) : Exception(message)
+
 data class InputSourceCaps(
     val minWidth: ThreeHundredthsOfInch,
     val maxWidth: ThreeHundredthsOfInch,
@@ -606,7 +608,7 @@ data class ScannerCapabilities @OptIn(ExperimentalUuidApi::class) constructor(
                 if (currentNode.nodeType != ELEMENT_NODE) continue
                 val currentElement = currentNode as Element
 
-                if (!reservedNames.contains(currentElement.tagName)) throw NotImplementedError("The toplevel element with ${currentElement.tagName} is not recognized. Please file an issue with the ScannerCapabilites which cause this!")
+                if (!reservedNames.contains(currentElement.tagName)) throw TopLevelElemNotKnownException("The toplevel element with ${currentElement.tagName} is not recognized. Please file an issue with the ScannerCapabilites which cause this!")
             }
 
             return ScannerCapabilities(

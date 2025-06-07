@@ -105,6 +105,8 @@ class ESCLRequestClient(
                 scannerCapabilities = ScannerCapabilities.fromXML(body.byteInputStream())
             } catch (exception: IllegalArgumentException) {
                 return ScannerCapabilitiesResult.ScannerCapabilitiesMalformed(body.toString(), exception)
+            } catch (exception: TopLevelElemNotKnownException) {
+                return ScannerCapabilitiesResult.ScannerCapabilitiesMalformed(body.toString(), exception)
             } catch (exception: IOException) {
                 return ScannerCapabilitiesResult.InternalBug(exception)
             } catch (exception: SAXException) {
