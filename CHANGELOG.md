@@ -1,3 +1,14 @@
+## [v1.4.9]
+
+## Changelog
+
+## 🐛 Fixes
+- [ea32885](https://github.com/Chrisimx/eSCLKt/commits/ea32885) fix: catch unknown top level elements
+- [9dc5729](https://github.com/Chrisimx/eSCLKt/commits/9dc5729) fix: fix typo
+
+## 📝 Documentation
+- [3935ccc](https://github.com/Chrisimx/eSCLKt/commits/3935ccc) docs: fix incorrect device name
+
 ## [v1.4.8]
 
 ## Changelog
