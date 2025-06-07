@@ -535,7 +535,7 @@ data class ScannerCapabilities @OptIn(ExperimentalUuidApi::class) constructor(
             if (!version.matches(Regex("[0-9]+.[0-9]+"))) throw IllegalArgumentException("Malformed ScannerCapabilities version '$version'")
 
             val makeAndModel = xmlRoot.findRequiredUniqueElementWithName("pwg:MakeAndModel").textContent
-            if (makeAndModel.length > 127) throw IllegalArgumentException("Malformed ScannerCapabilities MakeAndModel '$makeAndModel' is not too long")
+            if (makeAndModel.length > 127) throw IllegalArgumentException("Malformed ScannerCapabilities MakeAndModel '$makeAndModel' is too long")
 
             val manufacturer = xmlRoot.findUniqueElementWithName("scan:Manufacturer")?.textContent
 
