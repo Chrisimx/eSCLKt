@@ -42,25 +42,21 @@ class ScanJob(jobUrl: HttpUrl, private val esclClient: ESCLRequestClient, val sc
         if (scannerStatus !is ESCLRequestClient.ScannerStatusResult.Success) return null
 
         return scannerStatus.scannerStatus.jobs?.jobInfos?.firstOrNull {
-            this.jobUri.trimEnd('/') == it.jobURI.trimEnd(
-                '/'
-            )
+            this.jobUri.trimEnd('/') ==
+                it.jobURI.trimEnd(
+                    '/',
+                )
         }
     }
 
     /** Executes a NextPage request to the scanner to retrieve the next page of the scan job
      * @return A ScannerNextPageResult. If the retrieval was successful this contains a ScannedPage.
      * **/
-    fun retrieveNextPage(): ESCLRequestClient.ScannerNextPageResult {
-        return esclClient.retrieveNextPageForJob(jobUri)
-    }
+    fun retrieveNextPage(): ESCLRequestClient.ScannerNextPageResult = esclClient.retrieveNextPageForJob(jobUri)
 
     /** Gets the ScanImageInfo for the last retrieved page **/
-    fun getScanImageInfoForRetrievedPage(): ESCLRequestClient.RetrieveScanImageInfoResult {
-        return esclClient.retrieveScanImageInfoForJob(jobUri)
-    }
+    fun getScanImageInfoForRetrievedPage(): ESCLRequestClient.RetrieveScanImageInfoResult = esclClient.retrieveScanImageInfoForJob(jobUri)
 
-    override fun toString(): String {
-        return "ScanJob(isCancelled='$isCancelled', jobUri=$jobUri, jobSettings=$scanSettings, esclClient=$esclClient"
-    }
+    override fun toString(): String =
+        "ScanJob(isCancelled='$isCancelled', jobUri=$jobUri, jobSettings=$scanSettings, esclClient=$esclClient"
 }

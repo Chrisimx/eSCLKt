@@ -57,7 +57,7 @@ enum class AdfState {
     ScannerAdfDuplexPageTooLong,
     ScannerAdfMultipickDetected,
     ScannerAdfInputTrayFailed,
-    ScannerAdfInputTrayOverloaded
+    ScannerAdfInputTrayOverloaded,
 }
 
 @OptIn(ExperimentalXmlUtilApi::class)
@@ -90,60 +90,53 @@ data class JobInfo(
     @XmlElement
     @XmlSerialName(value = "JobUri", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
     val jobURI: String,
-
     @XmlElement
     @XmlSerialName(value = "JobUuid", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
     val jobUUID: String,
-
-    @XmlElement
-    @XmlSerialName(value = "Age", prefix = "scan", namespace = "http://schemas.hp.com/imaging/escl/2011/05/03")
     /** time in seconds since the job info has been updated. The duration is the difference between the time of the
      * latest update to job info element relative to the time of the status request. **/
+    @XmlElement
+    @XmlSerialName(value = "Age", prefix = "scan", namespace = "http://schemas.hp.com/imaging/escl/2011/05/03")
     val age: UInt,
-
     @XmlElement
     @XmlSerialName(value = "ImagesCompleted", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
     val imagesCompleted: UInt,
-
     @XmlElement
     @XmlSerialName(value = "ImagesToTransfer", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
     val imagesToTransfer: UInt? = null,
-
     @XmlElement
     @XmlSerialName(
         value = "TransferRetryCount",
         prefix = "scan",
-        namespace = "http://schemas.hp.com/imaging/escl/2011/05/03"
+        namespace = "http://schemas.hp.com/imaging/escl/2011/05/03",
     )
     val transferRetryCount: UInt? = null,
-
     @XmlElement
     @XmlSerialName(value = "JobState", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
     val jobState: JobState,
-
     @XmlElement
     @XmlSerialName(value = "JobStateReasons", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
-    val jobStateReasons: JobStateReasons? = null
+    val jobStateReasons: JobStateReasons? = null,
 )
 
 @Serializable
 @XmlSerialName(value = "JobState", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
 enum class JobState {
-    /// End state - indicates that the job was canceled either by the remote client application
-    /// (through the eSCL interface) or by the user interacting with the scanner directly. Check
-    /// [JobStateReasons] for more details.
+    // / End state - indicates that the job was canceled either by the remote client application
+    // / (through the eSCL interface) or by the user interacting with the scanner directly. Check
+    // / [JobStateReasons] for more details.
     Canceled,
 
-    /// End state - either an internal device error, or a communication error or a security error
+    // / End state - either an internal device error, or a communication error or a security error
     Aborted,
 
-    /// Job is finished successfully
+    // / Job is finished successfully
     Completed,
 
-    /// The job was initiated, and the scanner is preparing the scan engine
+    // / The job was initiated, and the scanner is preparing the scan engine
     Pending,
 
-    /// The scanner is processing the job and is transmitting the scan data
+    // / The scanner is processing the job and is transmitting the scan data
     Processing,
 }
 

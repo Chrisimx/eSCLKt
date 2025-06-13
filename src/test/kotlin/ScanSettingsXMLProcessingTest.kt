@@ -25,28 +25,32 @@ import org.junit.jupiter.api.Test
 class ScanSettingsXMLProcessingTest {
     @Test
     fun createScanRequest() {
-        val xml = XML {
-        }
-        val testScanSettings = ScanSettings(
-            version = "2.63",
-            intent = ScanIntentData.ScanIntentEnum(ScanIntent.Document),
-            scanRegions = ScanRegions(
-                listOf(
-                    ScanRegion(
-                        20u.threeHundredthsOfInch(),
-                        10u.threeHundredthsOfInch(),
-                        2u.threeHundredthsOfInch(),
-                        1u.threeHundredthsOfInch()
-                    )
-                ), true
-            ),
-            documentFormatExt = "image/jpeg",
-            contentType = ContentType.Text,
-            inputSource = InputSource.Platen,
-            xResolution = 600u,
-            yResolution = 200u,
-            colorMode = ColorMode.RGB24,
-            colorSpace = "sRGB",
+        val xml =
+            XML {
+            }
+        val testScanSettings =
+            ScanSettings(
+                version = "2.63",
+                intent = ScanIntentData.ScanIntentEnum(ScanIntent.Document),
+                scanRegions =
+                    ScanRegions(
+                        listOf(
+                            ScanRegion(
+                                20u.threeHundredthsOfInch(),
+                                10u.threeHundredthsOfInch(),
+                                2u.threeHundredthsOfInch(),
+                                1u.threeHundredthsOfInch(),
+                            ),
+                        ),
+                        true,
+                    ),
+                documentFormatExt = "image/jpeg",
+                contentType = ContentType.Text,
+                inputSource = InputSource.Platen,
+                xResolution = 600u,
+                yResolution = 200u,
+                colorMode = ColorMode.RGB24,
+                colorSpace = "sRGB",
             )
         println("ScanSettings Serialization returned:\n   ${xml.encodeToString<ScanSettings>(testScanSettings)}")
     }

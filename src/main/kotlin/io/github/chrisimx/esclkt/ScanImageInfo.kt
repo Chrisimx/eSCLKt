@@ -27,31 +27,33 @@ import kotlin.uuid.Uuid
 
 @Serializable
 @XmlSerialName(value = "ScanImageInfo", prefix = "scan", namespace = "http://schemas.hp.com/imaging/escl/2011/05/03")
-data class ScanImageInfo @OptIn(ExperimentalUuidApi::class) constructor(
-    @XmlElement
-    @XmlSerialName(value = "JobUri", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
-    val jobURI: String,
-    @XmlElement
-    @XmlSerialName(value = "JobUuid", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
-    val jobUuid: Uuid,
-    @XmlElement
-    @XmlSerialName(value = "ActualWidth", prefix = "scan", namespace = "http://schemas.hp.com/imaging/escl/2011/05/03")
-    val actualWidth: UInt,
-    @XmlElement
-    @XmlSerialName(value = "ActualHeight", prefix = "scan", namespace = "http://schemas.hp.com/imaging/escl/2011/05/03")
-    val actualHeight: UInt,
-    @XmlElement
-    @XmlSerialName(
-        value = "ActualBytesPerLine",
-        prefix = "scan",
-        namespace = "http://schemas.hp.com/imaging/escl/2011/05/03"
+data class ScanImageInfo
+    @OptIn(ExperimentalUuidApi::class)
+    constructor(
+        @XmlElement
+        @XmlSerialName(value = "JobUri", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
+        val jobURI: String,
+        @XmlElement
+        @XmlSerialName(value = "JobUuid", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
+        val jobUuid: Uuid,
+        @XmlElement
+        @XmlSerialName(value = "ActualWidth", prefix = "scan", namespace = "http://schemas.hp.com/imaging/escl/2011/05/03")
+        val actualWidth: UInt,
+        @XmlElement
+        @XmlSerialName(value = "ActualHeight", prefix = "scan", namespace = "http://schemas.hp.com/imaging/escl/2011/05/03")
+        val actualHeight: UInt,
+        @XmlElement
+        @XmlSerialName(
+            value = "ActualBytesPerLine",
+            prefix = "scan",
+            namespace = "http://schemas.hp.com/imaging/escl/2011/05/03",
+        )
+        val actualBytesPerLine: UInt,
+        @XmlElement
+        @XmlSerialName(
+            value = "BlankPageDetected",
+            prefix = "scan",
+            namespace = "http://schemas.hp.com/imaging/escl/2011/05/03",
+        )
+        val blankPageDetected: Boolean?,
     )
-    val actualBytesPerLine: UInt,
-    @XmlElement
-    @XmlSerialName(
-        value = "BlankPageDetected",
-        prefix = "scan",
-        namespace = "http://schemas.hp.com/imaging/escl/2011/05/03"
-    )
-    val blankPageDetected: Boolean?,
-)

@@ -20,11 +20,11 @@
 import io.github.chrisimx.esclkt.ScannerCapabilities
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
+import java.nio.file.Files
+import java.nio.file.Paths
 import kotlin.test.assertEquals
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
-import java.nio.file.Files
-import java.nio.file.Paths
 
 class ScannerCapabilitiesTest {
     @OptIn(ExperimentalUuidApi::class)
@@ -44,7 +44,8 @@ class ScannerCapabilitiesTest {
         }
         val capabilitiesDir = javaClass.getResource("/testResources/capabilities")!!
         val capabilitiesPath = Paths.get(capabilitiesDir.toURI())
-        Files.walk(capabilitiesPath)
+        Files
+            .walk(capabilitiesPath)
             .filter { it.toString().endsWith("-caps.xml") }
             .forEach { path ->
                 javaClass.getResourceAsStream("/testResources/capabilities/${path.fileName}")?.use {

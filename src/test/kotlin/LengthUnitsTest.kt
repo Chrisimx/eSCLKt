@@ -24,7 +24,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class LengthUnitsTest {
-
     @Test
     fun testConversions() {
         val threeHundredthsOfInch = 300u.threeHundredthsOfInch()
@@ -36,12 +35,14 @@ class LengthUnitsTest {
 
         assertEquals(
             threeHundredthsOfInch,
-            threeHundredthsOfInch.toInches().toMillimeters().toInches().toThreeHundredthsOfInch()
+            threeHundredthsOfInch
+                .toInches()
+                .toMillimeters()
+                .toInches()
+                .toThreeHundredthsOfInch(),
         )
 
         assertEquals(threeHundredthsOfInch, threeHundredthsOfInchInMM.toThreeHundredthsOfInch())
         assertEquals(threeHundredthsOfInch, threeHundredthsOfInchInInches.toThreeHundredthsOfInch())
-
     }
-
 }

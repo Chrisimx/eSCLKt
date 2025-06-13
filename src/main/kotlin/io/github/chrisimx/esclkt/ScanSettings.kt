@@ -40,8 +40,7 @@ data class ScanRegion(
     @XmlElement
     @XmlSerialName("pwg:YOffset")
     val yOffset: ThreeHundredthsOfInch,
-
-    ) {
+) {
     @XmlElement
     @XmlSerialName("pwg:ContentRegionUnits")
     private val contentRegionsUnits: String = "escl:ThreeHundredthsOfInches"
@@ -72,7 +71,7 @@ enum class InputSource {
 @Serializable
 enum class BinaryRendering {
     Halftone,
-    Threshold
+    Threshold,
 }
 
 @Serializable

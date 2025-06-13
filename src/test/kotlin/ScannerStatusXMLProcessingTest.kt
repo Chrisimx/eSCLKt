@@ -27,31 +27,35 @@ import kotlin.test.assertEquals
 class ScannerStatusXMLProcessingTest {
     @Test
     fun createScannerStatus() {
-        val xml = XML {
-        }
-        val testScannerStatus = ScannerStatus(
-            "2.63",
-            ScannerState.Processing,
-            Jobs(
-                listOf(
-                    JobInfo(
-                        jobURI = "/ScanJobs/893e6fcd-487f-4056-a8c9-\n" +
-                                "a87709b85daf",
-                        jobState = JobState.Pending,
-                        jobUUID = "dfasdfdsf",
-                        age = 10u,
-                        imagesCompleted = 1u
-                    )
-                )
+        val xml =
+            XML {
+            }
+        val testScannerStatus =
+            ScannerStatus(
+                "2.63",
+                ScannerState.Processing,
+                Jobs(
+                    listOf(
+                        JobInfo(
+                            jobURI =
+                                "/ScanJobs/893e6fcd-487f-4056-a8c9-\n" +
+                                    "a87709b85daf",
+                            jobState = JobState.Pending,
+                            jobUUID = "dfasdfdsf",
+                            age = 10u,
+                            imagesCompleted = 1u,
+                        ),
+                    ),
+                ),
             )
-        )
         println("ScannerStatus Serialization returned:\n   ${xml.encodeToString<ScannerStatus>(testScannerStatus)}")
     }
 
     @Test
     fun parseScannerStatus() {
-        val xml = XML {
-        }
+        val xml =
+            XML {
+            }
 
         javaClass.getResource("/testResources/status/example1.xml")!!.openStream().use {
             val scannerStatus =
@@ -62,19 +66,19 @@ class ScannerStatusXMLProcessingTest {
                     version = "2.62",
                     state = ScannerState.Idle,
                     jobs = null,
-                    adfState = AdfState.ScannerAdfEmpty
-                )
+                    adfState = AdfState.ScannerAdfEmpty,
+                ),
             )
-            println("ScannerStatus Deserialization example 1 returned:\n   ${scannerStatus}")
+            println("ScannerStatus Deserialization example 1 returned:\n   $scannerStatus")
         }
         javaClass.getResource("/testResources/status/example2.xml")!!.openStream().use {
             println(
                 "ScannerStatus Deserialization example 2 returned:\n   ${
                     xml.decodeFromString(
                         ScannerStatus.serializer(),
-                        it.readAllBytes().toString(StandardCharsets.UTF_8)
+                        it.readAllBytes().toString(StandardCharsets.UTF_8),
                     )
-                }"
+                }",
             )
         }
         javaClass.getResource("/testResources/status/HPColorLaserjetMFPM283fdw.xml")!!.openStream().use {
@@ -83,9 +87,9 @@ class ScannerStatusXMLProcessingTest {
                 "ScannerStatus Deserialization example 3 (HP Color Laserjet MFPM283fdw) returned:\n   ${
                     xml.decodeFromString(
                         ScannerStatus.serializer(),
-                        status
+                        status,
                     )
-                }"
+                }",
             )
         }
     }

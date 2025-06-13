@@ -72,7 +72,12 @@ publishing {
     }
     repositories {
         maven {
-            url = layout.buildDirectory.dir("staging-deploy").get().asFile.toURI()
+            url =
+                layout.buildDirectory
+                    .dir("staging-deploy")
+                    .get()
+                    .asFile
+                    .toURI()
         }
     }
 }
@@ -104,9 +109,7 @@ jreleaser {
                 contributors {
                     enabled = false
                 }
-
             }
-
         }
     }
     signing {

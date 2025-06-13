@@ -29,8 +29,6 @@ import kotlin.test.Test
 import kotlin.test.assertTrue
 
 class RealScannerTest {
-
-
     @Test
     fun testScanFull() {
         val scannerURL: String? = System.getenv("TEST_SCANNER_URL")
@@ -55,16 +53,18 @@ class RealScannerTest {
         assertTrue(scannerStatus is ESCLRequestClient.ScannerStatusResult.Success)
 
         executeScanJob(
-            testedESCLClient, scannerCapabilitiesResult,
+            testedESCLClient,
+            scannerCapabilitiesResult,
             inputSource = InputSource.Platen,
             duplex = false,
-            scanRegion = ScanRegion(
-                height = scannerCapabilities.platen!!.inputSourceCaps.maxHeight,
-                width = scannerCapabilities.platen!!.inputSourceCaps.maxWidth,
-                xOffset = 0u.threeHundredthsOfInch(),
-                yOffset = 0u.threeHundredthsOfInch()
-            ),
-            fileNamePrefix = "platen_scan"
+            scanRegion =
+                ScanRegion(
+                    height = scannerCapabilities.platen!!.inputSourceCaps.maxHeight,
+                    width = scannerCapabilities.platen!!.inputSourceCaps.maxWidth,
+                    xOffset = 0u.threeHundredthsOfInch(),
+                    yOffset = 0u.threeHundredthsOfInch(),
+                ),
+            fileNamePrefix = "platen_scan",
         )
 
         if (shouldAfdBeTested) {
@@ -75,16 +75,18 @@ class RealScannerTest {
                 if (duplexSupported) scannerCapabilities.adf!!.duplexCaps!! else scannerCapabilities.adf!!.simplexCaps
 
             executeScanJob(
-                testedESCLClient, scannerCapabilitiesResult,
+                testedESCLClient,
+                scannerCapabilitiesResult,
                 inputSource = InputSource.Feeder,
                 duplex = duplexSupported,
-                scanRegion = ScanRegion(
-                    height = inputSourceCaps.maxHeight,
-                    width = inputSourceCaps.maxWidth,
-                    xOffset = 0u.threeHundredthsOfInch(),
-                    yOffset = 0u.threeHundredthsOfInch()
-                ),
-                fileNamePrefix = "feeder_scan"
+                scanRegion =
+                    ScanRegion(
+                        height = inputSourceCaps.maxHeight,
+                        width = inputSourceCaps.maxWidth,
+                        xOffset = 0u.threeHundredthsOfInch(),
+                        yOffset = 0u.threeHundredthsOfInch(),
+                    ),
+                fileNamePrefix = "feeder_scan",
             )
         }
     }
@@ -113,16 +115,18 @@ class RealScannerTest {
         assertTrue(scannerStatus is ESCLRequestClient.ScannerStatusResult.Success)
 
         executeScanJob(
-            testedESCLClient, scannerCapabilitiesResult,
+            testedESCLClient,
+            scannerCapabilitiesResult,
             inputSource = InputSource.Platen,
             duplex = false,
-            scanRegion = ScanRegion(
-                height = 300000.threeHundredthsOfInch(),
-                width = 300000.threeHundredthsOfInch(),
-                xOffset = 0u.threeHundredthsOfInch(),
-                yOffset = 0u.threeHundredthsOfInch()
-            ),
-            fileNamePrefix = "platen_scan"
+            scanRegion =
+                ScanRegion(
+                    height = 300000.threeHundredthsOfInch(),
+                    width = 300000.threeHundredthsOfInch(),
+                    xOffset = 0u.threeHundredthsOfInch(),
+                    yOffset = 0u.threeHundredthsOfInch(),
+                ),
+            fileNamePrefix = "platen_scan",
         )
     }
 
@@ -132,25 +136,28 @@ class RealScannerTest {
         inputSource: InputSource,
         duplex: Boolean,
         scanRegion: ScanRegion,
-        fileNamePrefix: String
+        fileNamePrefix: String,
     ) {
-        val scanJob = testedESCLClient.createJob(
-            ScanSettings(
-                version = scannerCapabilitiesResult.scannerCapabilities.interfaceVersion,
-                intent = ScanIntentData.ScanIntentEnum(ScanIntent.Document),
-                inputSource = inputSource,
-                colorMode = ColorMode.RGB24,
-                scanRegions = ScanRegions(
-                    listOf(
-                        scanRegion
-                    ), mustHonor = true
+        val scanJob =
+            testedESCLClient.createJob(
+                ScanSettings(
+                    version = scannerCapabilitiesResult.scannerCapabilities.interfaceVersion,
+                    intent = ScanIntentData.ScanIntentEnum(ScanIntent.Document),
+                    inputSource = inputSource,
+                    colorMode = ColorMode.RGB24,
+                    scanRegions =
+                        ScanRegions(
+                            listOf(
+                                scanRegion,
+                            ),
+                            mustHonor = true,
+                        ),
+                    xResolution = 600u,
+                    yResolution = 600u,
+                    duplex = duplex,
+                    documentFormatExt = "image/jpeg",
                 ),
-                xResolution = 600u,
-                yResolution = 600u,
-                duplex = duplex,
-                documentFormatExt = "image/jpeg"
             )
-        )
         println("ScanJob result: $scanJob")
         assertTrue(scanJob is ESCLRequestClient.ScannerCreateJobResult.Success)
 
@@ -169,7 +176,7 @@ class RealScannerTest {
                     Files.copy(
                         it.body!!.byteStream(),
                         Path.of("$fileNamePrefix$counter.jpg"),
-                        StandardCopyOption.REPLACE_EXISTING
+                        StandardCopyOption.REPLACE_EXISTING,
                     )
                 }
                 val scanImageInfo = scanJob.scanJob.getScanImageInfoForRetrievedPage()
@@ -192,7 +199,6 @@ class RealScannerTest {
                     break
                 }
                 sleep(3000)
-
             } else if (pageRequest is ESCLRequestClient.ScannerNextPageResult.NotSuccessfulCode) {
                 println("Can't retrieve nextPage now. Fails with ${pageRequest.responseCode}")
                 val currentJobStatus = scanJob.scanJob.getJobStatus()!!
@@ -210,5 +216,4 @@ class RealScannerTest {
             }
         }
     }
-
 }

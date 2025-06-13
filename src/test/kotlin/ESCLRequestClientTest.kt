@@ -19,6 +19,7 @@
 
 import io.github.chrisimx.esclkt.ESCLRequestClient
 import io.github.chrisimx.esclkt.ESCLRequestClient.ScannerCapabilitiesResult
+import io.github.chrisimx.esclkt.ScanSettings
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import kotlin.test.Test
@@ -26,7 +27,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class ESCLRequestClientTest {
-
     @Test
     fun testScannerCapabilitiesRetrieval() {
         val server = MockWebServer()
@@ -40,13 +40,13 @@ class ESCLRequestClientTest {
             MockResponse()
                 .setResponseCode(200)
                 .setHeader("Content-Type", "text/xml")
-                .setBody(resource.readText(charset = Charsets.UTF_8))
+                .setBody(resource.readText(charset = Charsets.UTF_8)),
         )
         server.enqueue(
             MockResponse()
                 .setResponseCode(200)
                 .setHeader("Content-Type", "text/xml; charset=utf-8")
-                .setBody(resource.readText(charset = Charsets.UTF_8))
+                .setBody(resource.readText(charset = Charsets.UTF_8)),
         )
 
         val statusResource = javaClass.getResource("/testResources/status/HPColorLaserjetMFPM283fdw.xml")!!
@@ -54,7 +54,7 @@ class ESCLRequestClientTest {
             MockResponse()
                 .setResponseCode(200)
                 .setHeader("Content-Type", "text/xml; charset=utf-8")
-                .setBody(statusResource.readText(charset = Charsets.UTF_8))
+                .setBody(statusResource.readText(charset = Charsets.UTF_8)),
         )
 
         server.start()
@@ -66,32 +66,32 @@ class ESCLRequestClientTest {
         // Fail cases
         assertEquals(
             ScannerCapabilitiesResult.NotSuccessfulCode(404),
-            testedESCLClient.getScannerCapabilities()
+            testedESCLClient.getScannerCapabilities(),
         )
         assertEquals(
             ScannerCapabilitiesResult.NotSuccessfulCode(500),
-            testedESCLClient.getScannerCapabilities()
+            testedESCLClient.getScannerCapabilities(),
         )
         assertEquals(
             ScannerCapabilitiesResult.NotSuccessfulCode(503),
-            testedESCLClient.getScannerCapabilities()
+            testedESCLClient.getScannerCapabilities(),
         )
 
         assertEquals(
             ScannerCapabilitiesResult.NoBodyReturned,
-            testedESCLClient.getScannerCapabilities()
+            testedESCLClient.getScannerCapabilities(),
         )
 
         // Success cases
         assertTrue(
-            testedESCLClient.getScannerCapabilities() is ScannerCapabilitiesResult.Success
+            testedESCLClient.getScannerCapabilities() is ScannerCapabilitiesResult.Success,
         )
         assertTrue(
-            testedESCLClient.getScannerCapabilities() is ScannerCapabilitiesResult.Success
+            testedESCLClient.getScannerCapabilities() is ScannerCapabilitiesResult.Success,
         )
 
         assertTrue(
-            testedESCLClient.getScannerStatus() is ESCLRequestClient.ScannerStatusResult.Success
+            testedESCLClient.getScannerStatus() is ESCLRequestClient.ScannerStatusResult.Success,
         )
 
         server.shutdown()
