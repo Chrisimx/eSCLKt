@@ -1,3 +1,16 @@
+## [v1.4.10]
+
+## Changelog
+
+## 🚀 Features
+- [fc796c9](https://github.com/Chrisimx/eSCLKt/commits/fc796c9) feat(scanjob): add detailed toString() for easier debugging
+
+## 🐛 Fixes
+- [305d2f1](https://github.com/Chrisimx/eSCLKt/commits/305d2f1) fix(createJob): support jobUri as Location instead of jobURL
+
+## 🔄️ Changes
+- [8369823](https://github.com/Chrisimx/eSCLKt/commits/8369823) refactor: format with ktlint
+
 ## [v1.4.9]
 
 ## Changelog
