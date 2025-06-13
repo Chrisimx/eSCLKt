@@ -60,4 +60,7 @@ class ScanJob(jobUrl: HttpUrl, private val esclClient: ESCLRequestClient, val sc
         return esclClient.retrieveScanImageInfoForJob(jobUri)
     }
 
+    override fun toString(): String {
+        return "ScanJob(isCancelled='$isCancelled', jobUri=$jobUri, jobSettings=$scanSettings, esclClient=$esclClient"
+    }
 }
