@@ -268,18 +268,32 @@ class ESCLRequestClient(
 
         response.use {
             // Checking for response errors on HTTP level
-            val jobLocation = it.header("Location")?.toHttpUrlOrNull()
-            val error = when {
-                it.code != 201 -> ScannerCreateJobResult.NotSuccessfulCode(it.code) // Returned code is not 201 (Created)
-                jobLocation == null -> ScannerCreateJobResult.NoLocationGiven
-                else -> null
-            }
+            val jobLocation = it.header("Location")
+            val jobURL = jobLocation?.toHttpUrlOrNull()
+            val finalJobURL = jobURL?.newBuilder()?.encodedPath(jobURL.encodedPath + "/")?.build()
+
+            val error =
+                when {
+                    it.code != 201 -> ScannerCreateJobResult.NotSuccessfulCode(it.code) // Returned code is not 201 (Created)
+                    jobLocation == null -> ScannerCreateJobResult.NoLocationGiven
+                    else -> null
+                }
             if (error != null) return error
 
             return ScannerCreateJobResult.Success(
-                ScanJob(
-                    jobLocation!!.newBuilder().encodedPath(jobLocation.encodedPath + "/").build(), this, scanSettings
-                )
+                if (finalJobURL == null) {
+                    ScanJob(
+                        jobLocation!! + "/",
+                        this,
+                        scanSettings,
+                    )
+                } else {
+                    ScanJob(
+                        finalJobURL,
+                        this,
+                        scanSettings,
+                    )
+                },
             )
         }
     }

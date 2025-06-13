@@ -21,9 +21,19 @@ package io.github.chrisimx.esclkt
 
 import okhttp3.HttpUrl
 
-class ScanJob(jobUrl: HttpUrl, private val esclClient: ESCLRequestClient, val scanSettings: ScanSettings) {
+class ScanJob(
+    val jobUri: String,
+    val esclClient: ESCLRequestClient,
+    val scanSettings: ScanSettings,
+) {
     private var isCancelled = false
-    private val jobUri = jobUrl.encodedPath
+
+    constructor(jobUrl: HttpUrl, esclClient: ESCLRequestClient, scanSettings: ScanSettings) : this(
+        jobUrl.encodedPath,
+        esclClient,
+        scanSettings,
+    ) {
+    }
 
     /** Tries to cancle the scan job
      * @return A ScannerDeleteJobResult, which shows if the action was successful or not

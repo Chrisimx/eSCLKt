@@ -99,4 +99,25 @@ class ESCLRequestClientTest {
         assertTrue(testedESCLClient.getScannerCapabilities() is ScannerCapabilitiesResult.NetworkError)
     }
 
+    @Test
+    fun testLocationJobURIInsteadOfURL() {
+        val server = MockWebServer()
+        server.enqueue(MockResponse().setResponseCode(201).setHeader("location", "/eSCL/ScanJobs/123"))
+        server.start()
+
+        val baseUrl = server.url("/eSCL/")
+
+        val testedESCLClient = ESCLRequestClient(baseUrl)
+        val result = testedESCLClient.createJob(ScanSettings(version = "2.63"))
+
+        println(result)
+
+        assertTrue(
+            result is ESCLRequestClient.ScannerCreateJobResult.Success,
+        )
+
+        println(result.scanJob)
+
+        assertEquals(result.scanJob.jobUri, "/eSCL/ScanJobs/123/")
+    }
 }
