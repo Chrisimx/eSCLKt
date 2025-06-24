@@ -1,3 +1,14 @@
+## [v1.4.11]
+
+## Changelog
+
+## 🐛 Fixes
+### TA_UTAX P-C3567i MFP
+- [647fcaa](https://github.com/Chrisimx/eSCLKt/commits/647fcaa) fix: add pwg:Manufacturer as known top-level element
+
+## 🧪 Tests
+- [7328035](https://github.com/Chrisimx/eSCLKt/commits/7328035) test: add TA_UTAX P-C3567i MFP scanner caps as test case
+
 ## [v1.4.10]
 
 ## Changelog
