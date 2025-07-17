@@ -27,7 +27,8 @@ const val MILLIMETERS_PER_INCH = 25.4
 const val THREE_HUNDREDTHS_INCHES_PER_INCH = 300.0
 const val THREE_HUNDREDTHS_INCHES_PER_MM = 1.0 / 25.4 * THREE_HUNDREDTHS_INCHES_PER_INCH
 
-interface LengthUnit {
+@Serializable
+sealed interface LengthUnit {
     fun toInches(): Inches
 
     fun toThreeHundredthsOfInch(): ThreeHundredthsOfInch
