@@ -1,3 +1,10 @@
+## [v1.4.13]
+
+## Changelog
+
+## 🚀 Features
+- [47eccb3](https://github.com/Chrisimx/eSCLKt/commits/47eccb3) feat: make LengthUnit serializable
+
 ## [v1.4.12]
 
 ## Changelog
