@@ -49,6 +49,7 @@ class TopLevelElemNotKnownException(
     message: String,
 ) : Exception(message)
 
+@Serializable
 data class InputSourceCaps(
     val minWidth: ThreeHundredthsOfInch,
     val maxWidth: ThreeHundredthsOfInch,
@@ -163,6 +164,7 @@ data class InputSourceCaps(
     }
 }
 
+@Serializable
 data class DiscreteResolution(
     val xResolution: UInt,
     val yResolution: UInt,
@@ -184,6 +186,7 @@ data class DiscreteResolution(
     }
 }
 
+@Serializable
 data class SettingProfile(
     val colorModes: List<ColorMode>,
     val contentTypes: List<ContentType>?,
@@ -272,6 +275,7 @@ data class SettingProfile(
     }
 }
 
+@Serializable
 data class DocumentFormats(
     val documentFormat: List<String>,
     val documentFormatExt: List<String>,
@@ -397,6 +401,7 @@ enum class CcdChannel {
     GrayCcdEmulated,
 }
 
+@Serializable
 data class Platen(
     val inputSourceCaps: InputSourceCaps,
 ) {
@@ -406,6 +411,7 @@ data class Platen(
     }
 }
 
+@Serializable
 data class Adf(
     val simplexCaps: InputSourceCaps,
     val duplexCaps: InputSourceCaps? = null,
@@ -459,6 +465,7 @@ enum class AdfOption {
     Duplex,
 }
 
+@Serializable
 data class SharpenSupport(
     val min: Int,
     val max: Int,
@@ -484,6 +491,7 @@ data class SharpenSupport(
     }
 }
 
+@Serializable
 data class CompressionFactorSupport(
     val min: Int,
     val max: Int,
@@ -525,6 +533,7 @@ enum class ColorMode {
     RGB48,
 }
 
+@Serializable
 data class Certfication(
     val name: String,
     val version: String,
@@ -563,6 +572,7 @@ data class Certfication(
     }
 }
 
+@Serializable
 data class StoredJobRequestSupport(
     val maxStoredJobRequests: UInt,
     val timoutInSeconds: UInt,
@@ -584,6 +594,7 @@ data class StoredJobRequestSupport(
     }
 }
 
+@Serializable
 data class ScannerCapabilities
     @OptIn(ExperimentalUuidApi::class)
     constructor(
