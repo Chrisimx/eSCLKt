@@ -1,3 +1,10 @@
+## [v1.4.12]
+
+## Changelog
+
+- [6f60959](https://github.com/Chrisimx/eSCLKt/commits/6f60959) Rename Certfication to Certification
+- [2e3d111](https://github.com/Chrisimx/eSCLKt/commits/2e3d111) Add @Serializable to ScannerCapabilities
+
 ## [v1.4.11]
 
 ## Changelog
