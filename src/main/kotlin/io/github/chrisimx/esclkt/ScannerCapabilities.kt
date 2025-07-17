@@ -534,12 +534,12 @@ enum class ColorMode {
 }
 
 @Serializable
-data class Certfication(
+data class Certification(
     val name: String,
     val version: String,
 ) {
     companion object {
-        fun fromXMLElement(certElem: Element): Certfication {
+        fun fromXMLElement(certElem: Element): Certification {
             val name = certElem.findRequiredUniqueElementWithName("scan:Name").textContent
             val certVersion = certElem.findRequiredUniqueElementWithName("scan:Version").textContent
             if (name.isEmpty() ||
@@ -553,11 +553,11 @@ data class Certfication(
             ) {
                 throw IllegalArgumentException("Malformed Certification version '$certVersion'")
             }
-            return Certfication(name, certVersion)
+            return Certification(name, certVersion)
         }
 
-        fun certListFromXMLElement(certificationsElem: Element): List<Certfication>? {
-            val certifications: MutableList<Certfication>?
+        fun certListFromXMLElement(certificationsElem: Element): List<Certification>? {
+            val certifications: MutableList<Certification>?
             if (certificationsElem.getElementsByTagName("scan:Certification").length > 0) {
                 val certificationElems = certificationsElem.getElementsByTagName("scan:Certification")
                 certifications = mutableListOf()
@@ -606,7 +606,7 @@ data class ScannerCapabilities
         val serialNumber: String,
         val adminURI: String? = null,
         val iconURI: String? = null,
-        val certifications: List<Certfication>?,
+        val certifications: List<Certification>?,
         val platen: Platen?,
         val adf: Adf?,
         val supportedMediaTypes: List<String>?,
@@ -654,7 +654,7 @@ data class ScannerCapabilities
 
                 val certifications =
                     xmlRoot.findUniqueElementWithName("scan:Certifications")?.let {
-                        Certfication.certListFromXMLElement(it)
+                        Certification.certListFromXMLElement(it)
                     }
 
                 val platenElem = xmlRoot.findRequiredUniqueElementWithName("scan:Platen")
