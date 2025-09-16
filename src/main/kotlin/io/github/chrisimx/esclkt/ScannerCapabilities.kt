@@ -469,7 +469,7 @@ enum class AdfOption {
 data class SharpenSupport(
     val min: Int,
     val max: Int,
-    val normal: Int,
+    val normal: Int?,
     val step: Int,
 ) {
     companion object {
@@ -480,7 +480,7 @@ data class SharpenSupport(
                     SharpenSupport(
                         sharpenSupportElem.findRequiredUniqueElementWithName("scan:Min").textContent.toInt(),
                         sharpenSupportElem.findRequiredUniqueElementWithName("scan:Max").textContent.toInt(),
-                        sharpenSupportElem.findRequiredUniqueElementWithName("scan:Normal").textContent.toInt(),
+                        sharpenSupportElem.findUniqueElementWithName("scan:Normal")?.textContent?.toInt(),
                         sharpenSupportElem.findRequiredUniqueElementWithName("scan:Step").textContent.toInt(),
                     )
             } catch (NumberFormatException: NumberFormatException) {
