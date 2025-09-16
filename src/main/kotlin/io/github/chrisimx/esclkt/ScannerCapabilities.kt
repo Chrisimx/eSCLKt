@@ -714,6 +714,8 @@ data class ScannerCapabilities
                         "scan:BrightnessSupport",
                         "scan:ThresholdSupport",
                         "scan:NoiseRemovalSupport",
+                        "scan:HighlightSupport",
+                        "scan:ShadowSupport",
                         "scan:eSCLConfigCap",
                         "scan:JobSourceInfoSupport",
                         "scan:SettingProfiles",
