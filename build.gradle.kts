@@ -142,11 +142,11 @@ repositories {
 }
 
 dependencies {
-    implementation("io.github.pdvrieze.xmlutil:core:0.91.0")
-    implementation("io.github.pdvrieze.xmlutil:serialization:0.91.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("io.github.pdvrieze.xmlutil:core:0.91.2")
+    implementation("io.github.pdvrieze.xmlutil:serialization:0.91.2")
+    implementation("com.squareup.okhttp3:okhttp:5.1.0")
     testImplementation(kotlin("test"))
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
+    testImplementation("com.squareup.okhttp3:mockwebserver:5.1.0")
 }
 
 tasks.test {
