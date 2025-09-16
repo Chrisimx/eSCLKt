@@ -1,3 +1,16 @@
+## [v1.4.14]
+
+## Changelog
+
+## 🐛 Fixes
+### HP PhotoSmart 7525
+- [e7af874](https://github.com/Chrisimx/eSCLKt/commits/e7af874) fix: add scan:HighlightSupport and scan:ShadowSupport to known top-level elems
+- [88184f9](https://github.com/Chrisimx/eSCLKt/commits/88184f9) fix: make SharpenSupport scan:Normal optional
+
+## 🧪 Tests
+- [8fe586f](https://github.com/Chrisimx/eSCLKt/commits/8fe586f) test: add HP PhotoSmart 7525
+- [dad7afc](https://github.com/Chrisimx/eSCLKt/commits/dad7afc) test: add HP Color LaserJet MFP M283fdw
+
 ## [v1.4.13]
 
 ## Changelog
