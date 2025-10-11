@@ -19,13 +19,6 @@
 
 package io.github.chrisimx.esclkt
 
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.descriptors.buildClassSerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import nl.adaptivity.xmlutil.serialization.XmlSerialName
 import org.w3c.dom.Element
 import org.w3c.dom.Node.ELEMENT_NODE
 import java.io.InputStream
@@ -33,7 +26,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-private fun Element.findUniqueElementWithName(
+fun Element.findUniqueElementWithName(
     name: String,
     required: Boolean = false,
 ): Element? {
@@ -43,13 +36,13 @@ private fun Element.findUniqueElementWithName(
     return elements.item(0) as Element?
 }
 
-private fun Element.findRequiredUniqueElementWithName(name: String): Element = this.findUniqueElementWithName(name, true)!!
+fun Element.findRequiredUniqueElementWithName(name: String): Element = this.findUniqueElementWithName(name, true)!!
 
 class TopLevelElemNotKnownException(
     message: String,
 ) : Exception(message)
 
-@Serializable
+
 data class InputSourceCaps(
     val minWidth: ThreeHundredthsOfInch,
     val maxWidth: ThreeHundredthsOfInch,
@@ -89,7 +82,7 @@ data class InputSourceCaps(
                         for (i in 0..<it.length) {
                             try {
                                 intents.add(ScanIntentData.ScanIntentEnum(ScanIntent.valueOf(it.item(i).textContent)))
-                            } catch (e: IllegalArgumentException) {
+                            } catch (_: IllegalArgumentException) {
                                 intents.add(ScanIntentData.StringData(it.item(i).textContent))
                             }
                         }
@@ -164,7 +157,7 @@ data class InputSourceCaps(
     }
 }
 
-@Serializable
+
 data class DiscreteResolution(
     val xResolution: UInt,
     val yResolution: UInt,
@@ -186,7 +179,6 @@ data class DiscreteResolution(
     }
 }
 
-@Serializable
 data class SettingProfile(
     val colorModes: List<ColorMode>,
     val contentTypes: List<ContentType>?,
@@ -275,7 +267,6 @@ data class SettingProfile(
     }
 }
 
-@Serializable
 data class DocumentFormats(
     val documentFormat: List<String>,
     val documentFormatExt: List<String>,
@@ -311,8 +302,6 @@ data class DocumentFormats(
     }
 }
 
-@Serializable
-@XmlSerialName("scan:Intent")
 enum class ScanIntent {
     // / Scanning optimized for text.
     Document,
@@ -333,8 +322,6 @@ enum class ScanIntent {
     BusinessCard,
 }
 
-@Serializable(ScanIntentDataSerializer::class)
-@XmlSerialName("scan:ScanIntent", "", "scan")
 sealed class ScanIntentData {
     data class ScanIntentEnum(
         val scanIntent: ScanIntent,
@@ -345,31 +332,13 @@ sealed class ScanIntentData {
     ) : ScanIntentData()
 }
 
-object ScanIntentDataSerializer : KSerializer<ScanIntentData> {
-    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("scan:ScanIntent")
-
-    override fun serialize(
-        encoder: Encoder,
-        value: ScanIntentData,
-    ) {
-        when (value) {
-            is ScanIntentData.ScanIntentEnum -> encoder.encodeString(value.scanIntent.name)
-            is ScanIntentData.StringData -> encoder.encodeString(value.string)
-        }
-    }
-
-    override fun deserialize(decoder: Decoder): ScanIntentData {
-        val decodedString = decoder.decodeString()
-        return try {
-            ScanIntentData.ScanIntentEnum(ScanIntent.valueOf(decodedString))
-        } catch (exc: IllegalArgumentException) {
-            ScanIntentData.StringData(decodedString)
-        }
+fun ScanIntentData.toScanIntentString(): String {
+    return when(this) {
+        is ScanIntentData.ScanIntentEnum -> this.scanIntent.toString()
+        is ScanIntentData.StringData -> this.string
     }
 }
 
-@Serializable
-@XmlSerialName("pwg:ContentType")
 enum class ContentType {
     Photo,
     Text,
@@ -401,7 +370,6 @@ enum class CcdChannel {
     GrayCcdEmulated,
 }
 
-@Serializable
 data class Platen(
     val inputSourceCaps: InputSourceCaps,
 ) {
@@ -411,7 +379,6 @@ data class Platen(
     }
 }
 
-@Serializable
 data class Adf(
     val simplexCaps: InputSourceCaps,
     val duplexCaps: InputSourceCaps? = null,
@@ -465,7 +432,6 @@ enum class AdfOption {
     Duplex,
 }
 
-@Serializable
 data class SharpenSupport(
     val min: Int,
     val max: Int,
@@ -483,7 +449,7 @@ data class SharpenSupport(
                         sharpenSupportElem.findUniqueElementWithName("scan:Normal")?.textContent?.toInt(),
                         sharpenSupportElem.findRequiredUniqueElementWithName("scan:Step").textContent.toInt(),
                     )
-            } catch (NumberFormatException: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 throw IllegalArgumentException("Number in scan:SharpenSupport was not valid")
             }
             return sharpenSupport
@@ -491,7 +457,6 @@ data class SharpenSupport(
     }
 }
 
-@Serializable
 data class CompressionFactorSupport(
     val min: Int,
     val max: Int,
@@ -509,7 +474,7 @@ data class CompressionFactorSupport(
                         compressionFactorSupportElem.findRequiredUniqueElementWithName("scan:Normal").textContent.toInt(),
                         compressionFactorSupportElem.findRequiredUniqueElementWithName("scan:Step").textContent.toInt(),
                     )
-            } catch (NumberFormatException: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 throw IllegalArgumentException("Number in scan:SharpenSupport was not valid")
             }
             return compressionFactorSupport
@@ -533,7 +498,6 @@ enum class ColorMode {
     RGB48,
 }
 
-@Serializable
 data class Certification(
     val name: String,
     val version: String,
@@ -572,7 +536,6 @@ data class Certification(
     }
 }
 
-@Serializable
 data class StoredJobRequestSupport(
     val maxStoredJobRequests: UInt,
     val timoutInSeconds: UInt,
@@ -594,7 +557,6 @@ data class StoredJobRequestSupport(
     }
 }
 
-@Serializable
 data class ScannerCapabilities
     @OptIn(ExperimentalUuidApi::class)
     constructor(

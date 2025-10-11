@@ -18,16 +18,14 @@
  */
 
 import io.github.chrisimx.esclkt.*
-import kotlinx.serialization.encodeToString
-import nl.adaptivity.xmlutil.serialization.XML
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
 class ScanSettingsXMLProcessingTest {
+    val expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><scan:ScanSettings xmlns:scan=\"http://schemas.hp.com/imaging/escl/2011/05/03\" xmlns:pwg=\"http://www.pwg.org/schemas/2010/12/sm\"><pwg:Version>2.63</pwg:Version><scan:Intent>Document</scan:Intent><pwg:ScanRegions pwg:MustHonor=\"true\"><pwg:ScanRegion><pwg:Height>20</pwg:Height><pwg:ContentRegionUnits>escl:ThreeHundredthsOfInches</pwg:ContentRegionUnits><pwg:Width>10</pwg:Width><pwg:XOffset>2</pwg:XOffset><pwg:YOffset>1</pwg:YOffset></pwg:ScanRegion></pwg:ScanRegions><scan:DocumentFormatExt>image/jpeg</scan:DocumentFormatExt><pwg:ContentType>Text</pwg:ContentType><pwg:InputSource>Platen</pwg:InputSource><scan:XResolution>600</scan:XResolution><scan:YResolution>200</scan:YResolution><scan:ColorMode>RGB24</scan:ColorMode><scan:ColorSpace>sRGB</scan:ColorSpace></scan:ScanSettings>"
+
     @Test
     fun createScanRequest() {
-        val xml =
-            XML {
-            }
         val testScanSettings =
             ScanSettings(
                 version = "2.63",
@@ -52,6 +50,7 @@ class ScanSettingsXMLProcessingTest {
                 colorMode = ColorMode.RGB24,
                 colorSpace = "sRGB",
             )
-        println("ScanSettings Serialization returned:\n   ${xml.encodeToString<ScanSettings>(testScanSettings)}")
+        assertEquals(expected, testScanSettings.toXMLString())
+        println("ScanSettings Serialization returned:\n   ${testScanSettings.toXMLString()}")
     }
 }

@@ -51,7 +51,7 @@ class ScanJob(
         val scannerStatus = esclClient.getScannerStatus()
         if (scannerStatus !is ESCLRequestClient.ScannerStatusResult.Success) return null
 
-        return scannerStatus.scannerStatus.jobs?.jobInfos?.firstOrNull {
+        return scannerStatus.scannerStatus.jobs?.firstOrNull {
             this.jobUri.trimEnd('/') ==
                 it.jobURI.trimEnd(
                     '/',

@@ -12,6 +12,7 @@
             <pwg:ImagesCompleted>1</pwg:ImagesCompleted>
             <pwg:ImagesToTransfer>1</pwg:ImagesToTransfer>
             <pwg:JobState>Processing</pwg:JobState>
+            <scan:TransferRetryCount>29</scan:TransferRetryCount>
             <pwg:JobStateReasons>
                 <pwg:JobStateReason>JobScanning</pwg:JobStateReason>
             </pwg:JobStateReasons>

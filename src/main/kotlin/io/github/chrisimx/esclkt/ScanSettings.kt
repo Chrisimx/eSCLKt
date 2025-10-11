@@ -19,44 +19,47 @@
 
 package io.github.chrisimx.esclkt
 
-import kotlinx.serialization.Serializable
-import nl.adaptivity.xmlutil.ExperimentalXmlUtilApi
-import nl.adaptivity.xmlutil.serialization.XmlElement
-import nl.adaptivity.xmlutil.serialization.XmlNamespaceDeclSpec
-import nl.adaptivity.xmlutil.serialization.XmlSerialName
+import io.github.chrisimx.esclkt.XmlHelpers.addTextElement
+import org.w3c.dom.Document
+import org.w3c.dom.Element
+import java.io.StringWriter
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.dom.DOMSource
+import javax.xml.transform.stream.StreamResult
 
-@Serializable
-@XmlSerialName("pwg:ScanRegion")
 data class ScanRegion(
-    @XmlElement
-    @XmlSerialName("pwg:Height")
     val height: ThreeHundredthsOfInch,
-    @XmlElement
-    @XmlSerialName("pwg:Width")
     val width: ThreeHundredthsOfInch,
-    @XmlElement
-    @XmlSerialName("pwg:XOffset")
     val xOffset: ThreeHundredthsOfInch,
-    @XmlElement
-    @XmlSerialName("pwg:YOffset")
     val yOffset: ThreeHundredthsOfInch,
 ) {
-    @XmlElement
-    @XmlSerialName("pwg:ContentRegionUnits")
     private val contentRegionsUnits: String = "escl:ThreeHundredthsOfInches"
+
+    fun toElement(doc: Document): Element {
+        val root = doc.createElement("pwg:ScanRegion")
+        root.addTextElement("pwg:Height", height.value.toString())
+        root.addTextElement("pwg:ContentRegionUnits", contentRegionsUnits)
+        root.addTextElement("pwg:Width", width.value.toString())
+        root.addTextElement("pwg:XOffset", xOffset.value.toString())
+        root.addTextElement("pwg:YOffset", yOffset.value.toString())
+        return root
+    }
 }
 
-@Serializable
-@XmlSerialName("pwg:ScanRegions")
 data class ScanRegions(
-    @XmlElement
     val regions: List<ScanRegion>,
-    @XmlSerialName("pwg:MustHonor")
     val mustHonor: Boolean = true,
-)
+) {
+    fun toElement(doc: Document): Element {
+        val root = doc.createElement("pwg:ScanRegions")
+        root.setAttribute("pwg:MustHonor", mustHonor.toString())
+        for (region in regions) {
+            root.appendChild(region.toElement(doc))
+        }
+        return root
+    }
+}
 
-@Serializable
-@XmlSerialName("pwg:InputSource")
 enum class InputSource {
     /** Glass flat bed **/
     Platen,
@@ -68,107 +71,94 @@ enum class InputSource {
     Camera,
 }
 
-@Serializable
 enum class BinaryRendering {
     Halftone,
     Threshold,
 }
 
-@Serializable
 enum class FeedDirection {
     LongEdgeFeed,
     ShortEdgeFeed,
 }
 
-@OptIn(ExperimentalXmlUtilApi::class)
-@Serializable
-@XmlSerialName(value = "scan:ScanSettings")
-@XmlNamespaceDeclSpec("pwg=http://www.pwg.org/schemas/2010/12/sm;scan=http://schemas.hp.com/imaging/escl/2011/05/03")
 data class ScanSettings(
-    @XmlElement
-    @XmlSerialName("pwg:Version")
     val version: String,
     val intent: ScanIntentData? = null,
-    @XmlElement
     val scanRegions: ScanRegions? = null,
-    @XmlElement
-    @XmlSerialName("pwg:DocumentFormat")
     val documentFormat: String? = null,
-    @XmlElement
-    @XmlSerialName("scan:DocumentFormatExt")
     val documentFormatExt: String? = null,
-    @XmlElement
     val contentType: ContentType? = null,
-    @XmlElement
     val inputSource: InputSource? = null,
     /** Specified in DPI **/
-    @XmlElement
-    @XmlSerialName("scan:XResolution")
     val xResolution: UInt? = null,
     /** Specified in DPI **/
-    @XmlElement
-    @XmlSerialName("scan:YResolution")
     val yResolution: UInt? = null,
-    @XmlElement
-    @XmlSerialName("scan:ColorMode")
     val colorMode: ColorMode? = null,
-    @XmlElement
-    @XmlSerialName("scan:ColorSpace")
     val colorSpace: String? = null,
-    @XmlElement
-    @XmlSerialName("scan:MediaType")
     val mediaType: String? = null,
-    @XmlElement
-    @XmlSerialName("scan:CcdChannel")
     val ccdChannel: CcdChannel? = null,
-    @XmlElement
-    @XmlSerialName("scan:BinaryRendering")
     val binaryRendering: BinaryRendering? = null,
-    @XmlElement
-    @XmlSerialName("scan:Duplex")
     val duplex: Boolean? = null,
-    @XmlElement
-    @XmlSerialName("scan:NumberOfPages")
     val numberOfPages: UInt? = null,
-    @XmlElement
-    @XmlSerialName("scan:Brightness")
     val brightness: UInt? = null,
-    @XmlElement
-    @XmlSerialName("scan:CompressionFactor")
     val compressionFactor: UInt? = null,
-    @XmlElement
-    @XmlSerialName("scan:Contrast")
     val contrast: UInt? = null,
-    @XmlElement
-    @XmlSerialName("scan:Gamma")
     val gamma: UInt? = null,
-    @XmlElement
-    @XmlSerialName("scan:Highlight")
     val highlight: UInt? = null,
-    @XmlElement
-    @XmlSerialName("scan:NoiseRemoval")
     val noiseRemoval: UInt? = null,
-    @XmlElement
-    @XmlSerialName("scan:Shadow")
     val shadow: UInt? = null,
-    @XmlElement
-    @XmlSerialName("scan:Sharpen")
     val sharpen: UInt? = null,
-    @XmlElement
-    @XmlSerialName("scan:Threshold")
     val threshold: UInt? = null,
     /** As per spec:  "opaque information relayed by the client." **/
-    @XmlElement
-    @XmlSerialName("scan:ContextID")
     val contextID: String? = null,
     // val scanDestinations: HTTPDestination?, omitted as no known scanner supports this
-    @XmlElement
-    @XmlSerialName("scan:BlankPageDetection")
     val blankPageDetection: Boolean? = null,
-    @XmlElement
-    @XmlSerialName("scan:FeedDirection")
     val feedDirection: FeedDirection? = null,
-    @XmlElement
-    @XmlSerialName("scan:BlankPageDetectionAndRemoval")
     val blankPageDetectionAndRemoval: Boolean? = null,
-)
+) {
+    fun toXMLString(): String {
+        val doc = XmlHelpers.newDocument()
+        doc.xmlVersion = "1.0"
+        doc.xmlStandalone = true
+
+        val root: Element = doc.createElement("scan:ScanSettings")
+        root.setAttribute("xmlns:scan", "http://schemas.hp.com/imaging/escl/2011/05/03")
+        root.setAttribute("xmlns:pwg", "http://www.pwg.org/schemas/2010/12/sm")
+        doc.appendChild(root)
+
+        root.addTextElement("pwg:Version", version)
+        root.addTextElement("scan:Intent", intent?.toScanIntentString())
+        scanRegions?.toElement(doc)?.let { root.appendChild(it) }
+        root.addTextElement("pwg:DocumentFormat", documentFormat)
+        root.addTextElement("scan:DocumentFormatExt", documentFormatExt)
+        root.addTextElement("pwg:ContentType", contentType?.toString())
+        root.addTextElement("pwg:InputSource", inputSource?.toString())
+        root.addTextElement("scan:XResolution", xResolution?.toString())
+        root.addTextElement("scan:YResolution", yResolution?.toString())
+        root.addTextElement("scan:ColorMode", colorMode?.toString())
+        root.addTextElement("scan:ColorSpace", colorSpace)
+        root.addTextElement("scan:MediaType", mediaType)
+        root.addTextElement("scan:CcdChannel", ccdChannel?.toString())
+        root.addTextElement("scan:BinaryRendering", binaryRendering?.toString())
+        root.addTextElement("scan:Duplex", duplex?.toString())
+        root.addTextElement("scan:NumberOfPages", numberOfPages?.toString())
+        root.addTextElement("scan:Brightness", brightness?.toString())
+        root.addTextElement("scan:CompressionFactor", compressionFactor?.toString())
+        root.addTextElement("scan:Contrast", contrast?.toString())
+        root.addTextElement("scan:Gamma", gamma?.toString())
+        root.addTextElement("scan:Highlight", highlight?.toString())
+        root.addTextElement("scan:NoiseRemoval", noiseRemoval?.toString())
+        root.addTextElement("scan:Shadow", shadow?.toString())
+        root.addTextElement("scan:Sharpen", sharpen?.toString())
+        root.addTextElement("scan:Threshold", threshold?.toString())
+        root.addTextElement("scan:ContextID", contextID)
+        root.addTextElement("scan:BlankPageDetection", blankPageDetection?.toString())
+        root.addTextElement("scan:FeedDirection", feedDirection?.toString())
+        root.addTextElement("scan:BlankPageDetectionAndRemoval", blankPageDetectionAndRemoval?.toString())
+
+        val transformer = TransformerFactory.newInstance().newTransformer()
+        val writer = StringWriter()
+        transformer.transform(DOMSource(doc), StreamResult(writer))
+        return writer.toString()
+    }
+}

@@ -5,13 +5,12 @@ import org.jreleaser.model.Changelog
 import org.jreleaser.model.Signing
 
 plugins {
-    kotlin("jvm") version "2.1.20"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.20"
+    kotlin("jvm") version "2.2.20"
     id("maven-publish")
-    id("org.jreleaser") version "1.17.0"
+    id("org.jreleaser") version "1.20.0"
     id("org.jetbrains.dokka") version "2.0.0"
     id("signing")
-    id("com.github.ben-manes.versions") version "0.52.0"
+    id("com.github.ben-manes.versions") version "0.53.0"
 }
 
 java {
@@ -142,11 +141,9 @@ repositories {
 }
 
 dependencies {
-    implementation("io.github.pdvrieze.xmlutil:core:0.91.2")
-    implementation("io.github.pdvrieze.xmlutil:serialization:0.91.2")
-    implementation("com.squareup.okhttp3:okhttp:5.1.0")
+    implementation("com.squareup.okhttp3:okhttp:5.2.1")
     testImplementation(kotlin("test"))
-    testImplementation("com.squareup.okhttp3:mockwebserver:5.1.0")
+    testImplementation("com.squareup.okhttp3:mockwebserver:5.2.1")
 }
 
 tasks.test {

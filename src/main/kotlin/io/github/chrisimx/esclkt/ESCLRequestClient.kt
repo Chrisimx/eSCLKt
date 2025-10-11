@@ -19,8 +19,6 @@
 
 package io.github.chrisimx.esclkt
 
-import nl.adaptivity.xmlutil.XmlException
-import nl.adaptivity.xmlutil.serialization.XML
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
@@ -31,6 +29,7 @@ import okhttp3.Response
 import org.xml.sax.SAXException
 import java.io.Closeable
 import java.io.IOException
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 
 /**
@@ -50,9 +49,6 @@ class ESCLRequestClient(
             .callTimeout(100, TimeUnit.SECONDS)
             .build(),
 ) {
-    private val xml =
-        XML {
-        }
     private val rootURL: HttpUrl = baseUrl.newBuilder().encodedPath("/").build()
 
     sealed class ScannerCapabilitiesResult {
@@ -117,7 +113,7 @@ class ESCLRequestClient(
             val error =
                 when {
                     !it.isSuccessful -> ScannerCapabilitiesResult.NotSuccessfulCode(it.code)
-                    it.body!!.contentLength() == 0L -> ScannerCapabilitiesResult.NoBodyReturned
+                    it.body.contentLength() == 0L -> ScannerCapabilitiesResult.NoBodyReturned
                     else -> null
                 }
             if (error != null) return error
@@ -125,7 +121,7 @@ class ESCLRequestClient(
             val scannerCapabilities: ScannerCapabilities
             var body: String? = null
             try {
-                body = it.body!!.string()
+                body = it.body.string()
                 if (body.isEmpty()) return ScannerCapabilitiesResult.NoBodyReturned
                 scannerCapabilities = ScannerCapabilities.fromXML(body.byteInputStream())
             } catch (exception: IllegalArgumentException) {
@@ -195,7 +191,7 @@ class ESCLRequestClient(
 
         response.use {
             // Checking for response errors on HTTP level
-            val body = it.body!!.string()
+            val body = it.body.string()
             val error =
                 when {
                     !it.isSuccessful -> ScannerStatusResult.NotSuccessfulCode(it.code)
@@ -204,11 +200,9 @@ class ESCLRequestClient(
                 }
             if (error != null) return error
 
-            // body = body.removePrefix("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
-
             val scannerStatus: ScannerStatus
             try {
-                scannerStatus = xml.decodeFromString(ScannerStatus.serializer(), body)
+                scannerStatus = ScannerStatus.fromXML(body.byteInputStream(StandardCharsets.UTF_8))
             } catch (exception: Exception) {
                 println("Scanner status invalid: $body")
                 return ScannerStatusResult.ScannerStatusMalformed(body, exception)
@@ -247,14 +241,13 @@ class ESCLRequestClient(
      * @see ScannerCreateJobResult
      */
     fun createJob(scanSettings: ScanSettings): ScannerCreateJobResult {
-        val header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-        val requestData = xml.encodeToString(ScanSettings.serializer(), scanSettings)
+        val requestData = scanSettings.toXMLString()
 
         val req =
             Request
                 .Builder()
                 .url("${baseUrl}ScanJobs")
-                .post((header + requestData).toRequestBody("text/xml".toMediaType()))
+                .post((requestData).toRequestBody("text/xml".toMediaType()))
                 .build()
 
         val response: Response
@@ -326,7 +319,7 @@ class ESCLRequestClient(
      * @see ScannerDeleteJobResult
      */
     fun deleteJob(jobUri: String): ScannerDeleteJobResult {
-        val jobURL = rootURL.resolve(jobUri) ?: return ScannerDeleteJobResult.InvalidJobUri
+        val jobURL = rootURL.resolve(jobUri.removeSuffix("/")) ?: return ScannerDeleteJobResult.InvalidJobUri
         val req =
             Request
                 .Builder()
@@ -486,7 +479,7 @@ class ESCLRequestClient(
         }
 
         response.use {
-            val body = it.body!!.string()
+            val body = it.body.string()
             val error =
                 when {
                     !it.isSuccessful -> RetrieveScanImageInfoResult.NotSuccessfulCode(it.code)
@@ -497,8 +490,8 @@ class ESCLRequestClient(
 
             val scanImageInfo: ScanImageInfo
             try {
-                scanImageInfo = xml.decodeFromString(ScanImageInfo.serializer(), body)
-            } catch (exception: XmlException) {
+                scanImageInfo = ScanImageInfo.fromXML(body.byteInputStream(StandardCharsets.UTF_8))
+            } catch (_: Exception) {
                 println("ScanImageInfo XML invalid: $body")
                 return RetrieveScanImageInfoResult.ScanImageInfoMalformed(body)
             }

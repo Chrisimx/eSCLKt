@@ -60,7 +60,7 @@ class RealScannerTest {
             scanRegion =
                 ScanRegion(
                     height = scannerCapabilities.platen!!.inputSourceCaps.maxHeight,
-                    width = scannerCapabilities.platen!!.inputSourceCaps.maxWidth,
+                    width = scannerCapabilities.platen.inputSourceCaps.maxWidth,
                     xOffset = 0u.threeHundredthsOfInch(),
                     yOffset = 0u.threeHundredthsOfInch(),
                 ),
@@ -72,7 +72,7 @@ class RealScannerTest {
 
             val duplexSupported = scannerCapabilities.adf!!.duplexCaps != null
             val inputSourceCaps =
-                if (duplexSupported) scannerCapabilities.adf!!.duplexCaps!! else scannerCapabilities.adf!!.simplexCaps
+                if (duplexSupported) scannerCapabilities.adf.duplexCaps else scannerCapabilities.adf.simplexCaps
 
             executeScanJob(
                 testedESCLClient,
@@ -107,8 +107,6 @@ class RealScannerTest {
         val scannerCapabilitiesResult = testedESCLClient.getScannerCapabilities()
         println("Retrieved scanner capabilities: $scannerCapabilitiesResult")
         assertTrue(scannerCapabilitiesResult is ScannerCapabilitiesResult.Success)
-
-        val scannerCapabilities = scannerCapabilitiesResult.scannerCapabilities
 
         val scannerStatus = testedESCLClient.getScannerStatus()
         println("Retrieved scanner status: $scannerStatus")
@@ -174,7 +172,7 @@ class RealScannerTest {
                 println("Received one page")
                 pageRequest.page.data.use {
                     Files.copy(
-                        it.body!!.byteStream(),
+                        it.body.byteStream(),
                         Path.of("$fileNamePrefix$counter.jpg"),
                         StandardCopyOption.REPLACE_EXISTING,
                     )
@@ -190,7 +188,7 @@ class RealScannerTest {
                 println("There seem to be no futher pages. Checking completion with JobStatus")
                 val currentJobStatus = scanJob.scanJob.getJobStatus()!!
                 val currentState = currentJobStatus.jobState
-                val currentStateReasons = currentJobStatus.jobStateReasons
+                val currentStateReasons = currentJobStatus.jobStateReason
                 println("Current state: $currentState $currentStateReasons")
                 val jobDoneOrFailed =
                     currentState == JobState.Completed || currentState == JobState.Aborted || currentState == JobState.Canceled
@@ -203,7 +201,7 @@ class RealScannerTest {
                 println("Can't retrieve nextPage now. Fails with ${pageRequest.responseCode}")
                 val currentJobStatus = scanJob.scanJob.getJobStatus()!!
                 val currentState = currentJobStatus.jobState
-                val currentStateReasons = currentJobStatus.jobStateReasons
+                val currentStateReasons = currentJobStatus.jobStateReason
                 println("Current state: $currentState $currentStateReasons")
                 val jobDoneOrFailed =
                     currentState == JobState.Completed || currentState == JobState.Aborted || currentState == JobState.Canceled
@@ -215,5 +213,6 @@ class RealScannerTest {
                 sleep(3000)
             }
         }
+        scanJob.scanJob.cancle()
     }
 }

@@ -19,41 +19,44 @@
 
 package io.github.chrisimx.esclkt
 
-import kotlinx.serialization.Serializable
-import nl.adaptivity.xmlutil.serialization.XmlElement
-import nl.adaptivity.xmlutil.serialization.XmlSerialName
+import java.io.InputStream
+import javax.xml.parsers.DocumentBuilderFactory
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@Serializable
-@XmlSerialName(value = "ScanImageInfo", prefix = "scan", namespace = "http://schemas.hp.com/imaging/escl/2011/05/03")
 data class ScanImageInfo
     @OptIn(ExperimentalUuidApi::class)
     constructor(
-        @XmlElement
-        @XmlSerialName(value = "JobUri", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
         val jobURI: String,
-        @XmlElement
-        @XmlSerialName(value = "JobUuid", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
         val jobUuid: Uuid,
-        @XmlElement
-        @XmlSerialName(value = "ActualWidth", prefix = "scan", namespace = "http://schemas.hp.com/imaging/escl/2011/05/03")
         val actualWidth: UInt,
-        @XmlElement
-        @XmlSerialName(value = "ActualHeight", prefix = "scan", namespace = "http://schemas.hp.com/imaging/escl/2011/05/03")
         val actualHeight: UInt,
-        @XmlElement
-        @XmlSerialName(
-            value = "ActualBytesPerLine",
-            prefix = "scan",
-            namespace = "http://schemas.hp.com/imaging/escl/2011/05/03",
-        )
         val actualBytesPerLine: UInt,
-        @XmlElement
-        @XmlSerialName(
-            value = "BlankPageDetected",
-            prefix = "scan",
-            namespace = "http://schemas.hp.com/imaging/escl/2011/05/03",
-        )
         val blankPageDetected: Boolean?,
-    )
+    ) {
+        companion object {
+            @OptIn(ExperimentalUuidApi::class)
+            fun fromXML(xml: InputStream): ScanImageInfo {
+                val documentBuilderFactory = DocumentBuilderFactory.newInstance()
+                val docBuilder = documentBuilderFactory.newDocumentBuilder()
+                val parsedDoc = docBuilder.parse(xml)
+                parsedDoc.documentElement.normalize()
+                val xmlRoot = parsedDoc.documentElement
+
+                if (xmlRoot.tagName !=
+                    "scan:ScanImageInfo"
+                ) {
+                    throw IllegalArgumentException("Malformed ScanImageInfo: root tag not 'scan:ScanImageInfo'")
+                }
+
+                val jobUri = xmlRoot.findRequiredUniqueElementWithName("pwg:JobUri").textContent
+                val jobUUID = Uuid.parse(xmlRoot.findRequiredUniqueElementWithName("pwg:JobUuid").textContent)
+                val actualWidth = xmlRoot.findRequiredUniqueElementWithName("scan:ActualWidth").textContent.toUInt()
+                val actualHeight = xmlRoot.findRequiredUniqueElementWithName("scan:ActualHeight").textContent.toUInt()
+                val actualBytesPerLine = xmlRoot.findRequiredUniqueElementWithName("scan:ActualBytesPerLine").textContent.toUInt()
+                val blankPageDetected = xmlRoot.findUniqueElementWithName("scan:BlankPageDetected")?.textContent.toBoolean()
+
+                return ScanImageInfo(jobUri, jobUUID, actualWidth, actualHeight, actualBytesPerLine, blankPageDetected)
+            }
+        }
+    }

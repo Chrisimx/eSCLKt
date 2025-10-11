@@ -19,14 +19,11 @@
 
 package io.github.chrisimx.esclkt
 
-import kotlinx.serialization.Serializable
-import nl.adaptivity.xmlutil.ExperimentalXmlUtilApi
-import nl.adaptivity.xmlutil.serialization.XmlElement
-import nl.adaptivity.xmlutil.serialization.XmlNamespaceDeclSpec
-import nl.adaptivity.xmlutil.serialization.XmlSerialName
+import org.w3c.dom.Element
+import java.io.InputStream
+import javax.xml.parsers.DocumentBuilderFactory
+import kotlin.uuid.ExperimentalUuidApi
 
-@Serializable
-@XmlSerialName(value = "State", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
 enum class ScannerState {
     /** Idle state **/
     Idle,
@@ -44,8 +41,6 @@ enum class ScannerState {
     Down,
 }
 
-@Serializable
-@XmlSerialName(value = "AdfState", prefix = "scan", namespace = "http://schemas.hp.com/imaging/escl/2011/05/03")
 enum class AdfState {
     ScannerAdfProcessing, // the OK state, other states are errors or require 'user attention'
     ScannerAdfEmpty,
@@ -60,67 +55,94 @@ enum class AdfState {
     ScannerAdfInputTrayOverloaded,
 }
 
-@OptIn(ExperimentalXmlUtilApi::class)
-@Serializable
-@XmlSerialName(value = "ScannerStatus", prefix = "scan", namespace = "http://schemas.hp.com/imaging/escl/2011/05/03")
-@XmlNamespaceDeclSpec("pwg=http://www.pwg.org/schemas/2010/12/sm;scan=http://schemas.hp.com/imaging/escl/2011/05/03")
 data class ScannerStatus(
-    @XmlElement
-    @XmlSerialName(value = "Version", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
     val version: String,
-    @XmlElement
-    @XmlSerialName(value = "State", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
     val state: ScannerState,
-    @XmlElement
-    val jobs: Jobs? = null,
-    @XmlElement
+    val jobs: List<JobInfo> = listOf(),
     val adfState: AdfState? = null,
-)
+) {
+    companion object {
+        @OptIn(ExperimentalUuidApi::class)
+        fun fromXML(xml: InputStream): ScannerStatus {
+            val documentBuilderFactory = DocumentBuilderFactory.newInstance()
+            val docBuilder = documentBuilderFactory.newDocumentBuilder()
+            val parsedDoc = docBuilder.parse(xml)
+            parsedDoc.documentElement.normalize()
+            val xmlRoot = parsedDoc.documentElement
 
-@Serializable
-@XmlSerialName(value = "Jobs", prefix = "scan", namespace = "http://schemas.hp.com/imaging/escl/2011/05/03")
-data class Jobs(
-    @XmlElement
-    val jobInfos: List<JobInfo>,
-)
+            if (xmlRoot.tagName !=
+                "scan:ScannerStatus"
+            ) {
+                throw IllegalArgumentException("Malformed ScannerStatus: root tag not 'scan:ScannerStatus'")
+            }
 
-@Serializable
-@XmlSerialName(value = "JobInfo", prefix = "scan", namespace = "http://schemas.hp.com/imaging/escl/2011/05/03")
+            val version = xmlRoot.findRequiredUniqueElementWithName("pwg:Version").textContent
+            if (!version.matches(
+                    Regex("[0-9]+.[0-9]+"),
+                )
+            ) {
+                throw IllegalArgumentException("Malformed ScannerStatus version '$version'")
+            }
+
+            val jobsElement = xmlRoot.findUniqueElementWithName("scan:Jobs")
+            val jobInfoElements = jobsElement?.getElementsByTagName("scan:JobInfo")
+
+            val jobInfosResult = mutableListOf<JobInfo>()
+
+            if (jobInfoElements != null) {
+                for (i in 0 until jobInfoElements.length) {
+                    val jobElement = jobInfoElements.item(i) as Element
+                    jobInfosResult.add(JobInfo.fromElement(jobElement))
+                }
+            }
+
+            val stateString = xmlRoot.findRequiredUniqueElementWithName("pwg:State").textContent
+            val state = ScannerState.valueOf(stateString)
+
+            val adfStateString = xmlRoot.findUniqueElementWithName("scan:AdfState")?.textContent
+            val adfState = adfStateString?.let { AdfState.valueOf(it) }
+
+            return ScannerStatus(
+                version = version,
+                state = state,
+                jobs = jobInfosResult,
+                adfState = adfState
+            )
+        }
+    }
+}
+
 data class JobInfo(
-    @XmlElement
-    @XmlSerialName(value = "JobUri", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
     val jobURI: String,
-    @XmlElement
-    @XmlSerialName(value = "JobUuid", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
     val jobUUID: String,
     /** time in seconds since the job info has been updated. The duration is the difference between the time of the
      * latest update to job info element relative to the time of the status request. **/
-    @XmlElement
-    @XmlSerialName(value = "Age", prefix = "scan", namespace = "http://schemas.hp.com/imaging/escl/2011/05/03")
     val age: UInt,
-    @XmlElement
-    @XmlSerialName(value = "ImagesCompleted", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
     val imagesCompleted: UInt,
-    @XmlElement
-    @XmlSerialName(value = "ImagesToTransfer", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
     val imagesToTransfer: UInt? = null,
-    @XmlElement
-    @XmlSerialName(
-        value = "TransferRetryCount",
-        prefix = "scan",
-        namespace = "http://schemas.hp.com/imaging/escl/2011/05/03",
-    )
     val transferRetryCount: UInt? = null,
-    @XmlElement
-    @XmlSerialName(value = "JobState", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
     val jobState: JobState,
-    @XmlElement
-    @XmlSerialName(value = "JobStateReasons", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
-    val jobStateReasons: JobStateReasons? = null,
-)
+    val jobStateReason: String? = null,
+) {
+    companion object {
+        fun fromElement(elem: Element): JobInfo {
+            val jobURI = elem.findRequiredUniqueElementWithName("pwg:JobUri").textContent
+            val jobUUID = elem.findRequiredUniqueElementWithName("pwg:JobUuid").textContent
+            val age = elem.findRequiredUniqueElementWithName("scan:Age").textContent.toUInt()
+            val imagesCompleted = elem.findRequiredUniqueElementWithName("pwg:ImagesCompleted").textContent.toUInt()
+            val imagesToTransfer = elem.findUniqueElementWithName("pwg:ImagesToTransfer")?.textContent?.toUIntOrNull()
+            val transferRetryCount = elem.findUniqueElementWithName("scan:TransferRetryCount")?.textContent?.toUIntOrNull()
+            val jobState = elem.findRequiredUniqueElementWithName("pwg:JobState").textContent.let {
+                JobState.valueOf(it)
+            }
+            val jobStateReasons = elem.findUniqueElementWithName("pwg:JobStateReasons")
+            val jobStateReason = jobStateReasons?.findUniqueElementWithName("pwg:JobStateReason")?.textContent
 
-@Serializable
-@XmlSerialName(value = "JobState", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
+            return JobInfo(jobURI, jobUUID, age, imagesCompleted, imagesToTransfer, transferRetryCount, jobState, jobStateReason)
+        }
+    }
+}
+
 enum class JobState {
     // / End state - indicates that the job was canceled either by the remote client application
     // / (through the eSCL interface) or by the user interacting with the scanner directly. Check
@@ -139,11 +161,3 @@ enum class JobState {
     // / The scanner is processing the job and is transmitting the scan data
     Processing,
 }
-
-@Serializable
-@XmlSerialName(value = "JobStateReasons", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
-data class JobStateReasons(
-    @XmlElement
-    @XmlSerialName(value = "JobStateReason", prefix = "pwg", namespace = "http://www.pwg.org/schemas/2010/12/sm")
-    val jobStateReason: String,
-)

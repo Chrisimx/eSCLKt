@@ -18,77 +18,67 @@
  */
 
 import io.github.chrisimx.esclkt.*
-import kotlinx.serialization.encodeToString
-import nl.adaptivity.xmlutil.serialization.XML
 import org.junit.jupiter.api.Test
-import java.nio.charset.StandardCharsets
 import kotlin.test.assertEquals
 
 class ScannerStatusXMLProcessingTest {
     @Test
-    fun createScannerStatus() {
-        val xml =
-            XML {
-            }
-        val testScannerStatus =
-            ScannerStatus(
-                "2.63",
-                ScannerState.Processing,
-                Jobs(
-                    listOf(
-                        JobInfo(
-                            jobURI =
-                                "/ScanJobs/893e6fcd-487f-4056-a8c9-\n" +
-                                    "a87709b85daf",
-                            jobState = JobState.Pending,
-                            jobUUID = "dfasdfdsf",
-                            age = 10u,
-                            imagesCompleted = 1u,
-                        ),
-                    ),
-                ),
-            )
-        println("ScannerStatus Serialization returned:\n   ${xml.encodeToString<ScannerStatus>(testScannerStatus)}")
-    }
-
-    @Test
     fun parseScannerStatus() {
-        val xml =
-            XML {
-            }
-
         javaClass.getResource("/testResources/status/example1.xml")!!.openStream().use {
             val scannerStatus =
-                xml.decodeFromString(ScannerStatus.serializer(), it.readAllBytes().toString(StandardCharsets.UTF_8))
+                ScannerStatus.fromXML(it)
             assertEquals(
-                scannerStatus,
                 ScannerStatus(
                     version = "2.62",
                     state = ScannerState.Idle,
-                    jobs = null,
+                    jobs = listOf(),
                     adfState = AdfState.ScannerAdfEmpty,
                 ),
+                scannerStatus,
             )
             println("ScannerStatus Deserialization example 1 returned:\n   $scannerStatus")
         }
         javaClass.getResource("/testResources/status/example2.xml")!!.openStream().use {
+            val scannerStatus = ScannerStatus.fromXML(it)
+            assertEquals(
+                ScannerStatus(
+                    version = "2.6",
+                    state = ScannerState.Processing,
+                    jobs = listOf(
+                        JobInfo(
+                            "/ScanJobs/893e6fcd-487f-4056-a8c9-a87709b85daf",
+                            "893e6fcd-487f-4056-a8c9-a87709b85daf",
+                            10u,
+                            1u,
+                            1u,
+                            29u,
+                            JobState.Processing,
+                            "JobScanning"
+                        ),
+                        JobInfo(
+                            "/ScanJobs/898d6fcd-487f-4056-a8c9-a87709b85daf",
+                            "898d6fcd-487f-4056-a8c9-a87709b85daf",
+                            220u,
+                            5u,
+                            0u,
+                            null,
+                            JobState.Completed,
+                            "JobCompletedSuccessfully"
+                        )
+                    )
+                ),
+                scannerStatus
+            )
             println(
                 "ScannerStatus Deserialization example 2 returned:\n   ${
-                    xml.decodeFromString(
-                        ScannerStatus.serializer(),
-                        it.readAllBytes().toString(StandardCharsets.UTF_8),
-                    )
+                    scannerStatus
                 }",
             )
         }
         javaClass.getResource("/testResources/status/HPColorLaserjetMFPM283fdw.xml")!!.openStream().use {
-            val status = it.readAllBytes().toString(StandardCharsets.UTF_8)
             println(
                 "ScannerStatus Deserialization example 3 (HP Color Laserjet MFPM283fdw) returned:\n   ${
-                    xml.decodeFromString(
-                        ScannerStatus.serializer(),
-                        status,
-                    )
+                    ScannerStatus.fromXML(it)
                 }",
             )
         }
