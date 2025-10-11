@@ -1,3 +1,10 @@
+## [v1.5.2]
+
+## Changelog
+
+## 🐛 Fixes
+- [75cf9e7](https://github.com/Chrisimx/eSCLKt/commits/75cf9e7) fix: re-add custom serializer for ScanIntentData
+
 ## [v1.5.1]
 
 ## Changelog
