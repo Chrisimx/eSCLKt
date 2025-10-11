@@ -19,7 +19,12 @@
 
 package io.github.chrisimx.esclkt
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.buildClassSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import org.w3c.dom.Element
 import org.w3c.dom.Node.ELEMENT_NODE
 import java.io.InputStream
@@ -325,7 +330,7 @@ enum class ScanIntent {
     BusinessCard,
 }
 
-@Serializable
+@Serializable(with = ScanIntentDataSerializer::class)
 sealed class ScanIntentData {
     data class ScanIntentEnum(
         val scanIntent: ScanIntent,
@@ -334,6 +339,29 @@ sealed class ScanIntentData {
     data class StringData(
         val string: String,
     ) : ScanIntentData()
+}
+
+object ScanIntentDataSerializer : KSerializer<ScanIntentData> {
+    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("scan:ScanIntent")
+
+    override fun serialize(
+        encoder: Encoder,
+        value: ScanIntentData,
+    ) {
+        when (value) {
+            is ScanIntentData.ScanIntentEnum -> encoder.encodeString(value.scanIntent.name)
+            is ScanIntentData.StringData -> encoder.encodeString(value.string)
+        }
+    }
+
+    override fun deserialize(decoder: Decoder): ScanIntentData {
+        val decodedString = decoder.decodeString()
+        return try {
+            ScanIntentData.ScanIntentEnum(ScanIntent.valueOf(decodedString))
+        } catch (exc: IllegalArgumentException) {
+            ScanIntentData.StringData(decodedString)
+        }
+    }
 }
 
 fun ScanIntentData.toScanIntentString(): String {
