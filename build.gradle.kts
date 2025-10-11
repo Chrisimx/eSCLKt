@@ -113,13 +113,8 @@ jreleaser {
     }
     signing {
         active.set(Active.ALWAYS)
-        mode.set(Signing.Mode.COMMAND)
+        mode.set(Signing.Mode.MEMORY)
         armored.set(true)
-        command {
-            executable.set("gpg")
-
-            defaultKeyring = true
-        }
     }
     deploy {
         maven {
