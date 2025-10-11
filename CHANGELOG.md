@@ -1,3 +1,13 @@
+## [v1.5.1]
+
+## Changelog
+
+## 🐛 Fixes
+- [b7f44d5](https://github.com/Chrisimx/eSCLKt/commits/b7f44d5) fix: add @Serializable for all eSCL types
+
+---
+- [ce8b54f](https://github.com/Chrisimx/eSCLKt/commits/ce8b54f) deploy: change gpg signing key store mode
+
 ## [v1.5.0]
 
 ## Changelog
