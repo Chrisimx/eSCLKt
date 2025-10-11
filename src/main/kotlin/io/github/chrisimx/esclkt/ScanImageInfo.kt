@@ -19,11 +19,13 @@
 
 package io.github.chrisimx.esclkt
 
+import kotlinx.serialization.Serializable
 import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+@Serializable
 data class ScanImageInfo
     @OptIn(ExperimentalUuidApi::class)
     constructor(

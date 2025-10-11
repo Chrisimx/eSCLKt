@@ -19,6 +19,7 @@
 
 package io.github.chrisimx.esclkt
 
+import kotlinx.serialization.Serializable
 import org.w3c.dom.Element
 import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory
@@ -55,6 +56,7 @@ enum class AdfState {
     ScannerAdfInputTrayOverloaded,
 }
 
+@Serializable
 data class ScannerStatus(
     val version: String,
     val state: ScannerState,
@@ -112,6 +114,7 @@ data class ScannerStatus(
     }
 }
 
+@Serializable
 data class JobInfo(
     val jobURI: String,
     val jobUUID: String,

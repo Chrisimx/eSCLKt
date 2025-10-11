@@ -20,6 +20,7 @@
 package io.github.chrisimx.esclkt
 
 import io.github.chrisimx.esclkt.XmlHelpers.addTextElement
+import kotlinx.serialization.Serializable
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.StringWriter
@@ -27,6 +28,7 @@ import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 
+@Serializable
 data class ScanRegion(
     val height: ThreeHundredthsOfInch,
     val width: ThreeHundredthsOfInch,
@@ -46,6 +48,7 @@ data class ScanRegion(
     }
 }
 
+@Serializable
 data class ScanRegions(
     val regions: List<ScanRegion>,
     val mustHonor: Boolean = true,
@@ -81,6 +84,7 @@ enum class FeedDirection {
     ShortEdgeFeed,
 }
 
+@Serializable
 data class ScanSettings(
     val version: String,
     val intent: ScanIntentData? = null,

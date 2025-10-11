@@ -6,6 +6,7 @@ import org.jreleaser.model.Signing
 
 plugins {
     kotlin("jvm") version "2.2.20"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.20"
     id("maven-publish")
     id("org.jreleaser") version "1.20.0"
     id("org.jetbrains.dokka") version "2.0.0"
@@ -137,6 +138,7 @@ repositories {
 
 dependencies {
     implementation("com.squareup.okhttp3:okhttp:5.2.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
     testImplementation(kotlin("test"))
     testImplementation("com.squareup.okhttp3:mockwebserver:5.2.1")
 }
