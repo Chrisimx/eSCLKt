@@ -1,3 +1,13 @@
+## [v1.5.0]
+
+## Changelog
+
+## 🔄️ Changes
+- [3617448](https://github.com/Chrisimx/eSCLKt/commits/3617448) refactor: remove xmlutil, replace with org.w3c.dom.Document based parsing/serialization
+
+---
+- [94ffa6f](https://github.com/Chrisimx/eSCLKt/commits/94ffa6f) deps: upgrade dependencies
+
 ## [v1.4.14]
 
 ## Changelog
