@@ -440,15 +440,15 @@ data class Adf(
             // Extract adfOptions
             val adfOptions =
                 adfElement
-                    .findRequiredUniqueElementWithName("scan:AdfOptions")
-                    .getElementsByTagName("scan:AdfOption")
-                    .let { optionsList ->
+                    .findUniqueElementWithName("scan:AdfOptions")
+                    ?.getElementsByTagName("scan:AdfOption")
+                    ?.let { optionsList ->
                         val options = mutableListOf<AdfOption>()
                         for (i in 0..<optionsList.length) {
                             options.add(AdfOption.valueOf(optionsList.item(i).textContent))
                         }
                         options
-                    }
+                    } ?: emptyList()
 
             return Adf(
                 simplexCaps = simplexCaps,
