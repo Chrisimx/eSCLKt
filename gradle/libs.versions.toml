@@ -1,0 +1,19 @@
+[versions]
+versions = "0.53.0"
+dokka = "2.1.0"
+jreleaser = "1.22.0"
+kotlin = "2.3.0"
+kotlinxSerializationJson = "1.9.0"
+okhttp = "5.3.2"
+
+[libraries]
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+kotlinxSerializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+mockWebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "okhttp"}
+
+
+[plugins]
+versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
+dokka = { id = "org.jetbrains.dokka",  version.ref = "dokka" }
+jreleaser = { id = "org.jreleaser", version.ref = "jreleaser"}
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

@@ -5,13 +5,13 @@ import org.jreleaser.model.Changelog
 import org.jreleaser.model.Signing
 
 plugins {
-    kotlin("jvm") version "2.2.20"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.20"
+    kotlin("jvm") version libs.versions.kotlin.get()
+    alias(libs.plugins.kotlin.serialization)
     id("maven-publish")
-    id("org.jreleaser") version "1.20.0"
-    id("org.jetbrains.dokka") version "2.0.0"
+    alias(libs.plugins.jreleaser)
+    alias(libs.plugins.dokka)
     id("signing")
-    id("com.github.ben-manes.versions") version "0.53.0"
+    alias(libs.plugins.versions)
 }
 
 java {
@@ -137,10 +137,10 @@ repositories {
 }
 
 dependencies {
-    implementation("com.squareup.okhttp3:okhttp:5.2.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    implementation(libs.okhttp)
+    implementation(libs.kotlinxSerializationJson)
     testImplementation(kotlin("test"))
-    testImplementation("com.squareup.okhttp3:mockwebserver:5.2.1")
+    testImplementation(libs.mockWebserver)
 }
 
 tasks.test {
