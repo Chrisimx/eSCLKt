@@ -1,3 +1,13 @@
+## [v1.5.4]
+
+## Changelog
+
+## 🐛 Fixes
+- [76b00ee](https://github.com/Chrisimx/eSCLKt/commits/76b00ee) fix: make AdfOptions element optional
+
+---
+- [8474f50](https://github.com/Chrisimx/eSCLKt/commits/8474f50) deps: upgrade dependencies
+
 ## [v1.5.3]
 
 ## Changelog
