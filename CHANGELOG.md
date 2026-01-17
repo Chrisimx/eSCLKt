@@ -1,3 +1,10 @@
+## [v1.5.3]
+
+## Changelog
+
+## 🐛 Fixes
+- [9c5a4b3](https://github.com/Chrisimx/eSCLKt/commits/9c5a4b3) fix: make platen optional and add test for scanners having no platen
+
 ## [v1.5.2]
 
 ## Changelog
