@@ -658,8 +658,8 @@ data class ScannerCapabilities
                         Certification.certListFromXMLElement(it)
                     }
 
-                val platenElem = xmlRoot.findRequiredUniqueElementWithName("scan:Platen")
-                val platen = Platen.fromXMLElement(platenElem)
+                val platenElem = xmlRoot.findUniqueElementWithName("scan:Platen")
+                val platen = platenElem?.let { Platen.fromXMLElement(it) }
 
                 val adfElem = xmlRoot.findUniqueElementWithName("scan:Adf")
                 val adf = adfElem?.let { Adf.fromXMLElement(it) }
