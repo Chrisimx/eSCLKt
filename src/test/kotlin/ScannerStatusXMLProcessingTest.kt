@@ -44,30 +44,31 @@ class ScannerStatusXMLProcessingTest {
                 ScannerStatus(
                     version = "2.6",
                     state = ScannerState.Processing,
-                    jobs = listOf(
-                        JobInfo(
-                            "/ScanJobs/893e6fcd-487f-4056-a8c9-a87709b85daf",
-                            "893e6fcd-487f-4056-a8c9-a87709b85daf",
-                            10u,
-                            1u,
-                            1u,
-                            29u,
-                            JobState.Processing,
-                            "JobScanning"
+                    jobs =
+                        listOf(
+                            JobInfo(
+                                "/ScanJobs/893e6fcd-487f-4056-a8c9-a87709b85daf",
+                                "893e6fcd-487f-4056-a8c9-a87709b85daf",
+                                10u,
+                                1u,
+                                1u,
+                                29u,
+                                JobState.Processing,
+                                "JobScanning",
+                            ),
+                            JobInfo(
+                                "/ScanJobs/898d6fcd-487f-4056-a8c9-a87709b85daf",
+                                "898d6fcd-487f-4056-a8c9-a87709b85daf",
+                                220u,
+                                5u,
+                                0u,
+                                null,
+                                JobState.Completed,
+                                "JobCompletedSuccessfully",
+                            ),
                         ),
-                        JobInfo(
-                            "/ScanJobs/898d6fcd-487f-4056-a8c9-a87709b85daf",
-                            "898d6fcd-487f-4056-a8c9-a87709b85daf",
-                            220u,
-                            5u,
-                            0u,
-                            null,
-                            JobState.Completed,
-                            "JobCompletedSuccessfully"
-                        )
-                    )
                 ),
-                scannerStatus
+                scannerStatus,
             )
             println(
                 "ScannerStatus Deserialization example 2 returned:\n   ${

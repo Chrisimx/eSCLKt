@@ -1,8 +1,8 @@
 package io.github.chrisimx.esclkt
 
-import javax.xml.parsers.DocumentBuilderFactory
 import org.w3c.dom.Document
 import org.w3c.dom.Element
+import javax.xml.parsers.DocumentBuilderFactory
 
 object XmlHelpers {
     fun newDocument(): Document {
@@ -11,13 +11,19 @@ object XmlHelpers {
         return builder.newDocument()
     }
 
-    fun Document.createElementWithText(tag: String, text: String): Element {
+    fun Document.createElementWithText(
+        tag: String,
+        text: String,
+    ): Element {
         val elem = this.createElement(tag)
         elem.textContent = text
         return elem
     }
 
-    fun Element.addTextElement(tag: String, text: String?): Element? {
+    fun Element.addTextElement(
+        tag: String,
+        text: String?,
+    ): Element? {
         if (text == null) return null
 
         val newChild = this.ownerDocument.createElementWithText(tag, text)

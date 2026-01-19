@@ -108,7 +108,7 @@ data class ScannerStatus(
                 version = version,
                 state = state,
                 jobs = jobInfosResult,
-                adfState = adfState
+                adfState = adfState,
             )
         }
     }
@@ -135,9 +135,10 @@ data class JobInfo(
             val imagesCompleted = elem.findRequiredUniqueElementWithName("pwg:ImagesCompleted").textContent.toUInt()
             val imagesToTransfer = elem.findUniqueElementWithName("pwg:ImagesToTransfer")?.textContent?.toUIntOrNull()
             val transferRetryCount = elem.findUniqueElementWithName("scan:TransferRetryCount")?.textContent?.toUIntOrNull()
-            val jobState = elem.findRequiredUniqueElementWithName("pwg:JobState").textContent.let {
-                JobState.valueOf(it)
-            }
+            val jobState =
+                elem.findRequiredUniqueElementWithName("pwg:JobState").textContent.let {
+                    JobState.valueOf(it)
+                }
             val jobStateReasons = elem.findUniqueElementWithName("pwg:JobStateReasons")
             val jobStateReason = jobStateReasons?.findUniqueElementWithName("pwg:JobStateReason")?.textContent
 

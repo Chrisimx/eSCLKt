@@ -364,12 +364,11 @@ object ScanIntentDataSerializer : KSerializer<ScanIntentData> {
     }
 }
 
-fun ScanIntentData.toScanIntentString(): String {
-    return when(this) {
+fun ScanIntentData.toScanIntentString(): String =
+    when (this) {
         is ScanIntentData.ScanIntentEnum -> this.scanIntent.toString()
         is ScanIntentData.StringData -> this.string
     }
-}
 
 enum class ContentType {
     Photo,
