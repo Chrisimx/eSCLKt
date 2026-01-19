@@ -47,3 +47,4 @@ bin/
 /java_pid*.hprof
 
 testOutput
+/kls_database.db
