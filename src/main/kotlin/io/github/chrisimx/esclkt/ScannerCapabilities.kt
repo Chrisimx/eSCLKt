@@ -203,7 +203,14 @@ data class SettingProfile(
                     .let {
                         val modes = mutableListOf<ColorMode>()
                         for (i in 0..<it.length) {
-                            modes.add(ColorMode.valueOf(it.item(i).textContent))
+                            val colorModeElemText = it.item(i).textContent
+                            val equivalentColorModeEnumVal = ColorMode.from(colorModeElemText)
+
+                            if (equivalentColorModeEnumVal == null) {
+                                throw IllegalArgumentException("Could not associate known color mode for $colorModeElemText")
+                            }
+
+                            modes.add(equivalentColorModeEnumVal)
                         }
                         modes
                     }
@@ -463,6 +470,7 @@ enum class AdfOption {
     DetectPaperLoaded,
     SelectSinglePage,
     Duplex,
+    MultipickDetection,
 }
 
 @Serializable
@@ -531,6 +539,12 @@ enum class ColorMode {
 
     // / 16-bit per channel RGB
     RGB48,
+    AutoColorDetection,
+    ;
+
+    companion object {
+        fun from(name: String): ColorMode? = entries.find { it.name.equals(name.removePrefix("scan:"), ignoreCase = true) }
+    }
 }
 
 @Serializable
@@ -719,6 +733,12 @@ data class ScannerCapabilities
                         "scan:eSCLConfigCap",
                         "scan:JobSourceInfoSupport",
                         "scan:SettingProfiles",
+                        "scan:AutoCrop",
+                        "scan:AutoExposure",
+                        "scan:BlankPageSensitivitySupport",
+                        "scan:ColorSensitivitySupport",
+                        "scan:ColorRangeSupport",
+                        "scan:OverscanLengthSupport",
                     )
                 for (i in 0..<xmlRoot.childNodes.length) {
                     val currentNode = xmlRoot.childNodes.item(i)
