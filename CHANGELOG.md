@@ -1,3 +1,19 @@
+## [v1.5.5]
+
+## Changelog
+
+## 🐛 Fixes
+- [1cfb5d4](https://github.com/Chrisimx/eSCLKt/commits/1cfb5d4) fix: fix scanner caps parsing for brother ds940dw
+
+## 🧪 Tests
+- [61a629c](https://github.com/Chrisimx/eSCLKt/commits/61a629c) test: add brother ds-940dw caps as test
+
+## 🧰 Tasks
+- [07cc445](https://github.com/Chrisimx/eSCLKt/commits/07cc445) chore: add kls_database.db to .gitignore
+
+---
+- [c21c04c](https://github.com/Chrisimx/eSCLKt/commits/c21c04c) format: apply ktlint format
+
 ## [v1.5.4]
 
 ## Changelog
