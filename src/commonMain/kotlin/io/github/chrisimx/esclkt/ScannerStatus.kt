@@ -20,6 +20,7 @@
 package io.github.chrisimx.esclkt
 
 import kotlinx.serialization.Serializable
+import nl.adaptivity.xmlutil.serialization.XmlSerialName
 import org.w3c.dom.Element
 import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory
@@ -116,15 +117,23 @@ data class ScannerStatus(
 
 @Serializable
 data class JobInfo(
+    @XmlSerialName("JobUri", NS_PWG, "pwg")
     val jobURI: String,
+    @XmlSerialName("JobUuid", NS_PWG, "pwg")
     val jobUUID: String,
+    @XmlSerialName("Age", NS_SCAN, "scan")
     /** time in seconds since the job info has been updated. The duration is the difference between the time of the
      * latest update to job info element relative to the time of the status request. **/
     val age: UInt,
+    @XmlSerialName("ImagesCompleted", NS_PWG, "pwg")
     val imagesCompleted: UInt,
+    @XmlSerialName("ImagesToTransfer", NS_PWG, "pwg")
     val imagesToTransfer: UInt? = null,
+    @XmlSerialName("TransferRetryCount", NS_SCAN, "scan")
     val transferRetryCount: UInt? = null,
+    @XmlSerialName("JobState", NS_PWG, "pwg")
     val jobState: JobState,
+    @XmlSerialName("AdfState", NS_PWG, "pwg")
     val jobStateReason: String? = null,
 ) {
     companion object {

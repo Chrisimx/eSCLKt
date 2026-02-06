@@ -5,7 +5,7 @@ import org.jreleaser.model.Changelog
 import org.jreleaser.model.Signing
 
 plugins {
-    kotlin("jvm") version libs.versions.kotlin.get()
+    kotlin("multiplatform") version libs.versions.kotlin.get()
     alias(libs.plugins.kotlin.serialization)
     id("maven-publish")
     alias(libs.plugins.jreleaser)
@@ -14,15 +14,36 @@ plugins {
     alias(libs.plugins.versions)
 }
 
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
 kotlin {
-    target {
-        attributes {
-            if (KotlinPlatformType.attribute !in this) {
-                attribute(KotlinPlatformType.attribute, KotlinPlatformType.androidJvm)
+    jvm()
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(libs.kotlinxSerializationJson)
+                implementation("io.ktor:ktor-client-core:3.4.0")
+                implementation("io.ktor:ktor-client-content-negotiation:3.4.0")
+                implementation("io.ktor:ktor-client-mock:3.4.0")
+                implementation("io.ktor:ktor-serialization-kotlinx-xml:3.4.0")
+                implementation("io.github.pdvrieze.xmlutil:core:0.91.3")
+            }
+        }
+
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
+
+        val jvmMain by getting {
+            dependencies {
+                // JVM engine for Ktor
+                implementation("io.ktor:ktor-client-cio:2.3.7")
+            }
+        }
+
+        val jvmTest by getting {
+            dependencies {
+                implementation(libs.mockWebserver)
             }
         }
     }
@@ -35,14 +56,9 @@ version = "1.5.5"
 
 publishing {
     publications {
-        create<MavenPublication>("Maven") {
-            from(components["java"])
+        withType<MavenPublication> {
             groupId = group.toString()
             artifactId = "esclkt"
-            description =
-                "An implementation of AirScan (eSCL) in Kotlin, making it easy to use network-attached scanners"
-        }
-        withType<MavenPublication> {
             pom {
                 packaging = "jar"
                 name.set("esclkt")
@@ -136,14 +152,7 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    implementation(libs.okhttp)
-    implementation(libs.kotlinxSerializationJson)
-    testImplementation(kotlin("test"))
-    testImplementation(libs.mockWebserver)
-}
-
-tasks.test {
+/*tasks.test {
     useJUnitPlatform()
     val testOutputDir = "testOutput"
     mkdir(testOutputDir)
@@ -154,7 +163,7 @@ tasks.jar {
     enabled = true
     // Remove `plain` postfix from jar file name
     archiveClassifier.set("")
-}
+}*/
 
 fun isNonStable(version: String): Boolean {
     val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }

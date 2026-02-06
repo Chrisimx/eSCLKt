@@ -19,18 +19,28 @@
 
 package io.github.chrisimx.esclkt
 
-import okhttp3.HttpUrl
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.statement.*
+import io.ktor.http.URLBuilder
+import io.ktor.http.Url
+import io.ktor.http.encodedPath
+import io.ktor.http.isSuccess
+import io.ktor.serialization.kotlinx.xml.*
+import nl.adaptivity.xmlutil.*
+import nl.adaptivity.xmlutil.serialization.*
 import org.xml.sax.SAXException
 import java.io.Closeable
 import java.io.IOException
 import java.nio.charset.StandardCharsets
-import java.util.concurrent.TimeUnit
+import kotlin.collections.plus
+import kotlin.plus
+import kotlin.sequences.plus
+import kotlin.text.plus
 
 /**
  * A client for the eSCL scanning protocol
@@ -39,17 +49,19 @@ import java.util.concurrent.TimeUnit
  * @param usedHttpClient eSCL is an HTTP-based protocol. This OkHttpClient will be used to execute requests
  */
 class ESCLRequestClient(
-    val baseUrl: HttpUrl,
-    val usedHttpClient: OkHttpClient =
-        OkHttpClient()
-            .newBuilder()
-            .readTimeout(100, TimeUnit.SECONDS)
-            .writeTimeout(100, TimeUnit.SECONDS)
-            .connectTimeout(100, TimeUnit.SECONDS)
-            .callTimeout(100, TimeUnit.SECONDS)
-            .build(),
+    val baseUrl: Url,
+    val usedHttpClient: HttpClient = HttpClient {
+        install(HttpTimeout) {
+            requestTimeoutMillis = 100_000  // 100 seconds
+            connectTimeoutMillis = 100_000
+            socketTimeoutMillis = 100_000   // similar to read/write
+        }
+    }
 ) {
-    private val rootURL: HttpUrl = baseUrl.newBuilder().encodedPath("/").build()
+    private val rootURL: Url = URLBuilder(baseUrl).apply { encodedPath = "/" }.build()
+    private val xml = XML {
+        recommended()
+    }
 
     sealed class ScannerCapabilitiesResult {
         data class Success(
@@ -62,6 +74,7 @@ class ESCLRequestClient(
 
         data class NotSuccessfulCode(
             val responseCode: Int,
+            val body: String
         ) : ScannerCapabilitiesResult()
 
         data object NoBodyReturned : ScannerCapabilitiesResult()
@@ -90,52 +103,20 @@ class ESCLRequestClient(
      * @return The result of the request as one of the many possible outcomes specified as ScannerCapabilitiesResult
      * @see ScannerCapabilitiesResult
      */
-    fun getScannerCapabilities(): ScannerCapabilitiesResult {
-        val req =
-            Request
-                .Builder()
-                .url("${baseUrl}ScannerCapabilities")
-                .header("Accept", "*/*")
-                .get()
-                .build()
-
-        val response: Response
-        try {
-            response = usedHttpClient.newCall(req).execute()
-        } catch (e: IOException) {
-            return ScannerCapabilitiesResult.NetworkError(e)
-        } catch (e: IllegalStateException) {
-            return ScannerCapabilitiesResult.InternalBug(e)
-        }
-
-        response.use {
-            // Checking for response errors on HTTP level
-            val error =
-                when {
-                    !it.isSuccessful -> ScannerCapabilitiesResult.NotSuccessfulCode(it.code)
-                    it.body.contentLength() == 0L -> ScannerCapabilitiesResult.NoBodyReturned
-                    else -> null
-                }
-            if (error != null) return error
-
-            val scannerCapabilities: ScannerCapabilities
-            var body: String? = null
-            try {
-                body = it.body.string()
-                if (body.isEmpty()) return ScannerCapabilitiesResult.NoBodyReturned
-                scannerCapabilities = ScannerCapabilities.fromXML(body.byteInputStream())
-            } catch (exception: IllegalArgumentException) {
-                return ScannerCapabilitiesResult.ScannerCapabilitiesMalformed(body.toString(), exception)
-            } catch (exception: TopLevelElemNotKnownException) {
-                return ScannerCapabilitiesResult.ScannerCapabilitiesMalformed(body.toString(), exception)
-            } catch (exception: IOException) {
-                return ScannerCapabilitiesResult.InternalBug(exception)
-            } catch (exception: SAXException) {
-                return ScannerCapabilitiesResult.XMLParsingError(body.toString(), exception)
+    suspend fun getScannerCapabilities(): ScannerCapabilitiesResult {
+        val response: HttpResponse =
+            usedHttpClient.get(baseUrl) {
+                header("Accept", "*/*")
             }
 
-            return ScannerCapabilitiesResult.Success(scannerCapabilities)
+        val scanCapsString = response.bodyAsText()
+
+        if (!response.status.isSuccess()) {
+            return ScannerCapabilitiesResult.NotSuccessfulCode(response.status.value, response.bodyAsText())
         }
+
+        val scannerCapabilities: ScannerCapabilities = xml.decodeFromString<ScannerCapabilities>(scanCapsString)
+        return ScannerCapabilitiesResult.Success(scannerCapabilities)
     }
 
     sealed class ScannerStatusResult {

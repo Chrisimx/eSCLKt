@@ -19,7 +19,8 @@
 
 package io.github.chrisimx.esclkt
 
-import okhttp3.HttpUrl
+import io.ktor.http.Url
+
 
 class ScanJob(
     val jobUri: String,
@@ -28,7 +29,7 @@ class ScanJob(
 ) {
     private var isCancelled = false
 
-    constructor(jobUrl: HttpUrl, esclClient: ESCLRequestClient, scanSettings: ScanSettings) : this(
+    constructor(jobUrl: Url, esclClient: ESCLRequestClient, scanSettings: ScanSettings) : this(
         jobUrl.encodedPath,
         esclClient,
         scanSettings,
