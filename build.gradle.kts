@@ -5,25 +5,176 @@ import org.jreleaser.model.Changelog
 import org.jreleaser.model.Signing
 
 plugins {
-    kotlin("jvm") version libs.versions.kotlin.get()
+    kotlin("multiplatform") version libs.versions.kotlin.get()
+    id("io.kotest") version libs.versions.kotest.get()
+    id("com.google.devtools.ksp") version libs.versions.kotlin.get()
     alias(libs.plugins.kotlin.serialization)
     id("maven-publish")
     alias(libs.plugins.jreleaser)
     alias(libs.plugins.dokka)
     id("signing")
+    jacoco
     alias(libs.plugins.versions)
+    id("com.goncalossilva.resources") version "0.14.4"
 }
 
-java {
-    withJavadocJar()
-    withSourcesJar()
+jacoco {
+    toolVersion = "0.8.14"
+    //reportsDirectory = layout.buildDirectory.dir("customJacocoReportDir") // optional
 }
+
+val generateScannerCapIndex by tasks.registering {
+    val capDir = file("src/commonTest/resources/testResources/capabilities")
+    val outputFile = file("src/commonTest/resources/testResources/capabilities.txt")
+
+    inputs.dir(capDir)
+    outputs.file(outputFile)
+
+    doLast {
+        outputFile.parentFile.mkdirs()
+        outputFile.writeText(
+            capDir.listFiles()
+                ?.filter { it.isFile }
+                ?.joinToString("\n") { it.name } ?: ""
+        )
+        println("Generated index.txt with file list in ${outputFile.absolutePath}")
+    }
+}
+
+tasks.matching { it.name.endsWith("ProcessResources") }.configureEach {
+    dependsOn(generateScannerCapIndex)
+}
+
+tasks.matching { it.name.endsWith("CopyResources") }.configureEach {
+    dependsOn(generateScannerCapIndex)
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn(tasks.named("jvmTest"))
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    // Make sure the file tree points to the actual compiled classes
+    classDirectories.setFrom(
+        fileTree("${layout.buildDirectory}/classes/kotlin/jvm/main") {
+            exclude(
+                "**/R.class",
+                "**/BuildConfig.*",
+                "**/Manifest*.*",
+                "**/*Test*.*"
+            )
+        }
+    )
+
+    // Source directories for HTML report mapping
+    sourceDirectories.setFrom(
+        files("src/jvmMain/kotlin"),
+        files("src/commonMain/kotlin")
+    )
+
+    // Point to the exec data from the jvmTest task
+    executionData.setFrom(
+        files("${layout.buildDirectory}/jacoco/jvmTest.exec")
+    )
+}
+
+
 kotlin {
-    target {
-        attributes {
-            if (KotlinPlatformType.attribute !in this) {
-                attribute(KotlinPlatformType.attribute, KotlinPlatformType.androidJvm)
+    jvm {
+        testRuns["test"].executionTask.configure {
+            useJUnitPlatform()
+        }
+    }
+    js(IR) {
+        nodejs {
+            testTask {
+                useMocha {
+                    timeout = "30s"
+                    testLogging {
+                        events("started", "passed", "skipped", "failed")
+                        showStandardStreams = true
+                    }
+                }
             }
+        }
+    }
+
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+    tvosX64()
+    tvosArm64()
+    tvosSimulatorArm64()
+    watchosX64()
+    watchosArm32()
+    watchosArm64()
+    watchosSimulatorArm64()
+    macosX64()
+    macosArm64()
+
+    linuxX64()
+    linuxArm64()
+
+    mingwX64()
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(libs.kotlinxSerializationJson)
+                implementation("io.ktor:ktor-client-core:3.4.0")
+                implementation("io.ktor:ktor-client-mock:3.4.0")
+                implementation("io.ktor:ktor-serialization-kotlinx-xml:3.4.0")
+                implementation("io.github.pdvrieze.xmlutil:core:0.91.3")
+            }
+        }
+
+        val commonTest by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+                implementation("io.kotest:kotest-framework-engine:${libs.versions.kotest.get()}")
+                implementation("io.kotest:kotest-assertions-core:${libs.versions.kotest.get()}")
+                implementation("io.ktor:ktor-client-core:3.4.0")
+                implementation("io.ktor:ktor-client-mock:3.4.0")
+                implementation("com.goncalossilva:resources:0.14.4")
+                implementation(kotlin("test"))
+            }
+        }
+
+        val jvmMain by getting {
+            dependencies {
+                // JVM engine for Ktor
+                implementation("io.ktor:ktor-client-cio:3.4.0")
+            }
+        }
+
+        val jvmTest by getting {
+            dependencies {
+                implementation("io.kotest:kotest-framework-engine:${libs.versions.kotest.get()}")
+                implementation("io.ktor:ktor-client-core:3.4.0")
+                implementation("io.ktor:ktor-client-mock:3.4.0")
+                implementation("io.kotest:kotest-assertions-core:${libs.versions.kotest.get()}")
+                implementation("io.kotest:kotest-runner-junit5:${libs.versions.kotest.get()}")
+                implementation("io.ktor:ktor-client-cio:3.4.0")
+            }
+
+        }
+
+        val jsMain by getting {
+            dependencies {
+                implementation("io.ktor:ktor-client-js:3.4.0")
+            }
+        }
+
+        linuxMain.dependencies {
+            implementation("io.ktor:ktor-client-curl:3.4.0")
+        }
+
+        appleMain.dependencies {
+            implementation("io.ktor:ktor-client-darwin:3.4.0")
         }
     }
 }
@@ -35,16 +186,8 @@ version = "1.5.5"
 
 publishing {
     publications {
-        create<MavenPublication>("Maven") {
-            from(components["java"])
-            groupId = group.toString()
-            artifactId = "esclkt"
-            description =
-                "An implementation of AirScan (eSCL) in Kotlin, making it easy to use network-attached scanners"
-        }
         withType<MavenPublication> {
             pom {
-                packaging = "jar"
                 name.set("esclkt")
                 description.set("eSCLKt: AirScan protocol (eSCL) in Kotlin")
                 url.set("https://github.com/chrisimx/eSCLKt")
@@ -113,9 +256,12 @@ jreleaser {
         }
     }
     signing {
-        active.set(Active.ALWAYS)
-        mode.set(Signing.Mode.MEMORY)
-        armored.set(true)
+        pgp {
+            active = Active.ALWAYS
+            mode = Signing.Mode.MEMORY
+            armored = true
+        }
+
     }
     deploy {
         maven {
@@ -136,14 +282,12 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    implementation(libs.okhttp)
-    implementation(libs.kotlinxSerializationJson)
-    testImplementation(kotlin("test"))
-    testImplementation(libs.mockWebserver)
+tasks.withType<Test>().configureEach {
+    logger.lifecycle("UP-TO-DATE check for $name is disabled, forcing it to run.")
+    outputs.upToDateWhen { false }
 }
 
-tasks.test {
+/*tasks.test {
     useJUnitPlatform()
     val testOutputDir = "testOutput"
     mkdir(testOutputDir)
@@ -154,7 +298,7 @@ tasks.jar {
     enabled = true
     // Remove `plain` postfix from jar file name
     archiveClassifier.set("")
-}
+}*/
 
 fun isNonStable(version: String): Boolean {
     val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }

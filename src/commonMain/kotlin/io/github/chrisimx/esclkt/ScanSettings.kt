@@ -1,0 +1,147 @@
+/*
+ *     Copyright (C) 2024 Christian Nagel and contributors
+ *
+ *     This file is part of eSCLKt.
+ *
+ *     eSCLKt is free software: you can redistribute it and/or modify it under the terms of
+ *     the GNU General Public License as published by the Free Software Foundation, either
+ *     version 3 of the License, or (at your option) any later version.
+ *
+ *     eSCLKt is distributed in the hope that it will be useful, but WITHOUT ANY
+ *     WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ *     FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License along with eSCLKt.
+ *     If not, see <https://www.gnu.org/licenses/>.
+ *
+ *     SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+package io.github.chrisimx.esclkt
+
+import kotlinx.serialization.Serializable
+import nl.adaptivity.xmlutil.ExperimentalXmlUtilApi
+import nl.adaptivity.xmlutil.serialization.XmlAfter
+import nl.adaptivity.xmlutil.serialization.XmlBefore
+import nl.adaptivity.xmlutil.serialization.XmlElement
+import nl.adaptivity.xmlutil.serialization.XmlNamespaceDeclSpecs
+import nl.adaptivity.xmlutil.serialization.XmlSerialName
+import nl.adaptivity.xmlutil.serialization.XmlValue
+
+@Serializable
+@XmlSerialName("ScanRegion", NS_PWG, "pwg")
+data class ScanRegion(
+    @XmlSerialName("Height", NS_PWG, "pwg")
+    val height: ThreeHundredthsOfInch,
+    @XmlSerialName("Width", NS_PWG, "pwg")
+    val width: ThreeHundredthsOfInch,
+    @XmlSerialName("XOffset", NS_PWG, "pwg")
+    val xOffset: ThreeHundredthsOfInch,
+    @XmlSerialName("YOffset", NS_PWG, "pwg")
+    val yOffset: ThreeHundredthsOfInch,
+) {
+    @XmlSerialName("ContentRegionUnits", NS_PWG, "pwg")
+    private val contentRegionUnits: String = "escl:ThreeHundredthsOfInches"
+
+}
+
+@Serializable
+@XmlSerialName("ScanRegions", NS_PWG, "pwg")
+data class ScanRegions(
+    @XmlValue
+    val regions: List<ScanRegion>,
+    @XmlElement(false)
+    @XmlSerialName("MustHonor", NS_PWG, "pwg")
+    val mustHonor: Boolean = true,
+)
+enum class InputSource {
+    /** Glass flat bed **/
+    Platen,
+
+    /** ADF - Automatic Document Feede **/
+    Feeder,
+
+    /** Non-classical camera based scanning **/
+    Camera,
+}
+
+enum class BinaryRendering {
+    Halftone,
+    Threshold,
+}
+
+enum class FeedDirection {
+    LongEdgeFeed,
+    ShortEdgeFeed,
+}
+
+@OptIn(ExperimentalXmlUtilApi::class)
+@Serializable
+@XmlSerialName("ScanSettings", NS_SCAN, "scan")
+@XmlNamespaceDeclSpecs("pwg=http://www.pwg.org/schemas/2010/12/sm", "scan=http://schemas.hp.com/imaging/escl/2011/05/03")
+data class ScanSettings(
+    @XmlSerialName("Version", NS_PWG, "pwg")
+    val version: String,
+    @Serializable(with = ScanIntentDataSerializer::class)
+    @XmlSerialName("Intent", NS_SCAN, "scan")
+    val intent: EnumOrRaw<ScanIntent>? = null,
+    @XmlSerialName("ScanRegions", NS_PWG, "pwg")
+    val scanRegions: ScanRegions? = null,
+    @XmlSerialName("DocumentFormat", NS_PWG, "pwg")
+    val documentFormat: String? = null,
+    @XmlSerialName("DocumentFormatExt", NS_SCAN, "scan")
+    val documentFormatExt: String? = null,
+    @Serializable(with = ContentTypeDataSerializer::class)
+    @XmlSerialName("ContentType", NS_PWG, "pwg")
+    val contentType: EnumOrRaw<ContentType>? = null,
+    @XmlSerialName("InputSource", NS_PWG, "pwg")
+    val inputSource: InputSource? = null,
+    /** Specified in DPI **/
+    @XmlSerialName("XResolution", NS_SCAN, "scan")
+    val xResolution: UInt? = null,
+    /** Specified in DPI **/
+    @XmlSerialName("YResolution", NS_SCAN, "scan")
+    val yResolution: UInt? = null,
+    @XmlSerialName("ColorMode", NS_SCAN, "scan")
+    val colorMode: ColorMode? = null,
+    @XmlSerialName("ColorSpace", NS_SCAN, "scan")
+    val colorSpace: String? = null,
+    @XmlSerialName("MediaType", NS_SCAN, "scan")
+    val mediaType: String? = null,
+    @XmlSerialName("CcdChannel", NS_SCAN, "scan")
+    val ccdChannel: CcdChannel? = null,
+    @XmlSerialName("BinaryRendering", NS_SCAN, "scan")
+    val binaryRendering: BinaryRendering? = null,
+    @XmlSerialName("Duplex", NS_SCAN, "scan")
+    val duplex: Boolean? = null,
+    @XmlSerialName("NumberOfPages", NS_SCAN, "scan")
+    val numberOfPages: UInt? = null,
+    @XmlSerialName("Brightness", NS_SCAN, "scan")
+    val brightness: UInt? = null,
+    @XmlSerialName("CompressionFactor", NS_SCAN, "scan")
+    val compressionFactor: UInt? = null,
+    @XmlSerialName("Contrast", NS_SCAN, "scan")
+    val contrast: UInt? = null,
+    @XmlSerialName("Gamma", NS_SCAN, "scan")
+    val gamma: UInt? = null,
+    @XmlSerialName("Highlight", NS_SCAN, "scan")
+    val highlight: UInt? = null,
+    @XmlSerialName("NoiseRemoval", NS_SCAN, "scan")
+    val noiseRemoval: UInt? = null,
+    @XmlSerialName("Shadow", NS_SCAN, "scan")
+    val shadow: UInt? = null,
+    @XmlSerialName("Sharpen", NS_SCAN, "scan")
+    val sharpen: UInt? = null,
+    @XmlSerialName("Threshold", NS_SCAN, "scan")
+    val threshold: UInt? = null,
+    /** Opaque information relayed by the client */
+    @XmlSerialName("ContextID", NS_SCAN, "scan")
+    val contextID: String? = null,
+    // val scanDestinations: HTTPDestination?, omitted as no known scanner supports this
+    @XmlSerialName("BlankPageDetection", NS_SCAN, "scan")
+    val blankPageDetection: Boolean? = null,
+    @XmlSerialName("FeedDirection", NS_SCAN, "scan")
+    val feedDirection: FeedDirection? = null,
+    @XmlSerialName("BlankPageDetectionAndRemoval", NS_SCAN, "scan")
+    val blankPageDetectionAndRemoval: Boolean? = null,
+)
