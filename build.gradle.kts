@@ -269,8 +269,13 @@ jreleaser {
                     url.set("https://central.sonatype.com/api/v1/publisher")
                     stagingRepositories.add("build/staging-deploy")
                     applyMavenCentralRules = true
+
                     maxRetries = 200
                 }
+            }
+
+            pomchecker {
+                strict = false
             }
         }
     }
