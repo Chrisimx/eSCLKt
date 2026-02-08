@@ -1,11 +1,13 @@
 ## eSCLKt: AirScan (eSCL) in Kotlin
 
-This project is a easy-to-use Kotlin library for using network-attached scanners supporting the eSCL/AirScan protocol.
+This project is a easy-to-use Kotlin Multiplatform (KMP) library for using network-attached scanners supporting the eSCL/AirScan protocol.
 This protocol allows for driverless usage of network scanners and is supported by most modern scanning devices.
 
 The implementation is based on the eSCL specification as provided on https://mopria.org/spec-download and on practical
 testing with actual network-attached scanners. The spec is very fuzzy in multiple places but the goal is to be
 compatible with most scanners and scanner features.
+
+Almost all platforms (except jsBrowser) should be work, although the error handling differs.
 
 ## Usage as dependency
 
@@ -15,21 +17,21 @@ Add the following in your dependencies:
 
 ```
 dependencies {
-    implementation("io.github.chrisimx:esclkt:1.4.6")
+    implementation("io.github.chrisimx:esclkt:2.0.0")
 }
 ```
 
 ### Maven
 
-Add the following in your pom.xml as dependency:
+Add the following in your pom.xml as dependency and replace platform with the platform for which you build:
 
 ```
 <dependencies>
     ...
     <dependency>
-        <groupId>io.github.chrisimx</groupId>
+        <groupId>io.github.chrisimx-{platform}</groupId>
         <artifactId>esclkt</artifactId>
-        <version>1.4.6</version>
+        <version>2.0.0</version>
     </dependency>
     ...
 </dependencies>
@@ -40,10 +42,6 @@ Add the following in your pom.xml as dependency:
 Gradle is used as the build system. To compile the project, run the following command:
 
 ```./gradlew build```
-
-To output a JAR file, run the following command:
-
-```./gradlew jar```
 
 ## Bugs & feature requests
 
