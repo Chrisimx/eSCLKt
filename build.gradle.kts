@@ -185,31 +185,29 @@ group = "io.github.chrisimx"
 version = "2.0.0"
 
 publishing {
-    publications {
-        withType<MavenPublication> {
-            pom {
-                name.set("esclkt")
-                description.set("eSCLKt: AirScan protocol (eSCL) in Kotlin")
+    publications.withType<MavenPublication>().configureEach {
+        pom {
+            name.set("esclkt")
+            description.set("eSCLKt: AirScan protocol (eSCL) in Kotlin")
+            url.set("https://github.com/chrisimx/eSCLKt")
+            inceptionYear.set("2024")
+            licenses {
+                license {
+                    name.set("GPL-3.0-or-later")
+                    url.set("https://www.gnu.org/licenses/gpl-3.0.html")
+                }
+            }
+            developers {
+                developer {
+                    id.set("chrisimx")
+                    name.set("Christian Nagel")
+                    email.set("chris.imx@online.de")
+                }
+            }
+            scm {
+                connection.set("scm:git:git@github.com:Chrisimx/eSCLKt.git")
+                developerConnection.set("scm:git:ssh:git@github.com:Chrisimx/eSCLKt.git")
                 url.set("https://github.com/chrisimx/eSCLKt")
-                inceptionYear.set("2024")
-                licenses {
-                    license {
-                        name.set("GPL-3.0-or-later")
-                        url.set("https://www.gnu.org/licenses/gpl-3.0.html")
-                    }
-                }
-                developers {
-                    developer {
-                        id.set("chrisimx")
-                        name.set("Christian Nagel")
-                        email.set("chris.imx@online.de")
-                    }
-                }
-                scm {
-                    connection.set("scm:git:git@github.com:Chrisimx/eSCLKt.git")
-                    developerConnection.set("scm:git:ssh:git@github.com:Chrisimx/eSCLKt.git")
-                    url.set("https://github.com/chrisimx/eSCLKt")
-                }
             }
         }
     }
