@@ -9,13 +9,13 @@ plugins {
     id("io.kotest") version libs.versions.kotest.get()
     id("com.google.devtools.ksp") version libs.versions.kotlin.get()
     alias(libs.plugins.kotlin.serialization)
-    id("maven-publish")
     alias(libs.plugins.jreleaser)
     alias(libs.plugins.dokka)
     id("signing")
     jacoco
     alias(libs.plugins.versions)
     id("com.goncalossilva.resources") version "0.14.4"
+    id("com.vanniktech.maven.publish") version "0.36.0"
 }
 
 jacoco {
@@ -184,44 +184,40 @@ KotlinPlatformType.setupAttributesMatchingStrategy(dependencies.attributesSchema
 group = "io.github.chrisimx"
 version = "2.0.0"
 
-publishing {
-    publications.withType<MavenPublication>().configureEach {
-        pom {
-            name.set("esclkt")
-            description.set("eSCLKt: AirScan protocol (eSCL) in Kotlin")
-            url.set("https://github.com/chrisimx/eSCLKt")
-            inceptionYear.set("2024")
-            licenses {
-                license {
-                    name.set("GPL-3.0-or-later")
-                    url.set("https://www.gnu.org/licenses/gpl-3.0.html")
-                }
-            }
-            developers {
-                developer {
-                    id.set("chrisimx")
-                    name.set("Christian Nagel")
-                    email.set("chris.imx@online.de")
-                }
-            }
-            scm {
-                connection.set("scm:git:git@github.com:Chrisimx/eSCLKt.git")
-                developerConnection.set("scm:git:ssh:git@github.com:Chrisimx/eSCLKt.git")
-                url.set("https://github.com/chrisimx/eSCLKt")
+
+mavenPublishing {
+    publishToMavenCentral(automaticRelease = true)
+
+    signAllPublications()
+
+    coordinates(group.toString(), "esclkt", version.toString())
+
+    pom {
+        name.set("esclkt")
+        description.set("eSCLKt: AirScan protocol (eSCL) in Kotlin")
+        url.set("https://github.com/chrisimx/eSCLKt")
+        inceptionYear.set("2024")
+        licenses {
+            license {
+                name.set("GPL-3.0-or-later")
+                url.set("https://www.gnu.org/licenses/gpl-3.0.html")
             }
         }
-    }
-    repositories {
-        maven {
-            url =
-                layout.buildDirectory
-                    .dir("staging-deploy")
-                    .get()
-                    .asFile
-                    .toURI()
+        developers {
+            developer {
+                id.set("chrisimx")
+                name.set("Christian Nagel")
+                email.set("chris.imx@online.de")
+            }
+        }
+        scm {
+            connection.set("scm:git:git@github.com:Chrisimx/eSCLKt.git")
+            developerConnection.set("scm:git:ssh:git@github.com:Chrisimx/eSCLKt.git")
+            url.set("https://github.com/chrisimx/eSCLKt")
         }
     }
 }
+
 jreleaser {
     project {
         name = rootProject.name
@@ -260,33 +256,6 @@ jreleaser {
             armored = true
         }
 
-    }
-    deploy {
-        maven {
-            val pubs = publishing.publications.withType<MavenPublication>()
-            mavenCentral {
-                create("sonatype") {
-                    active.set(Active.ALWAYS)
-                    url.set("https://central.sonatype.com/api/v1/publisher")
-                    stagingRepositories.add("build/staging-deploy")
-                    applyMavenCentralRules = true
-                    verifyPom = false
-
-
-
-                    pubs.forEach {
-                        artifactOverride {
-                            artifactId = it.artifactId
-                            jar = false
-                            sourceJar = false
-                            javadocJar = false
-                        }
-                    }
-
-                    maxRetries = 200
-                }
-            }
-        }
     }
 }
 

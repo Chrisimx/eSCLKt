@@ -51,3 +51,4 @@ testOutput
 /src/commonTest/resources/testResources/capabilities.txt
 /src/commonTest/resources/testResources/scanner_url.txt
 /page*
+*.gpg
