@@ -1,14 +1,7 @@
-import com.goncalossilva.resources.Charset
 import com.goncalossilva.resources.Resource
-import io.github.chrisimx.esclkt.AdfState
-import io.github.chrisimx.esclkt.ESCLXml
-import io.github.chrisimx.esclkt.JobInfo
-import io.github.chrisimx.esclkt.JobState
-import io.github.chrisimx.esclkt.ScannerState
-import io.github.chrisimx.esclkt.ScannerStatus
+import io.github.chrisimx.esclkt.*
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import io.ktor.utils.io.charsets.Charsets
 
 class ScannerStatusXMLProcessingTest: StringSpec({
     "Parse example1 scanner status" {

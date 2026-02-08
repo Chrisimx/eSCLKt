@@ -1,8 +1,5 @@
 package io.github.chrisimx.esclkt
 
-import io.ktor.client.engine.js.JsError
-import kotlin.io.println
-
 actual fun <T> platformErrorMapping(e: Any): ESCLHttpCallResult<T> {
     val error = gatherJsErrorIfPossible(e)
     return ESCLHttpCallResult.Error.UnknownError(error)

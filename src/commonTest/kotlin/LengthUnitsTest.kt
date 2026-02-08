@@ -23,7 +23,6 @@ import io.github.chrisimx.esclkt.threeHundredthsOfInch
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
-
 class LengthUnitsTest: FunSpec({
     test("Test LengthUnit conversions") {
         val threeHundredthsOfInch = 300u.threeHundredthsOfInch()

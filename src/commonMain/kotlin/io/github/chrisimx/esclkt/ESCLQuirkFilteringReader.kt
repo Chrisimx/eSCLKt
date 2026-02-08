@@ -3,14 +3,10 @@ package io.github.chrisimx.esclkt
 
 import nl.adaptivity.xmlutil.XmlDelegatingReader
 import nl.adaptivity.xmlutil.XmlReader
-import nl.adaptivity.xmlutil.serialization.XML
-import nl.adaptivity.xmlutil.xmlStreaming
 
-inline fun <reified T : Any> XML.decodeFromString(
-    string: String
-): T {
-    return decodeFromReader<T>(ESCLQuirkFilteringReader(xmlStreaming.newReader(string)))
-}
+/**
+ * An XMLReader that filters out scanner quirks
+ */
 class ESCLQuirkFilteringReader(
     reader: XmlReader
 ) : XmlDelegatingReader(reader) {
