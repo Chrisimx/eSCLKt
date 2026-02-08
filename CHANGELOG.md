@@ -1,3 +1,18 @@
+## [v2.0.0]
+
+## Changelog
+
+This release primarily adds KMP (Kotlin Multiplatform) support.
+
+## 🚀 Features
+- [ca1bc07](https://github.com/Chrisimx/eSCLKt/commits/ca1bc07) feat: kmp support
+
+## 🧰 Tasks
+- [ec436e8](https://github.com/Chrisimx/eSCLKt/commits/ec436e8) chore: optimize imports
+
+## 📝 Documentation
+- [536686a](https://github.com/Chrisimx/eSCLKt/commits/536686a) docs: add KMP support to README.md
+
 ## [v1.5.5]
 
 ## Changelog
