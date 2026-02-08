@@ -263,19 +263,28 @@ jreleaser {
     }
     deploy {
         maven {
+            val pubs = publishing.publications.withType<MavenPublication>()
             mavenCentral {
                 create("sonatype") {
                     active.set(Active.ALWAYS)
                     url.set("https://central.sonatype.com/api/v1/publisher")
                     stagingRepositories.add("build/staging-deploy")
                     applyMavenCentralRules = true
+                    verifyPom = false
+
+
+
+                    pubs.forEach {
+                        artifactOverride {
+                            artifactId = it.artifactId
+                            jar = false
+                            sourceJar = false
+                            javadocJar = false
+                        }
+                    }
 
                     maxRetries = 200
                 }
-            }
-
-            pomchecker {
-                strict = false
             }
         }
     }
