@@ -1,3 +1,10 @@
+## [v2.0.2]
+
+## Changelog
+
+## 🔄️ Changes
+- [021f42e](https://github.com/Chrisimx/eSCLKt/commits/021f42e) refactor: use codegen to generate EnumOrRawSerializers, provide type defs for easy access
+
 ## [v2.0.1]
 
 ## Changelog
