@@ -124,8 +124,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.kotlinxSerializationJson)
-                implementation("io.ktor:ktor-client-core:3.4.0")
-                implementation("io.ktor:ktor-client-mock:3.4.0")
+                api("io.ktor:ktor-client-core:3.4.0")
                 implementation("io.ktor:ktor-serialization-kotlinx-xml:3.4.0")
                 implementation("io.github.pdvrieze.xmlutil:core:0.91.3")
             }
