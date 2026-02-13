@@ -80,18 +80,16 @@ enum class FeedDirection {
 data class ScanSettings(
     @XmlSerialName("Version", NS_PWG, "pwg")
     val version: String,
-    @Serializable(with = ScanIntentDataSerializer::class)
     @XmlSerialName("Intent", NS_SCAN, "scan")
-    val intent: EnumOrRaw<ScanIntent>? = null,
+    val intent: ScanIntentEnumOrRaw? = null,
     @XmlSerialName("ScanRegions", NS_PWG, "pwg")
     val scanRegions: ScanRegions? = null,
     @XmlSerialName("DocumentFormat", NS_PWG, "pwg")
     val documentFormat: String? = null,
     @XmlSerialName("DocumentFormatExt", NS_SCAN, "scan")
     val documentFormatExt: String? = null,
-    @Serializable(with = ContentTypeDataSerializer::class)
     @XmlSerialName("ContentType", NS_PWG, "pwg")
-    val contentType: EnumOrRaw<ContentType>? = null,
+    val contentType: ContentTypeEnumOrRaw? = null,
     @XmlSerialName("InputSource", NS_PWG, "pwg")
     val inputSource: InputSource? = null,
     /** Specified in DPI **/
