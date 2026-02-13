@@ -1,3 +1,10 @@
+## [v2.0.1]
+
+## Changelog
+
+## 🐛 Fixes
+- [ff39b7c](https://github.com/Chrisimx/eSCLKt/commits/ff39b7c) fix: make ktor client api dependency because HttpUrl is needed to create a ESCLRequestClient
+
 ## [v2.0.0]
 
 ## Changelog
