@@ -83,8 +83,7 @@ data class InputSourceCaps(
     val settingProfiles: List<SettingProfile>,
     @XmlSerialName("SupportedIntents", NS_SCAN, "scan")
     @XmlChildrenName("Intent", NS_SCAN, "scan")
-    @Serializable(with = ScanIntentDataListSerializer::class)
-    val supportedIntents: List<EnumOrRaw<ScanIntent>>,
+    val supportedIntents: List<ScanIntentEnumOrRaw>,
     @XmlSerialName("EdgeAutoDetection", NS_SCAN, "scan")
     @XmlChildrenName("SupportedEdge", NS_SCAN, "scan")
     val edgeAutoDetection: List<Edge>,
@@ -113,12 +112,10 @@ data class SupportedResolutions(
 data class SettingProfile(
     @XmlSerialName("ColorModes", NS_SCAN, "scan")
     @XmlChildrenName("ColorMode", NS_SCAN, "scan")
-    @Serializable(with = ColorModeListSerializer::class)
-    val colorModes: List<EnumOrRaw<ColorMode>>,
+    val colorModes: List<ColorModeEnumOrRaw>,
     @XmlSerialName("ContentTypes", NS_SCAN, "scan")
     @XmlChildrenName("ContentType", NS_PWG, "scan")
-    @Serializable(with = ContentTypeDataListSerializer::class)
-    val contentTypes: List<EnumOrRaw<ContentType>>?,
+    val contentTypes: List<ContentTypeEnumOrRaw>?,
     @XmlSerialName("DocumentFormats", NS_SCAN, "scan")
     val documentFormats: DocumentFormats,
     val supportedResolutions: SupportedResolutions,
@@ -127,8 +124,7 @@ data class SettingProfile(
     val colorSpaces: List<String>? = null,
     @XmlSerialName("CcdChannels", NS_SCAN, "scan")
     @XmlChildrenName("CcdChannel", NS_SCAN, "scan")
-    @Serializable(with = CcdChannelListSerializer::class)
-    val ccdChannels: List<EnumOrRaw<CcdChannel>>? = null,
+    val ccdChannels: List<CcdChannelEnumOrRaw>? = null,
     @XmlSerialName("BinaryRenderings", NS_SCAN, "scan")
     @XmlChildrenName("BinaryRendering", NS_SCAN, "scan")
     val binaryRenderings: List<String>? = null,
@@ -246,6 +242,7 @@ object DocumentFormatsSerializer : KSerializer<DocumentFormats> {
 
 
 @XmlSerialName("Intent", NS_SCAN, "scan")
+@GenerateEnumOrRawSerializer
 enum class ScanIntent {
     // / Scanning optimized for text.
     Document,
@@ -265,9 +262,6 @@ enum class ScanIntent {
     // / Scanning optimized for a business card
     BusinessCard,
 }
-
-object ScanIntentDataSerializer : KSerializer<EnumOrRaw<ScanIntent>> by enumOrRawSerializer<ScanIntent>()
-object ScanIntentDataListSerializer : KSerializer<List<EnumOrRaw<ScanIntent>>> by ListSerializer(enumOrRawSerializer<ScanIntent>())
 
 sealed class EnumOrRaw<E : Enum<E>> {
 
@@ -323,6 +317,7 @@ private class ScanIntentSerialDescriptorDelegate(
 )
 
 @XmlSerialName("ContentType", NS_SCAN, "scan")
+@GenerateEnumOrRawSerializer
 enum class ContentType {
     Photo,
     Text,
@@ -334,10 +329,8 @@ enum class ContentType {
     Thru
 }
 
-object ContentTypeDataSerializer : KSerializer<EnumOrRaw<ContentType>> by enumOrRawSerializer<ContentType>()
-object ContentTypeDataListSerializer : KSerializer<List<EnumOrRaw<ContentType>>> by ListSerializer(enumOrRawSerializer<ContentType>())
-
 @XmlSerialName("CcdChannel", NS_SCAN, "scan")
+@GenerateEnumOrRawSerializer
 enum class CcdChannel {
     // / Use the Red CCD
     Red,
@@ -359,9 +352,6 @@ enum class CcdChannel {
     GrayCcdEmulated,
 }
 
-object CcdChannelSerializer : KSerializer<EnumOrRaw<CcdChannel>> by enumOrRawSerializer<CcdChannel>()
-object CcdChannelListSerializer : KSerializer<List<EnumOrRaw<CcdChannel>>> by ListSerializer(enumOrRawSerializer<CcdChannel>())
-
 @Serializable
 @XmlSerialName("Platen", NS_SCAN, "scan")
 data class Platen(
@@ -380,19 +370,17 @@ data class Adf(
     val feederCapacity: UInt? = null,
     @XmlSerialName("AdfOptions", NS_SCAN, "scan")
     @XmlChildrenName("AdfOption", NS_SCAN, "scan")
-    @Serializable(with = AdfOptionListSerializer::class)
-    val adfOptions: List<EnumOrRaw<AdfOption>>,
+    val adfOptions: List<AdfOptionEnumOrRaw>,
 )
 
 @XmlSerialName("AdfOption", NS_SCAN, "scan")
+@GenerateEnumOrRawSerializer
 enum class AdfOption {
     DetectPaperLoaded,
     SelectSinglePage,
     Duplex,
     MultipickDetection,
 }
-
-object AdfOptionListSerializer : KSerializer<List<EnumOrRaw<AdfOption>>> by ListSerializer(enumOrRawSerializer<AdfOption>())
 
 @Serializable
 @XmlSerialName("SharpenSupport", NS_SCAN, "scan")
@@ -421,6 +409,7 @@ data class CompressionFactorSupport(
 )
 
 @XmlSerialName("ColorMode", NS_SCAN, "scan")
+@GenerateEnumOrRawSerializer
 enum class ColorMode {
     BlackAndWhite1,
 
@@ -438,8 +427,6 @@ enum class ColorMode {
     AutoColorDetection,
     ;
 }
-
-object ColorModeListSerializer : KSerializer<List<EnumOrRaw<ColorMode>>> by ListSerializer(enumOrRawSerializer<ColorMode>())
 
 @Serializable
 @XmlSerialName("Certification", NS_SCAN, "scan")

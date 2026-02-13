@@ -48,7 +48,7 @@ bin/
 
 testOutput
 /kls_database.db
-/src/commonTest/resources/testResources/capabilities.txt
-/src/commonTest/resources/testResources/scanner_url.txt
-/page*
+/esclkt-main/src/commonTest/resources/testResources/capabilities.txt
+/esclkt-main/src/commonTest/resources/testResources/scanner_url.txt
+/esclkt-main/page*
 *.gpg

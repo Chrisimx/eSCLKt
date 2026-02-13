@@ -168,7 +168,7 @@ suspend fun executeScanJob(
 
         if (pageRequest is ESCLRequestClient.ScannerNextPageResult.Success) {
             println("Received one page")
-            maybeSaveDebugFile("page${counter}", pageRequest.page.data)
+            maybeSaveDebugFile("page${counter}.jpg", pageRequest.page.data)
             val scanImageInfo = scanJob.scanJob.getScanImageInfoForRetrievedPage()
             if (scanImageInfo is ESCLRequestClient.RetrieveScanImageInfoResult.Success) {
                 println("Received ScanImageInfo: $scanImageInfo")
