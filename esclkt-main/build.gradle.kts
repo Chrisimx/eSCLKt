@@ -305,3 +305,8 @@ tasks.withType<KotlinCompilationTask<*>>().configureEach {
         }
     }
 }
+
+tasks.matching { it.name.endsWith("SourcesJar") || it.name.endsWith("sourcesJar")  }
+    .configureEach {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
