@@ -99,13 +99,13 @@ data class ScanSettings(
     @XmlSerialName("YResolution", NS_SCAN, "scan")
     val yResolution: UInt? = null,
     @XmlSerialName("ColorMode", NS_SCAN, "scan")
-    val colorMode: ColorMode? = null,
+    val colorMode: ColorModeEnumOrRaw? = null,
     @XmlSerialName("ColorSpace", NS_SCAN, "scan")
     val colorSpace: String? = null,
     @XmlSerialName("MediaType", NS_SCAN, "scan")
     val mediaType: String? = null,
     @XmlSerialName("CcdChannel", NS_SCAN, "scan")
-    val ccdChannel: CcdChannel? = null,
+    val ccdChannel: CcdChannelEnumOrRaw? = null,
     @XmlSerialName("BinaryRendering", NS_SCAN, "scan")
     val binaryRendering: BinaryRendering? = null,
     @XmlSerialName("Duplex", NS_SCAN, "scan")
