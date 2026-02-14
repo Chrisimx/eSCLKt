@@ -189,6 +189,21 @@ dependencies {
     add("kspCommonMainMetadata", project(":codegen"))
 }
 
+publishing {
+    repositories {
+        if (version.toString().endsWith("SNAPSHOT")) {
+            maven {
+                name = "fireamp"
+                url = uri("https://repo.fireamp.eu/repository/maven-snapshots/")
+                credentials {
+                    username = findProperty("fireampNexusUsername") as String?
+                    password = findProperty("fireampNexusPassword") as String?
+                }
+            }
+        }
+    }
+}
+
 mavenPublishing {
     publishToMavenCentral(automaticRelease = true)
 
@@ -267,10 +282,10 @@ repositories {
     mavenCentral()
 }
 
-tasks.withType<Test>().configureEach {
+/*tasks.withType<Test>().configureEach {
     logger.lifecycle("UP-TO-DATE check for $name is disabled, forcing it to run.")
     outputs.upToDateWhen { false }
-}
+}*/
 
 /*tasks.test {
     useJUnitPlatform()
