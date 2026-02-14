@@ -37,7 +37,7 @@ class ScanJob(
     /** Tries to cancle the scan job
      * @return A ScannerDeleteJobResult, which shows if the action was successful or not
      * **/
-    suspend fun cancle(): ESCLRequestClient.ScannerDeleteJobResult {
+    suspend fun cancel(): ESCLRequestClient.ScannerDeleteJobResult {
         val cancellationResult = esclClient.deleteJob(jobUri)
         if (cancellationResult is ESCLRequestClient.ScannerDeleteJobResult.Success) isCancelled = true
         return cancellationResult

@@ -205,7 +205,7 @@ suspend fun executeScanJob(
             delay(3000)
         }
     }
-    scanJob.scanJob.cancle()
+    scanJob.scanJob.cancel()
 }
 
 expect fun maybeSaveDebugFile(fileName: String, data: ByteArray)
