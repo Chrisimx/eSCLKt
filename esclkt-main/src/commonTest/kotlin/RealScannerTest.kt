@@ -140,7 +140,7 @@ suspend fun executeScanJob(
                 version = scannerCapabilitiesResult.scannerCapabilities.interfaceVersion,
                 intent = EnumOrRaw.Known(ScanIntent.Document),
                 inputSource = inputSource,
-                colorMode = ColorMode.RGB24,
+                colorMode = EnumOrRaw.Known(ColorMode.RGB24),
                 scanRegions =
                     ScanRegions(
                         listOf(

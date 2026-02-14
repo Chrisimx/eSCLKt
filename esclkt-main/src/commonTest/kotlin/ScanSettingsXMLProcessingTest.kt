@@ -1,4 +1,5 @@
 import io.github.chrisimx.esclkt.ColorMode
+import io.github.chrisimx.esclkt.ColorModeEnumOrRaw
 import io.github.chrisimx.esclkt.ContentType
 import io.github.chrisimx.esclkt.ESCLXml
 import io.github.chrisimx.esclkt.EnumOrRaw
@@ -38,7 +39,7 @@ class ScanSettingsXMLProcessingTest: StringSpec( {
                 inputSource = InputSource.Platen,
                 xResolution = 600u,
                 yResolution = 200u,
-                colorMode = ColorMode.RGB24,
+                colorMode = EnumOrRaw.Known(ColorMode.RGB24),
                 colorSpace = "sRGB",
             )
 
