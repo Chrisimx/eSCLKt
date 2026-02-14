@@ -1,3 +1,10 @@
+## [v2.0.4]
+
+## Changelog
+
+## 🚀 Features
+- [d00a3b6](https://github.com/Chrisimx/eSCLKt/commits/d00a3b6) feat: use EnumOrRaw in ScanSettings
+
 ## [v2.0.3]
 
 ## Changelog
