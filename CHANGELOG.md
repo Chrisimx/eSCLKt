@@ -1,3 +1,13 @@
+## [v2.0.3]
+
+## Changelog
+
+## 🔄️ Changes
+- chore: use directly serializable types in ScanSettings class
+
+## 🐛 Fixes
+- fix: declare source jar task dependency to code generation for maven publication
+
 ## [v2.0.2]
 
 ## Changelog
