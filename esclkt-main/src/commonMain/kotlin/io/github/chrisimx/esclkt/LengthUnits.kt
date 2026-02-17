@@ -34,6 +34,8 @@ sealed interface LengthUnit {
     fun toThreeHundredthsOfInch(): ThreeHundredthsOfInch
 
     fun toMillimeters(): Millimeters
+
+    fun toPoints(): Points
 }
 
 // Units
@@ -46,6 +48,8 @@ value class Inches(
 
     override fun toMillimeters() = Millimeters(this.value * MILLIMETERS_PER_INCH)
 
+    override fun toPoints(): Points = Points(this.value * 72)
+
     override fun toThreeHundredthsOfInch() = ThreeHundredthsOfInch((this.value * THREE_HUNDREDTHS_INCHES_PER_INCH).toUInt())
 }
 
@@ -55,6 +59,7 @@ value class Millimeters(
     val value: Double,
 ) : LengthUnit {
     override fun toMillimeters() = this
+    override fun toPoints(): Points = this.toInches().toPoints()
 
     override fun toInches() = Inches(this.value / MILLIMETERS_PER_INCH)
 
@@ -67,10 +72,24 @@ value class ThreeHundredthsOfInch(
     val value: UInt,
 ) : LengthUnit {
     override fun toThreeHundredthsOfInch() = this
+    override fun toPoints(): Points = this.toInches().toPoints()
 
     override fun toMillimeters() = Millimeters(this.value.toDouble() / THREE_HUNDREDTHS_INCHES_PER_MM)
 
     override fun toInches() = Inches(this.value.toDouble() / THREE_HUNDREDTHS_INCHES_PER_INCH)
+}
+
+@Serializable
+@JvmInline
+value class Points(
+    val value: Double,
+) : LengthUnit {
+    override fun toThreeHundredthsOfInch() = this.toInches().toThreeHundredthsOfInch()
+
+    override fun toMillimeters() = this.toInches().toMillimeters()
+    override fun toInches() = Inches(this.value / 72.0)
+
+    override fun toPoints(): Points = this
 }
 
 fun Number.inches(): Inches = Inches(this.toDouble())
@@ -79,8 +98,12 @@ fun Number.millimeters(): Millimeters = Millimeters(this.toDouble())
 
 fun Number.threeHundredthsOfInch(): ThreeHundredthsOfInch = ThreeHundredthsOfInch(this.toInt().toUInt())
 
+fun Number.pts(): Points = Points(this.toDouble())
+
 fun UInt.inches(): Inches = Inches(this.toDouble())
 
 fun UInt.millimeters(): Millimeters = Millimeters(this.toDouble())
 
 fun UInt.threeHundredthsOfInch(): ThreeHundredthsOfInch = ThreeHundredthsOfInch(this)
+
+fun UInt.pts(): Points = Points(this.toDouble())
