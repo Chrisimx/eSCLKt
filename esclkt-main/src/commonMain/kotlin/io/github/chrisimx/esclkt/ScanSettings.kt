@@ -69,6 +69,14 @@ class ScanRegionBuilder(
             _width = ScanRegionLength.DiscreteLength(value)
         }
 
+    fun width(value: ScanRegionLength) {
+        _width = value
+    }
+
+    fun height(value: ScanRegionLength) {
+        _height = value
+    }
+
     fun maxWidth() {
         _width = ScanRegionLength.Max
     }
