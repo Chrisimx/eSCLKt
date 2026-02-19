@@ -1,14 +1,4 @@
-import io.github.chrisimx.esclkt.ColorMode
-import io.github.chrisimx.esclkt.ColorModeEnumOrRaw
-import io.github.chrisimx.esclkt.ContentType
-import io.github.chrisimx.esclkt.ESCLXml
-import io.github.chrisimx.esclkt.EnumOrRaw
-import io.github.chrisimx.esclkt.InputSource
-import io.github.chrisimx.esclkt.ScanIntent
-import io.github.chrisimx.esclkt.ScanRegion
-import io.github.chrisimx.esclkt.ScanRegions
-import io.github.chrisimx.esclkt.ScanSettings
-import io.github.chrisimx.esclkt.threeHundredthsOfInch
+import io.github.chrisimx.esclkt.*
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.serialization.encodeToString
@@ -23,17 +13,12 @@ class ScanSettingsXMLProcessingTest: StringSpec( {
                 version = "2.63",
                 intent = EnumOrRaw.Known(ScanIntent.Document),
                 scanRegions =
-                    ScanRegions(
-                        listOf(
-                            ScanRegion(
-                                20u.threeHundredthsOfInch(),
-                                10u.threeHundredthsOfInch(),
-                                2u.threeHundredthsOfInch(),
-                                1u.threeHundredthsOfInch(),
-                            ),
-                        ),
-                        true,
-                    ),
+                    scanRegion {
+                        height = 20u.threeHundredthsOfInch()
+                        width = 10u.threeHundredthsOfInch()
+                        xOffset = 2u.threeHundredthsOfInch()
+                        yOffset = 1u.threeHundredthsOfInch()
+                    },
                 documentFormatExt = "image/jpeg",
                 contentType = EnumOrRaw.Known(ContentType.Text),
                 inputSource = InputSource.Platen,

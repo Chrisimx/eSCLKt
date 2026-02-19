@@ -43,6 +43,80 @@ data class ScanRegion(
 
 }
 
+
+sealed class ScanRegionLength {
+    data class DiscreteLength(val length: LengthUnit) : ScanRegionLength()
+    data object Max : ScanRegionLength()
+}
+
+class ScanRegionBuilder(
+    private val inputSourceCaps: InputSourceCaps? = null
+) {
+    private var _height: ScanRegionLength = ScanRegionLength.Max
+    private var _width: ScanRegionLength = ScanRegionLength.Max
+    var xOffset: LengthUnit = 0.threeHundredthsOfInch()
+    var yOffset: LengthUnit = 0.threeHundredthsOfInch()
+
+    var height: LengthUnit
+        get() = resolve(_height, maxHeight)
+        set(value) {
+            _height = ScanRegionLength.DiscreteLength(value)
+        }
+
+    var width: LengthUnit
+        get() = resolve(_width, maxWidth)
+        set(value) {
+            _width = ScanRegionLength.DiscreteLength(value)
+        }
+
+    fun maxWidth() {
+        _width = ScanRegionLength.Max
+    }
+
+    fun maxHeight() {
+        _height = ScanRegionLength.Max
+    }
+
+    fun maxSize() {
+        _width = ScanRegionLength.Max
+        _height = ScanRegionLength.Max
+    }
+
+    val maxHeight: LengthUnit
+        get() = inputSourceCaps?.maxHeight ?: 30000.threeHundredthsOfInch()
+
+    val maxWidth: LengthUnit
+        get() = inputSourceCaps?.maxWidth ?: 30000.threeHundredthsOfInch()
+
+    fun build(): ScanRegions {
+        val region =  ScanRegion(
+            height = resolve(_height, maxHeight),
+            width = resolve(_width, maxWidth),
+            xOffset = xOffset.toThreeHundredthsOfInch(),
+            yOffset = yOffset.toThreeHundredthsOfInch()
+        )
+        return ScanRegions(listOf(region))
+    }
+
+    private fun resolve(
+        value: ScanRegionLength,
+        max: LengthUnit
+    ): ThreeHundredthsOfInch =
+        when (value) {
+            is ScanRegionLength.DiscreteLength -> value.length.toThreeHundredthsOfInch()
+            ScanRegionLength.Max -> max.toThreeHundredthsOfInch()
+        }
+}
+
+fun scanRegion(
+    inputSourceCaps: InputSourceCaps? = null,
+    block: ScanRegionBuilder.() -> Unit
+): ScanRegions {
+    val builder = ScanRegionBuilder(inputSourceCaps)
+    builder.block()
+    return builder.build()
+}
+
 @Serializable
 @XmlSerialName("ScanRegions", NS_PWG, "pwg")
 data class ScanRegions(
