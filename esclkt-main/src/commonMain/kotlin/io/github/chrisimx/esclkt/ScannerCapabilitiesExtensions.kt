@@ -1,9 +1,10 @@
 package io.github.chrisimx.esclkt
 
-fun ScannerCapabilities.getInputSourceCaps(inputSource: InputSource, duplex: Boolean = false): InputSourceCaps = when (inputSource) {
+fun ScannerCapabilities.getInputSourceCaps(inputSource: InputSource?, duplex: Boolean = false): InputSourceCaps = when (inputSource) {
     InputSource.Platen -> this.platen!!.inputSourceCaps
     InputSource.Feeder -> if (duplex) this.adf!!.duplexCaps!! else this.adf!!.simplexCaps
     InputSource.Camera -> TODO()
+    null -> getInputSourceCaps(this.getInputSourceOptions().first(), duplex)
 }
 
 fun ScannerCapabilities.getInputSourceOptions(): List<InputSource> {
