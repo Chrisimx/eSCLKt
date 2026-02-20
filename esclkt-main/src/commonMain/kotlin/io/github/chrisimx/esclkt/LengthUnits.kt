@@ -38,6 +38,12 @@ sealed interface LengthUnit {
     fun toPoints(): Points
 }
 
+fun LengthUnit.equalsLength(other: LengthUnit?): Boolean {
+    if (other == null) return false
+    return this.toThreeHundredthsOfInch().value ==
+            other.toThreeHundredthsOfInch().value
+}
+
 // Units
 @Serializable
 @JvmInline
