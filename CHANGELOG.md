@@ -1,3 +1,13 @@
+## [v2.0.5]
+
+## Changelog
+
+## 🚀 Features
+- scanRegion builder extension function for easy creation of scan region objects
+
+## Fixes
+- map CertPathValidatorException to UntrustedCertificate (CIO engine on JVM) 
+
 ## [v2.0.4]
 
 ## Changelog
