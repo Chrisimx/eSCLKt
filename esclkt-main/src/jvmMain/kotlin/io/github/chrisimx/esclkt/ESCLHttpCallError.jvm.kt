@@ -7,6 +7,6 @@ import java.security.cert.CertPathValidatorException
 actual fun <T> platformErrorMapping(e: Any): ESCLHttpCallResult<T> =
     when (e) {
         is UnresolvedAddressException -> ESCLHttpCallResult.Error.NetworkError(e)
-        is CertPathBuilderException, is CertPathValidatorException -> ESCLHttpCallResult.Error.UntrustedCertificate()
+        is CertPathBuilderException, is CertPathValidatorException -> ESCLHttpCallResult.Error.UntrustedCertificate(e.message)
         else -> ESCLHttpCallResult.Error.UnknownError(e)
     }
