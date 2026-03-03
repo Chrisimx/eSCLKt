@@ -1,5 +1,6 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import org.jreleaser.model.Active
 import org.jreleaser.model.Changelog
@@ -17,6 +18,7 @@ plugins {
     alias(libs.plugins.versions)
     id("com.goncalossilva.resources") version "0.14.4"
     id("com.vanniktech.maven.publish") version "0.36.0"
+    alias(libs.plugins.kotlinCocoapods)
 }
 
 jacoco {
@@ -177,6 +179,36 @@ kotlin {
         appleMain.dependencies {
             implementation("io.ktor:ktor-client-darwin:3.4.0")
         }
+    }
+
+    cocoapods {
+        // Required properties
+        // Specify the required Pod version here
+        // Otherwise, the Gradle project version is used
+        //summary = "Some description for a Kotlin/Native module"
+        //homepage = "Link to a Kotlin/Native module homepage"
+
+        // Optional properties
+        // Configure the Pod name here instead of changing the Gradle project name
+        name = "eSCLKt"
+
+        framework {
+            // Required properties
+            // Framework name configuration. Use this property instead of deprecated 'frameworkName'
+            baseName = "eSCLKt"
+
+            // Optional properties
+            // Specify the framework linking type. It's dynamic by default.
+            isStatic = false
+            // Dependency export
+            // Uncomment and specify another project module if you have one:
+            // export(project(":<your other KMP module>"))
+            //transitiveExport = false // This is default.
+        }
+
+        // Maps custom Xcode configuration to NativeBuildType
+        xcodeConfigurationToNativeBuildType["CUSTOM_DEBUG"] = NativeBuildType.DEBUG
+        xcodeConfigurationToNativeBuildType["CUSTOM_RELEASE"] = NativeBuildType.RELEASE
     }
 }
 

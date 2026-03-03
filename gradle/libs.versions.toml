@@ -18,3 +18,4 @@ versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
 dokka = { id = "org.jetbrains.dokka",  version.ref = "dokka" }
 jreleaser = { id = "org.jreleaser", version.ref = "jreleaser"}
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinCocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
