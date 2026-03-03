@@ -214,7 +214,7 @@ mavenPublishing {
     pom {
         name.set("esclkt")
         description.set("eSCLKt: AirScan protocol (eSCL) in Kotlin")
-        url.set("https://github.com/chrisimx/eSCLKt")
+        url.set("https://github.com/Chrisimx/eSCLKt")
         inceptionYear.set("2024")
         licenses {
             license {
@@ -224,15 +224,15 @@ mavenPublishing {
         }
         developers {
             developer {
-                id.set("chrisimx")
+                id.set("Chrisimx")
                 name.set("Christian Nagel")
                 email.set("chris.imx@online.de")
             }
         }
         scm {
-            connection.set("scm:git:git@github.com:Chrisimx/eSCLKt.git")
-            developerConnection.set("scm:git:ssh:git@github.com:Chrisimx/eSCLKt.git")
-            url.set("https://github.com/chrisimx/eSCLKt")
+            connection.set("scm:git:https://github.com/Chrisimx/eSCLKt.git")
+            developerConnection.set("scm:git:ssh://github.com/Chrisimx/eSCLKt.git")
+            url.set("https://github.com/Chrisimx/eSCLKt/")
         }
     }
 }
