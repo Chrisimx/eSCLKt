@@ -1,3 +1,9 @@
+## [v2.0.6]
+
+## Changelog
+## Fixes
+- Floor down conversions to threeHundredthsOfInch
+
 ## [v2.0.5]
 
 ## Changelog
