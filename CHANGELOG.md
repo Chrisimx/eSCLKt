@@ -1,3 +1,9 @@
+## [v2.0.7]
+
+## Changelog
+## Changed
+- Improved pom metadata
+
 ## [v2.0.6]
 
 ## Changelog

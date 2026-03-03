@@ -183,7 +183,7 @@ kotlin {
 KotlinPlatformType.setupAttributesMatchingStrategy(dependencies.attributesSchema)
 
 group = "io.github.chrisimx"
-version = "2.0.6"
+version = "2.0.7"
 
 dependencies {
     add("kspCommonMainMetadata", project(":codegen"))
