@@ -21,7 +21,7 @@ package io.github.chrisimx.esclkt
 
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
-import kotlin.math.roundToInt
+import kotlin.math.floor
 
 // Conversion factors
 const val MILLIMETERS_PER_INCH = 25.4
@@ -69,7 +69,7 @@ value class Millimeters(
 
     override fun toInches() = Inches(this.value / MILLIMETERS_PER_INCH)
 
-    override fun toThreeHundredthsOfInch() = ThreeHundredthsOfInch((this.value * THREE_HUNDREDTHS_INCHES_PER_MM).roundToInt().toUInt())
+    override fun toThreeHundredthsOfInch() = ThreeHundredthsOfInch((this.value * THREE_HUNDREDTHS_INCHES_PER_MM).toUInt())
 }
 
 @Serializable
