@@ -1,4 +1,3 @@
-
 pluginManagement {
     val kotlinVersion: String by settings
     val kspVersion: String by settings
@@ -16,3 +15,4 @@ rootProject.name = "eSCLKt"
 
 include("codegen")
 include("esclkt-main")
+include("escl-mock-server")

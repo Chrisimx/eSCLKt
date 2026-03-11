@@ -17,7 +17,7 @@ plugins {
     jacoco
     alias(libs.plugins.versions)
     id("com.goncalossilva.resources") version "0.14.4"
-    id("com.vanniktech.maven.publish") version "0.36.0"
+    id("com.vanniktech.maven.publish")
     alias(libs.plugins.kotlinCocoapods)
 }
 
