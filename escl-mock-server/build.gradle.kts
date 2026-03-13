@@ -2,7 +2,7 @@
 
 plugins {
     kotlin("multiplatform")
-    id("com.goncalossilva.resources") version "0.15.0"
+    alias(libs.plugins.kotlinx.resources)
     id("com.vanniktech.maven.publish")
 }
 
@@ -48,10 +48,10 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.kotlinxSerializationJson)
-                implementation("io.ktor:ktor-server-core:3.4.1")
-                implementation("io.ktor:ktor-server-cio:3.4.1")
+                implementation("io.ktor:ktor-server-core:${libs.versions.ktor.get()}")
+                implementation("io.ktor:ktor-server-cio:${libs.versions.ktor.get()}")
 
-                implementation("com.goncalossilva:resources:0.15.0")
+                implementation(libs.kotlinxResources)
             }
         }
     }

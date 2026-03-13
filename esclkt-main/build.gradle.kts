@@ -16,7 +16,7 @@ plugins {
     id("signing")
     jacoco
     alias(libs.plugins.versions)
-    id("com.goncalossilva.resources") version "0.14.4"
+    alias(libs.plugins.kotlinx.resources)
     id("com.vanniktech.maven.publish")
     alias(libs.plugins.kotlinCocoapods)
 }
@@ -127,22 +127,22 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(libs.kotlinxSerializationJson)
-                api("io.ktor:ktor-client-core:3.4.0")
-                implementation("io.ktor:ktor-serialization-kotlinx-xml:3.4.0")
-                implementation("io.github.pdvrieze.xmlutil:core:0.91.3")
+                api("io.ktor:ktor-client-core:${libs.versions.ktor.get()}")
+                implementation("io.ktor:ktor-serialization-kotlinx-xml:${libs.versions.ktor.get()}")
+                implementation(libs.xmlutil.core)
             }
             kotlin.srcDirs("build/generated/ksp/metadata/commonMain/kotlin")
         }
 
         val commonTest by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+                implementation(libs.kotlinxCoroutines)
+                implementation(libs.kotlinxCoroutines.test)
                 implementation("io.kotest:kotest-framework-engine:${libs.versions.kotest.get()}")
                 implementation("io.kotest:kotest-assertions-core:${libs.versions.kotest.get()}")
-                implementation("io.ktor:ktor-client-core:3.4.0")
-                implementation("io.ktor:ktor-client-mock:3.4.0")
-                implementation("com.goncalossilva:resources:0.14.4")
+                implementation("io.ktor:ktor-client-core:${libs.versions.ktor.get()}")
+                implementation("io.ktor:ktor-client-mock:${libs.versions.ktor.get()}")
+                implementation(libs.kotlinxResources)
                 implementation(kotlin("test"))
             }
         }
@@ -150,34 +150,34 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 // JVM engine for Ktor
-                implementation("io.ktor:ktor-client-cio:3.4.0")
+                implementation("io.ktor:ktor-client-cio:${libs.versions.ktor.get()}")
             }
         }
 
         val jvmTest by getting {
             dependencies {
                 implementation("io.kotest:kotest-framework-engine:${libs.versions.kotest.get()}")
-                implementation("io.ktor:ktor-client-core:3.4.0")
-                implementation("io.ktor:ktor-client-mock:3.4.0")
+                implementation("io.ktor:ktor-client-core:${libs.versions.ktor.get()}")
+                implementation("io.ktor:ktor-client-mock:${libs.versions.ktor.get()}")
                 implementation("io.kotest:kotest-assertions-core:${libs.versions.kotest.get()}")
                 implementation("io.kotest:kotest-runner-junit5:${libs.versions.kotest.get()}")
-                implementation("io.ktor:ktor-client-cio:3.4.0")
+                implementation("io.ktor:ktor-client-cio:${libs.versions.ktor.get()}")
             }
 
         }
 
         val jsMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-client-js:3.4.0")
+                implementation("io.ktor:ktor-client-js:${libs.versions.ktor.get()}")
             }
         }
 
         linuxMain.dependencies {
-            implementation("io.ktor:ktor-client-curl:3.4.0")
+            implementation("io.ktor:ktor-client-curl:${libs.versions.ktor.get()}")
         }
 
         appleMain.dependencies {
-            implementation("io.ktor:ktor-client-darwin:3.4.0")
+            implementation("io.ktor:ktor-client-darwin:${libs.versions.ktor.get()}")
         }
     }
 
