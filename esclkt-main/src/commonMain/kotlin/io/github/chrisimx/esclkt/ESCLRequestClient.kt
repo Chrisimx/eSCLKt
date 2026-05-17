@@ -25,6 +25,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.ContentType
 import nl.adaptivity.xmlutil.XmlException
+import kotlin.coroutines.cancellation.CancellationException
 
 /**
  * A client for the eSCL scanning protocol
@@ -34,13 +35,14 @@ import nl.adaptivity.xmlutil.XmlException
  */
 class ESCLRequestClient(
     val baseUrl: Url,
-    val usedHttpClient: HttpClient = HttpClient {
-        install(HttpTimeout) {
-            requestTimeoutMillis = 100_000
-            connectTimeoutMillis = 100_000
-            socketTimeoutMillis = 100_000
-        }
-    }
+    val usedHttpClient: HttpClient =
+        HttpClient {
+            install(HttpTimeout) {
+                requestTimeoutMillis = 100_000
+                connectTimeoutMillis = 100_000
+                socketTimeoutMillis = 100_000
+            }
+        },
 ) {
     private val rootURL: Url = URLBuilder(baseUrl).apply { encodedPath = "/" }.build()
     val esclXml: ESCLXml = ESCLXml()
@@ -53,6 +55,7 @@ class ESCLRequestClient(
         data class RequestFailure(
             val error: ESCLHttpCallResult.Error,
         ) : ScannerCapabilitiesResult()
+
         data class ScannerCapabilitiesMalformed(
             val content: String,
             val exception: Exception,
@@ -73,14 +76,18 @@ class ESCLRequestClient(
      * @see ScannerCapabilitiesResult
      */
     suspend fun getScannerCapabilities(): ScannerCapabilitiesResult {
-        val response = usedHttpClient.safeRequest<String>("${baseUrl}ScannerCapabilities") {
-            accept(ContentType.Any)
-            expectSuccess = true
-        }
+        val response =
+            usedHttpClient.safeRequest<String>("${baseUrl}ScannerCapabilities") {
+                accept(ContentType.Any)
+                expectSuccess = true
+            }
 
         when (response) {
             is ESCLHttpCallResult.Success -> {}
-            is ESCLHttpCallResult.Error -> return ScannerCapabilitiesResult.RequestFailure(response)
+
+            is ESCLHttpCallResult.Error -> {
+                return ScannerCapabilitiesResult.RequestFailure(response)
+            }
         }
 
         val scannerCaps = response.body
@@ -92,6 +99,8 @@ class ESCLRequestClient(
             return ScannerCapabilitiesResult.ScannerCapabilitiesMalformed(scannerCaps, e)
         } catch (e: IllegalArgumentException) {
             return ScannerCapabilitiesResult.ScannerCapabilitiesMalformed(scannerCaps, e)
+        } catch (e: CancellationException) {
+            throw e // Do not catch cancellation exception to not break structured concurrency
         } catch (e: Exception) {
             return ScannerCapabilitiesResult.InternalBug(e)
         }
@@ -133,7 +142,10 @@ class ESCLRequestClient(
 
         when (response) {
             is ESCLHttpCallResult.Success -> {}
-            is ESCLHttpCallResult.Error -> return ScannerStatusResult.RequestFailure(response)
+
+            is ESCLHttpCallResult.Error -> {
+                return ScannerStatusResult.RequestFailure(response)
+            }
         }
 
         val scannerStatus = response.body
@@ -145,6 +157,8 @@ class ESCLRequestClient(
             return ScannerStatusResult.ScannerStatusMalformed(scannerStatus, e)
         } catch (e: IllegalArgumentException) {
             return ScannerStatusResult.ScannerStatusMalformed(scannerStatus, e)
+        } catch (e: CancellationException) {
+            throw e // Do not catch cancellation exception to not break structured concurrency
         } catch (e: Exception) {
             return ScannerStatusResult.InternalBug(e)
         }
@@ -159,7 +173,9 @@ class ESCLRequestClient(
             val exception: ESCLHttpCallResult.Error,
         ) : ScannerCreateJobResult()
 
-        data class JobUrlBuildingFailed(val exception: Exception) : ScannerCreateJobResult()
+        data class JobUrlBuildingFailed(
+            val exception: Exception,
+        ) : ScannerCreateJobResult()
 
         data object NoLocationGiven : ScannerCreateJobResult()
     }
@@ -186,7 +202,10 @@ class ESCLRequestClient(
 
         when (req) {
             is ESCLHttpCallResult.Success -> {}
-            is ESCLHttpCallResult.Error -> return ScannerCreateJobResult.RequestFailure(req)
+
+            is ESCLHttpCallResult.Error -> {
+                return ScannerCreateJobResult.RequestFailure(req)
+            }
         }
 
         val jobURL: Url?
@@ -196,6 +215,8 @@ class ESCLRequestClient(
             jobLocation = req.response.headers["Location"]
             jobURL = jobLocation?.let { Url(it) }
             finalJobURL = jobURL?.let { URLBuilder(jobURL).appendPathSegments("/").build() }
+        } catch (e: CancellationException) {
+            throw e // Do not catch cancellation exception to not break structured concurrency
         } catch (e: Exception) {
             return ScannerCreateJobResult.JobUrlBuildingFailed(e)
         }
@@ -226,7 +247,9 @@ class ESCLRequestClient(
     sealed class ScannerDeleteJobResult {
         data object Success : ScannerDeleteJobResult()
 
-        data class CouldNotBuiltJobUrl(val exception: Exception) : ScannerDeleteJobResult()
+        data class CouldNotBuiltJobUrl(
+            val exception: Exception,
+        ) : ScannerDeleteJobResult()
 
         data class RequestFailure(
             val exception: ESCLHttpCallResult.Error,
@@ -248,14 +271,17 @@ class ESCLRequestClient(
             val urlBuilder = URLBuilder(rootURL)
             urlBuilder.path(jobUri.removeSuffix("/"))
             url = urlBuilder.build()
+        } catch (e: CancellationException) {
+            throw e // Do not catch cancellation exception to not break structured concurrency
         } catch (e: Exception) {
             return ScannerDeleteJobResult.CouldNotBuiltJobUrl(e)
         }
 
-        val req = usedHttpClient.safeRequest<String>(url.toString()) {
-                        method = HttpMethod.Delete
-                        expectSuccess = true
-                    }
+        val req =
+            usedHttpClient.safeRequest<String>(url.toString()) {
+                method = HttpMethod.Delete
+                expectSuccess = true
+            }
 
         return when (req) {
             is ESCLHttpCallResult.Success -> ScannerDeleteJobResult.Success
@@ -269,9 +295,8 @@ class ESCLRequestClient(
         val data: ByteArray,
         val supportRangeHeader: Boolean,
     ) {
-        override fun toString(): String {
-            return "ScannedPage(contentType='$contentType', contentLocation=$contentLocation, data.size=${data.size}, supportRangeHeader=$supportRangeHeader)"
-        }
+        override fun toString(): String =
+            "ScannedPage(contentType='$contentType', contentLocation=$contentLocation, data.size=${data.size}, supportRangeHeader=$supportRangeHeader)"
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -301,7 +326,9 @@ class ESCLRequestClient(
 
         data object NoFurtherPages : ScannerNextPageResult()
 
-        data class InvalidJobUri(val exception: Exception) : ScannerNextPageResult()
+        data class InvalidJobUri(
+            val exception: Exception,
+        ) : ScannerNextPageResult()
 
         data class RequestFailure(
             val exception: ESCLHttpCallResult.Error,
@@ -330,6 +357,8 @@ class ESCLRequestClient(
             val urlBuilder = URLBuilder(rootURL)
             urlBuilder.path(jobUri)
             jobURL = urlBuilder.build()
+        } catch (e: CancellationException) {
+            throw e // Do not catch cancellation exception to not break structured concurrency
         } catch (e: Exception) {
             return ScannerNextPageResult.InvalidJobUri(e)
         }
@@ -342,7 +371,10 @@ class ESCLRequestClient(
 
         when (req) {
             is ESCLHttpCallResult.Success -> {}
-            is ESCLHttpCallResult.Error -> return ScannerNextPageResult.RequestFailure(req)
+
+            is ESCLHttpCallResult.Error -> {
+                return ScannerNextPageResult.RequestFailure(req)
+            }
         }
 
         val response = req.response
@@ -350,10 +382,26 @@ class ESCLRequestClient(
 
         val error =
             when {
-                httpStatus == HttpStatusCode.NotFound -> ScannerNextPageResult.NoFurtherPages
-                !httpStatus.isSuccess() -> ScannerNextPageResult.RequestFailure(ESCLHttpCallResult.Error.HttpError(httpStatus.value,  req.body.decodeToString()))
-                response.headers["Content-Type"] == null -> ScannerNextPageResult.ContentTypeMissing(httpStatus.value, req.body.decodeToString())
-                else -> null
+                httpStatus == HttpStatusCode.NotFound -> {
+                    ScannerNextPageResult.NoFurtherPages
+                }
+
+                !httpStatus.isSuccess() -> {
+                    ScannerNextPageResult.RequestFailure(
+                        ESCLHttpCallResult.Error.HttpError(httpStatus.value, req.body.decodeToString()),
+                    )
+                }
+
+                response.headers["Content-Type"] == null -> {
+                    ScannerNextPageResult.ContentTypeMissing(
+                        httpStatus.value,
+                        req.body.decodeToString(),
+                    )
+                }
+
+                else -> {
+                    null
+                }
             }
         if (error != null) return error
 
@@ -362,7 +410,7 @@ class ESCLRequestClient(
                 contentType = response.headers["Content-Type"]!!,
                 contentLocation = response.headers["Content-Location"],
                 data = req.body,
-                supportRangeHeader = (response.headers["Accept-Ranges"] ?:  "none") == "bytes",
+                supportRangeHeader = (response.headers["Accept-Ranges"] ?: "none") == "bytes",
             ),
         )
     }
@@ -372,7 +420,9 @@ class ESCLRequestClient(
             val scanImageInfo: ScanImageInfo,
         ) : RetrieveScanImageInfoResult()
 
-        data class InvalidJobUri(val exception: Exception) : RetrieveScanImageInfoResult()
+        data class InvalidJobUri(
+            val exception: Exception,
+        ) : RetrieveScanImageInfoResult()
 
         data class RequestFailure(
             val exception: ESCLHttpCallResult.Error,
@@ -407,7 +457,8 @@ class ESCLRequestClient(
             return RetrieveScanImageInfoResult.InvalidJobUri(e)
         }
 
-        val req = usedHttpClient
+        val req =
+            usedHttpClient
                 .safeRequest<String>("${jobURL}ScanImageInfo") {
                     accept(ContentType.Any)
                     expectSuccess = true
@@ -415,7 +466,10 @@ class ESCLRequestClient(
 
         when (req) {
             is ESCLHttpCallResult.Success -> {}
-            is ESCLHttpCallResult.Error -> return RetrieveScanImageInfoResult.RequestFailure(req)
+
+            is ESCLHttpCallResult.Error -> {
+                return RetrieveScanImageInfoResult.RequestFailure(req)
+            }
         }
 
         val body = req.body
@@ -427,6 +481,8 @@ class ESCLRequestClient(
             return RetrieveScanImageInfoResult.ScanImageInfoMalformed(body, e)
         } catch (e: IllegalArgumentException) {
             return RetrieveScanImageInfoResult.ScanImageInfoMalformed(body, e)
+        } catch (e: CancellationException) {
+            throw e // Do not catch cancellation exception to not break structured concurrency
         } catch (e: Exception) {
             return RetrieveScanImageInfoResult.InternalBug(e)
         }
