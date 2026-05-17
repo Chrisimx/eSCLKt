@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'eSCLKt'
-    spec.version                  = '2.0.7'
+    spec.version                  = '2.0.8'
     spec.homepage                 = ''
     spec.source                   = { :http=> ''}
     spec.authors                  = ''

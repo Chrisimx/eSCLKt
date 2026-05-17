@@ -61,13 +61,20 @@ suspend inline fun <reified T> HttpClient.safeRequest(
     }
 }
 
-suspend fun <T> commonErrorMapping(e: Any): ESCLHttpCallResult<T> =
-    when (e) {
+suspend fun <T> commonErrorMapping(e: Any): ESCLHttpCallResult<T> {
+    val platformError: ESCLHttpCallResult<T>? = platformErrorMapping(e)
+
+    if (platformError != null) { // Prioritizing platform errors
+        return platformError
+    }
+
+    return when (e) {
         is ClientRequestException -> ESCLHttpCallResult.Error.HttpError(e.response.status.value, e.errorBody())
         is ServerResponseException -> ESCLHttpCallResult.Error.HttpError(e.response.status.value, e.errorBody())
         is IOException -> ESCLHttpCallResult.Error.NetworkError(e)
-        else -> platformErrorMapping(e)
+        else -> ESCLHttpCallResult.Error.UnknownError(e)
     }
+}
 
 /** This function maps Ktor engine and system specific exceptions to system-independent error types **/
-expect fun <T> platformErrorMapping(e: Any): ESCLHttpCallResult<T>
+expect fun <T> platformErrorMapping(e: Any): ESCLHttpCallResult<T>?
